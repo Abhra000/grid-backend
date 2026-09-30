@@ -1,0 +1,22 @@
+{
+  "name": "grid-matrix-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "schema": "node scripts/tools.js schema"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@fastify/cookie": "^11.0.0",
+    "@fastify/cors": "^11.0.0",
+    "@fastify/rate-limit": "^10.0.0",
+    "bcryptjs": "^3.0.0",
+    "fastify": "^5.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.0",
+    "xlsx": "^0.18.5"
+  }
+}

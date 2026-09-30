@@ -1,0 +1,18 @@
+# Grid Matrix Portal — own compose project in /root/grid-portal (does not touch /root/first-crm)
+services:
+  grid-api:
+    build: .
+    container_name: grid-api
+    restart: unless-stopped
+    env_file: ../.env            # secrets live in /root/grid-portal/.env (outside the code folder)
+    # hard limits so the portal can never starve the CRM of memory / CPU
+    mem_limit: 512m
+    cpus: 1.0
+    networks: [crm]
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+networks:
+  crm:
+    external: true
+    name: first-crm_default      # joins the CRM's private network: reaches Postgres as "db", Caddy reaches us as "grid-api"

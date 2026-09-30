@@ -1,0 +1,15 @@
+[Unit]
+Description=Grid Matrix Portal API
+After=network.target postgresql.service
+
+[Service]
+WorkingDirectory=/opt/gridmatrix/api
+EnvironmentFile=/opt/gridmatrix/api/.env
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=3
+User=www-data
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

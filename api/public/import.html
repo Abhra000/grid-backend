@@ -1,0 +1,32 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grid Portal — Upload grid</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>body{font-family:Arial,sans-serif;max-width:760px;margin:30px auto;padding:0 16px;color:#1d2b24}h2{color:#1e4d3a}
+.card{border:1px solid #d5e0d9;border-radius:10px;padding:18px;margin:14px 0}label{display:block;font-size:12px;font-weight:700;color:#557;margin:10px 0 4px}
+input,select{padding:8px;border:1px solid #c9d3cc;border-radius:7px;width:100%;box-sizing:border-box}button{background:#1e4d3a;color:#fff;border:0;border-radius:8px;padding:10px 16px;margin-top:14px;cursor:pointer}
+button.alt{background:#fff;color:#1e4d3a;border:1px solid #1e4d3a}.hidden{display:none}pre{background:#f4f7f5;padding:10px;border-radius:8px;white-space:pre-wrap}.ok{color:#197a3e}.err{color:#b3261e}</style></head><body>
+<h2>Grid Portal — Upload a grid</h2>
+<div class="card" id="loginCard"><b>Log in (admin)</b><label>Email</label><input id="em"><label>Password</label><input id="pw" type="password">
+<button onclick="login()">Log in</button><div id="lmsg"></div></div>
+<div class="card hidden" id="upCard"><b>Upload</b>
+<label>LOB id</label><input id="lob" value="motor-pvt-car">
+<label>Effective From</label><input id="from" type="date">
+<label>Excel file (first sheet, header in row 1)</label><input id="file" type="file" accept=".xlsx,.xls">
+<label><input type="checkbox" id="rep" checked style="width:auto"> Replace: rows of the same insurer + product type that are not in this file end the day before</label>
+<button class="alt" onclick="send(true)">1. Check changes</button> <button onclick="send(false)">2. Publish</button>
+<pre id="out">Choose a file, then "Check changes".</pre></div>
+<script>
+let TOK='';const $=id=>document.getElementById(id);
+async function login(){const r=await fetch('/api/auth/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:$('em').value,password:$('pw').value})});
+ const d=await r.json();if(!r.ok){$('lmsg').innerHTML='<span class=err>'+(d.error||'Login failed')+'</span>';return;}
+ if(d.user.role==='viewer'){$('lmsg').innerHTML='<span class=err>Admin role needed</span>';return;}TOK=d.token;$('loginCard').classList.add('hidden');$('upCard').classList.remove('hidden');}
+async function send(dry){const f=$('file').files[0];if(!f)return alert('Choose the Excel file');if(!$('from').value)return alert('Set Effective From');
+ const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});const aoa=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:'',raw:false});
+ if(!dry&&!confirm('Publish '+(aoa.length-1)+' rows effective from '+$('from').value+'?'))return;
+ $('out').textContent=dry?'Checking…':'Publishing…';
+ const r=await fetch('/api/lobs/'+encodeURIComponent($('lob').value)+'/uploads',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+TOK},
+  body:JSON.stringify({columns:aoa[0].map(String),rows:aoa.slice(1),effectiveFrom:$('from').value,fileName:f.name,replaceScope:$('rep').checked,dryRun:dry})});
+ const d=await r.json();if(!r.ok){$('out').innerHTML='<span class=err>'+(d.error||'Failed')+'</span>';return;}
+ $('out').textContent=(dry?'CHECK (nothing saved yet)\n':'PUBLISHED ✓\n')+`Rows in file: ${d.rows}\nChanged: ${d.changed}\nNew: ${d.added}\nUnchanged: ${d.unchanged}\nEnded (not in file): ${d.ended}\nInsurer + product: ${d.scopes.map(s=>s.join(' / ')).join(', ')}`+
+  (d.samples&&d.samples.length?'\n\nExamples of changes:\n'+d.samples.slice(0,10).map(x=>`${x.params.Insurer} | ${x.params['Product Type']} | ${x.params.Location||''} ${x.params.RTO||''} ${x.params['Fuel Type']||''} ${x.params.CC||''}: ${x.from} → ${x.to}`).join('\n'):'');}
+</script></body></html>

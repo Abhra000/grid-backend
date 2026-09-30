@@ -86,3 +86,22 @@ CREATE TABLE IF NOT EXISTS audit_log (
   detail   jsonb
 );
 CREATE INDEX IF NOT EXISTS audit_at ON audit_log (at DESC);
+
+-- ===== M-09 / M-10: Microsoft 365 sign-in + usage tracking (safe to re-run) =====
+ALTER TABLE users ALTER COLUMN pass_hash DROP NOT NULL;                         -- Microsoft users have no password here
+ALTER TABLE users ADD COLUMN IF NOT EXISTS ms_oid text UNIQUE;                  -- Microsoft account id
+ALTER TABLE users ADD COLUMN IF NOT EXISTS auth_provider text NOT NULL DEFAULT 'password';   -- 'password' | 'm365'
+CREATE TABLE IF NOT EXISTS visits (
+  id          bigserial PRIMARY KEY,
+  user_id     int NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  started_at  timestamptz NOT NULL DEFAULT now(),
+  last_seen   timestamptz NOT NULL DEFAULT now(),
+  hits        int NOT NULL DEFAULT 1,                                             -- searches / filter changes in the visit
+  ip          text,
+  ua          text
+);
+CREATE INDEX IF NOT EXISTS visits_user ON visits (user_id, last_seen DESC);
+CREATE INDEX IF NOT EXISTS visits_time ON visits (started_at DESC);
+
+-- ===== email/password accounts for normal users =====
+ALTER TABLE users ADD COLUMN IF NOT EXISTS must_change boolean NOT NULL DEFAULT false;   -- temporary password → must set own password

@@ -8,7 +8,9 @@
     "start": "node server.js",
     "schema": "node scripts/tools.js schema"
   },
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "@fastify/cookie": "^11.0.0",
     "@fastify/cors": "^11.0.0",
@@ -17,6 +19,7 @@
     "fastify": "^5.0.0",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.13.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "jose": "^5.9.0"
   }
 }

@@ -13,6 +13,7 @@ import { publish, diffUpload, toRecords, effectiveDates, exportRows } from './li
 import { getSnapshot, querySnapshot, facetsSnapshot, clearSnapshots } from './lib/snapshot.js';
 import { m365Config, startLogin, finishLogin } from './lib/m365.js';
 import { touchVisit, usageReport } from './lib/usage.js';
+import { registerAdmin, masterWarnings } from './lib/admin.js';
 
 const { DATABASE_URL, JWT_SECRET, PORT = 8080, CORS_ORIGIN = '' } = process.env;
 if (!DATABASE_URL || !JWT_SECRET) { console.error('Set DATABASE_URL and JWT_SECRET'); process.exit(1); }
@@ -154,17 +155,21 @@ app.post('/api/lobs/:id/export', { preHandler: viewer }, async (req, reply) => {
 app.post('/api/lobs/:id/uploads', { preHandler: admin }, async (req, reply) => {
   const b = req.body || {};
   if (!/^\d{4}-\d{2}-\d{2}$/.test(b.effectiveFrom || '')) return reply.code(400).send({ error: 'Effective From (YYYY-MM-DD) is required' });
-  const rateCol = b.rateCol || 'Base Commission %';
+  const lob = (await pool.query('SELECT rate_col FROM lobs WHERE id=$1', [req.params.id])).rows[0];
+  const rateCol = b.rateCol || lob?.rate_col || 'Base Commission %';
   try {
-    if (b.dryRun) { const { records } = toRecords(b.columns, b.rows, rateCol); return diffUpload(pool, req.params.id, records, b.effectiveFrom); }
+    const { records } = toRecords(b.columns, b.rows, rateCol);
+    const warnings = await masterWarnings(pool, req.params.id, records);
+    if (b.dryRun) return { ...(await diffUpload(pool, req.params.id, records, b.effectiveFrom)), warnings };
     const res = await publish(pool, { lobId: req.params.id, columns: b.columns, rows: b.rows, rateCol, from: b.effectiveFrom,
                                       fileName: b.fileName, replaceScope: b.replaceScope !== false, userId: req.user.id });
-    clearCache(); return res;
+    clearCache(); return { ...res, warnings };
   } catch (e) { return reply.code(400).send({ error: e.message }); }
 });
 
 app.get('/api/lobs/:id/uploads', { preHandler: admin }, async req =>
-  (await pool.query(`SELECT u.id, u.file_name, u.effective_from::text, u.row_count, u.summary, u.created_at, us.email AS by
+  (await pool.query(`SELECT u.id, u.file_name, u.effective_from::text, u.row_count, u.summary, u.created_at, us.email AS by,
+                              (SELECT count(*) FROM rates r WHERE r.upload_id=u.id)::int AS rows_kept
                        FROM uploads u LEFT JOIN users us ON us.id=u.uploaded_by WHERE u.lob_id=$1 ORDER BY u.id DESC LIMIT 100`, [req.params.id])).rows);
 
 // M-06: admin re-arranges / renames / hides filters.  body: [{col, position, label, is_filter, visible}]
@@ -212,11 +217,11 @@ app.patch('/api/users/:uid', { preHandler: admin }, async (req, reply) => {
   audit(req.user.id, 'user_update', { id: req.params.uid, role, active }); return { ok: true };
 });
 
+registerAdmin(app, { pool, viewer, admin, superadmin, audit, clearCache, lobColumns });
+
 app.get('/api/health', async () => { await pool.query('select 1'); return { ok: true }; });
-// one-page admin upload tool (used until the new admin screens of M-02..M-07 are live)
 import fsImport from 'node:fs';
-const IMPORT_HTML = fsImport.readFileSync(new URL('./public/import.html', import.meta.url), 'utf8');
-app.get('/import', async (req, reply) => reply.type('text/html; charset=utf-8').send(IMPORT_HTML));
+app.get('/import', async (req, reply) => reply.redirect('/admin#lobs'));   // old temporary uploader -> full admin
 // M-02: viewer for users at "/" ; admin screens come at /admin (M-03..M-07) — until then /admin opens the upload tool
 const VIEWER_HTML = fsImport.readFileSync(new URL('./public/index.html', import.meta.url), 'utf8');
 const noCache = r => r.header('Cache-Control', 'no-cache');

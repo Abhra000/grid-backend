@@ -129,6 +129,21 @@ footer{text-align:center;color:#93A695;font-size:12px;margin-top:26px}
   .dl-tbl tbody td.dl-k0::before{display:none}
 }
 @media(max-width:560px){header{padding:0 14px}.hd{gap:9px}.hd small{display:none}#liveText{display:none}}
+
+/* ---------- rate details + suggest a rate ---------- */
+.dl-tbl tbody tr{cursor:pointer}
+.overlay{position:fixed;inset:0;background:rgba(18,28,20,.55);display:flex;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(3px);padding:14px}
+.overlay .modal{max-width:580px;max-height:88vh;overflow:auto}
+.modal .mh{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.xbtn{background:rgba(255,255,255,.15);border:none;color:#fff;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:15px;flex-shrink:0}
+.frow{display:flex;border-bottom:1px solid var(--line);padding:8px 0;gap:14px}
+.frow .k{width:150px;flex-shrink:0;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;padding-top:2px}
+.frow .v{font-size:13.5px}
+.rhist div{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sgrid .full{grid-column:1/3}
+.sgbtn{background:#fff;border:1px solid var(--accent);color:#8a6412;border-radius:9px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;margin-top:14px}
+.okmsg{background:#e2f7ee;color:#0b7a52;border-radius:8px;padding:10px 12px;font-size:13px;margin-top:10px}
+.spill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#FBF1DC;color:#8a6412}.spill.approved{background:#e2f7ee;color:#0b7a52}.spill.rejected{background:#fdecec;color:var(--red)}
 </style>
 </head>
 <body>
@@ -138,6 +153,7 @@ footer{text-align:center;color:#93A695;font-size:12px;margin-top:26px}
     <div><h1>Grid Matrix</h1><small>Commission Grid Viewer</small></div>
     <div class="spacer"></div>
     <select class="lobsel hidden" id="lobSwitch"></select>
+    <button class="hbtn hidden" id="mysug" title="Rates you suggested">✎ My suggestions</button>
     <button class="hbtn hidden" id="logout">Log out</button>
     <div class="live" id="live"><span class="dot"></span><span id="liveText">Connecting…</span></div>
   </div>
@@ -229,7 +245,7 @@ $('cpgo').onclick=async()=>{$('cperr').textContent='';if($('cp1').value!==$('cp2
   const r=await fetch('/api/auth/change-password',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({current:$('cp0').value,password:$('cp1').value})});
   const d=await r.json().catch(()=>({}));if(!r.ok){$('cperr').textContent=d.error||'Could not save';return;}
   ['cp0','cp1','cp2'].forEach(i=>$(i).value='');$('changeView').classList.add('hidden');start();};
-function showLogin(){$('changeView').classList.add('hidden');$('loginView').classList.remove('hidden');$('app').classList.add('hidden');$('logout').classList.add('hidden');$('lobSwitch').classList.add('hidden');live('Signed out');}
+function showLogin(){$('changeView').classList.add('hidden');$('loginView').classList.remove('hidden');$('app').classList.add('hidden');$('logout').classList.add('hidden');$('mysug').classList.add('hidden');$('lobSwitch').classList.add('hidden');live('Signed out');}
 async function login(){
   $('lerr').textContent='';
   const r=await fetch('/api/auth/login',{method:'POST',headers:{'content-type':'application/json'},credentials:'same-origin',body:JSON.stringify({email:$('em').value.trim(),password:$('pw').value})});
@@ -238,7 +254,7 @@ async function login(){
 }
 async function start(){
   fetch('/api/visit',{method:'POST',credentials:'same-origin'}).catch(()=>{});   // counts this visit for the admin report
-  $('loginView').classList.add('hidden');$('app').classList.remove('hidden');$('logout').classList.remove('hidden');
+  $('loginView').classList.add('hidden');$('app').classList.remove('hidden');$('logout').classList.remove('hidden');$('mysug').classList.remove('hidden');
   const lobs=await api('/api/lobs');
   const nice=l=>l.name&&l.name!==l.id?l.name:l.id.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
   $('lobSwitch').innerHTML=lobs.map(l=>`<option value="${esc(l.id)}">${esc(nice(l))}</option>`).join('');
@@ -352,7 +368,8 @@ function render(newRows,reset){
     S.shown=S.cols.filter(c=>S.rows.some(r=>{const v=r.params[c.col];return v&&!isAll(v);}));
     $('thr').innerHTML=S.shown.map(c=>`<th>${esc(c.label)}</th>`).join('')+'<th>Base Commission %</th><th>Effective From</th><th>Notes</th>';
   }
-  $('tb').insertAdjacentHTML('beforeend',newRows.map(r=>'<tr>'+S.shown.map((c,k)=>{const v=r.params[c.col];
+  const base=S.rows.length-newRows.length;
+  $('tb').insertAdjacentHTML('beforeend',newRows.map((r,i)=>'<tr data-i="'+(base+i)+'">'+S.shown.map((c,k)=>{const v=r.params[c.col];
       return `<td class="${k===0?'dl-k0':''}" data-label="${esc(c.label)}">${v&&!isAll(v)?hl(v):'—'}</td>`;}).join('')+
     `<td class="dl-rate" data-label="Base Commission %">${hl(r.rate_text)}</td>`+
     `<td data-label="Effective From">${esc(dtxt(r.effective_from))}${r.effective_to?`<div class="dl-still">till ${esc(dtxt(r.effective_to))}</div>`:''}</td>`+
@@ -377,6 +394,46 @@ $('xls').onclick=async()=>{
 $('go').onclick=login;$('pw').onkeydown=e=>{if(e.key==='Enter')login();};$('em').onkeydown=e=>{if(e.key==='Enter')$('pw').focus();};
 $('logout').onclick=async()=>{await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'});showLogin();};
 fetch('/api/me',{credentials:'same-origin'}).then(async r=>{if(!r.ok)return showLogin();const d=await r.json();if(d.user.mustChange)return showChange();start();}).catch(()=>{live('Offline','err');showLogin();});
+
+/* ---------- rate details + "suggest a rate" ---------- */
+function modal(html){closeModal();const d=document.createElement('div');d.className='overlay';d.id='ov';d.innerHTML=html;document.body.appendChild(d);
+  d.onclick=e=>{if(e.target===d||e.target.closest('.xbtn'))closeModal();};}
+function closeModal(){$('ov')?.remove();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+$('tb').addEventListener('click',e=>{if(e.target.closest('a,button,input'))return;const tr=e.target.closest('tr[data-i]');if(tr&&S.rows[+tr.dataset.i])openDetail(S.rows[+tr.dataset.i]);});
+function openDetail(r){
+  const f=Object.entries(r.params).filter(([,v])=>v&&!isAll(v)),lab=c=>(S.cols.find(x=>x.col===c)||{}).label||c;
+  modal(`<div class="modal"><div class="mh"><div><h3>${esc(f.slice(0,2).map(x=>x[1]).join(' · '))}</h3><p>${esc(f.slice(2).map(x=>x[1]).join(' · '))}</p></div><button class="xbtn">✕</button></div><div class="mb">
+    ${f.map(([k,v])=>`<div class="frow"><div class="k">${esc(lab(k))}</div><div class="v">${esc(v)}</div></div>`).join('')}
+    <div class="frow"><div class="k">Base Commission %</div><div class="v" style="font-weight:800;color:var(--navy);font-size:16px">${esc(r.rate_text)}</div></div>
+    <div class="frow"><div class="k">Effective</div><div class="v">${esc(dtxt(r.effective_from))} → ${r.effective_to?esc(dtxt(r.effective_to)):'still valid'}</div></div>
+    ${r.notes?`<div class="frow"><div class="k">Notes</div><div class="v">${esc(r.notes)}</div></div>`:''}
+    <div class="fl" style="margin-top:14px">Rate history</div><div class="rhist" id="rh"><div style="color:var(--muted);font-size:12px">Loading…</div></div>
+    <div id="sgBox"><button class="sgbtn" id="sgOpen">✎ Rate looks wrong? Suggest a correction</button></div>
+  </div></div>`);
+  api('/api/lobs/'+encodeURIComponent(S.lob)+'/rates/'+r.id+'/history').then(h=>{$('rh')&&($('rh').innerHTML=h.map(x=>`<div><b>${esc(x.rate_text)}</b><span style="color:var(--muted)">${esc(dtxt(x.effective_from))} → ${x.effective_to?esc(dtxt(x.effective_to)):'now'}</span></div>`).join(''));}).catch(()=>{});
+  $('sgOpen').onclick=()=>{$('sgBox').innerHTML=`<div class="fl" style="margin-top:16px">Suggest a correction — an admin will check it</div>
+    <div class="sgrid"><div><label class="fl">Correct rate</label><input class="fi" id="sgRate" placeholder="e.g. 42%"></div>
+    <div><label class="fl">From date (optional)</label><input class="fi" type="date" id="sgFrom"></div>
+    <div class="full"><label class="fl">Why / source</label><input class="fi" id="sgNote" placeholder="e.g. insurer circular dated 3 Oct, RM mail…"></div></div>
+    <button class="gold" id="sgSend" style="width:auto;padding:10px 18px">Send suggestion</button><div class="lerr" id="sgErr"></div>`;
+    $('sgRate').focus();
+    $('sgSend').onclick=async()=>{$('sgErr').textContent='';
+      try{const r2=await fetch('/api/lobs/'+encodeURIComponent(S.lob)+'/suggestions',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},
+          body:JSON.stringify({rateId:r.id,suggestedRate:$('sgRate').value,effectiveFrom:$('sgFrom').value||undefined,note:$('sgNote').value})});
+        const d=await r2.json().catch(()=>({}));if(!r2.ok)throw new Error(d.error||'Could not send');
+        $('sgBox').innerHTML='<div class="okmsg">✓ Thank you — sent to the admin for approval. Track it under “My suggestions”.</div>';}
+      catch(e){$('sgErr').textContent=e.message;}};};
+}
+$('mysug').onclick=async()=>{
+  modal(`<div class="modal"><div class="mh"><div><h3>My suggestions</h3><p>Rates you suggested and what the admin decided</p></div><button class="xbtn">✕</button></div><div class="mb" id="msb"><div class="spin"></div></div></div>`);
+  const L=await api('/api/suggestions/mine');
+  $('msb').innerHTML=L.length?L.map(s=>{const f=Object.values(s.params).filter(v=>v&&!isAll(v));
+    return`<div class="frow" style="display:block"><div style="display:flex;justify-content:space-between;gap:10px"><b style="color:var(--navy)">${esc(f.slice(0,3).join(' · '))}</b><span class="spill ${s.status}">${s.status}</span></div>
+      <div style="font-size:12.5px;color:var(--muted);margin-top:3px">${esc(f.slice(3).join(' · '))}</div>
+      <div style="font-size:13px;margin-top:4px">${esc(s.current_rate)} → <b>${esc(s.suggested_rate)}</b>${s.applied_rate&&s.applied_rate!==s.suggested_rate?` (applied ${esc(s.applied_rate)})`:''}${s.effective_from?` from ${esc(dtxt(s.effective_from))}`:''} · <span style="color:var(--muted)">${esc(new Date(s.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short'}))}</span></div>
+      ${s.decision_note?`<div style="font-size:12.5px;margin-top:3px">Admin: “${esc(s.decision_note)}”</div>`:''}</div>`;}).join(''):'<div style="color:var(--muted);text-align:center;padding:20px">You have not suggested any rate yet. Click a row in the grid to suggest a correction.</div>';
+};
 </script>
 </body>
 </html>

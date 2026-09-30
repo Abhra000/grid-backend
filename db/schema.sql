@@ -105,3 +105,34 @@ CREATE INDEX IF NOT EXISTS visits_time ON visits (started_at DESC);
 
 -- ===== email/password accounts for normal users =====
 ALTER TABLE users ADD COLUMN IF NOT EXISTS must_change boolean NOT NULL DEFAULT false;   -- temporary password → must set own password
+
+-- ===== M-12: full admin (LOB templates, masters, approvals, upload history) =====
+ALTER TABLE lobs    ADD COLUMN IF NOT EXISTS description text;
+ALTER TABLE uploads ADD COLUMN IF NOT EXISTS columns jsonb;                   -- file header as uploaded (for "download this version")
+-- Masters: the allowed values of a column (Insurer, Product Type, ...) per LOB. Upload check warns on anything else.
+CREATE TABLE IF NOT EXISTS masters (
+  lob_id  text NOT NULL REFERENCES lobs(id) ON DELETE CASCADE,
+  col     text NOT NULL,
+  value   text NOT NULL,
+  PRIMARY KEY (lob_id, col, value)
+);
+-- "Suggest a rate": a user proposes a correction for one row; an admin approves (becomes a new dated rate) or rejects.
+CREATE TABLE IF NOT EXISTS suggestions (
+  id              serial PRIMARY KEY,
+  lob_id          text NOT NULL REFERENCES lobs(id) ON DELETE CASCADE,
+  rate_id         bigint REFERENCES rates(id) ON DELETE SET NULL,
+  row_key         text NOT NULL,
+  params          jsonb NOT NULL,
+  current_rate    text,
+  suggested_rate  text NOT NULL,
+  effective_from  date,
+  note            text,
+  status          text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected')),
+  user_id         int REFERENCES users(id) ON DELETE SET NULL,
+  created_at      timestamptz NOT NULL DEFAULT now(),
+  decided_by      int REFERENCES users(id) ON DELETE SET NULL,
+  decided_at      timestamptz,
+  decision_note   text,
+  applied_rate    text
+);
+CREATE INDEX IF NOT EXISTS suggestions_status ON suggestions (status, created_at DESC);

@@ -21,8 +21,8 @@ export function splitColumns(columns, rateCol) {
 export function rowKey(params, paramCols) {
   return crypto.createHash('md5').update(paramCols.map(c => norm(params[c])).join('\u0001')).digest('hex');
 }
-const rateNum = t => { const m = String(t).match(/-?\d+(\.\d+)?/); return m ? Number(m[0]) : null; };
-const fmtRate = t => { const s = norm(t); const m = s.match(/^(\d+(?:\.\d+)?)\s*%?$/); if (!m) return s; let n = Number(m[1]); if (n > 0 && n <= 1 && s.indexOf('%') < 0 && m[1].includes('.')) n = +(n * 100).toFixed(3); return `${n}%`; };
+export const rateNum = t => { const m = String(t).match(/-?\d+(\.\d+)?/); return m ? Number(m[0]) : null; };
+export const fmtRate = t => { const s = norm(t); const m = s.match(/^(\d+(?:\.\d+)?)\s*%?$/); if (!m) return s; let n = Number(m[1]); if (n > 0 && n <= 1 && s.indexOf('%') < 0 && m[1].includes('.')) n = +(n * 100).toFixed(3); return `${n}%`; };
 
 /** Turn uploaded array-of-arrays (header row excluded) into rate records */
 export function toRecords(columns, rows, rateCol) {
@@ -84,9 +84,9 @@ export async function publish(pool, { lobId, columns, rows, rateCol, from, fileN
                     SELECT $1, c, 1000 + ord FROM unnest($2::text[]) WITH ORDINALITY AS t(c, ord)
                     ON CONFLICT DO NOTHING`, [lobId, paramCols]);
     const summary = await diffUpload(db, lobId, records, from);
-    const up = await db.query(`INSERT INTO uploads (lob_id, file_name, effective_from, replace_scope, row_count, summary, uploaded_by)
-                               VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id`,
-                              [lobId, fileName || null, from, replaceScope, records.length, summary, userId]);
+    const up = await db.query(`INSERT INTO uploads (lob_id, file_name, effective_from, replace_scope, row_count, summary, uploaded_by, columns)
+                               VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id`,
+                              [lobId, fileName || null, from, replaceScope, records.length, summary, userId, JSON.stringify(columns)]);
     const uploadId = up.rows[0].id;
     const scopes = summary.scopes.map(s => s.join('\u0001'));
     const keys = records.map(r => r.row_key);

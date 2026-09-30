@@ -136,3 +136,9 @@ CREATE TABLE IF NOT EXISTS suggestions (
   applied_rate    text
 );
 CREATE INDEX IF NOT EXISTS suggestions_status ON suggestions (status, created_at DESC);
+
+-- ===== M-13: default filter set + "see all filters" permission (per user / per role) =====
+ALTER TABLE lob_columns ADD COLUMN IF NOT EXISTS is_default boolean NOT NULL DEFAULT true;   -- filter shown to everyone
+ALTER TABLE users       ADD COLUMN IF NOT EXISTS all_filters boolean NOT NULL DEFAULT false; -- this user sees every filter
+CREATE TABLE IF NOT EXISTS settings (key text PRIMARY KEY, value jsonb NOT NULL);
+INSERT INTO settings (key, value) VALUES ('all_filters_roles', '["admin","superadmin"]') ON CONFLICT DO NOTHING;

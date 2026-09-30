@@ -90,11 +90,12 @@ select:focus,input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 .empty{padding:40px;text-align:center;color:var(--muted)}
 /* filters order (M-06) */
 .forder{list-style:none}
-.forder li{display:grid;grid-template-columns:28px 34px 1fr 1fr auto auto auto;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:7px}
+.forder li{display:grid;grid-template-columns:28px 34px 1fr 1fr auto auto auto auto;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:7px}
 .forder li.drag{opacity:.4}.forder li.over{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,150,44,.15)}
 .forder .h{cursor:grab;color:var(--muted);font-size:18px;text-align:center;user-select:none}
 .forder .n{background:#E7EFE7;color:var(--navy);border-radius:20px;font-size:11px;font-weight:800;text-align:center;padding:2px 0}
-.forder li.nf .n{background:#eef1f6;color:#98a3bd}
+.forder li.nf .n{background:#eef1f6;color:#98a3bd}.forder li.adv .n{background:#FBF1DC;color:#8a6412}
+.chk.dis{opacity:.4;pointer-events:none}
 .forder input[type=text]{padding:7px 9px}
 @media(max-width:760px){.forder li{grid-template-columns:24px 1fr auto;}.forder li .c,.forder li .lab{grid-column:2/4}}
 /* KPI + usage */
@@ -232,7 +233,8 @@ body.locked #sidebar,body.locked main,body.locked #burger,body.locked #userChip,
 
     <!-- filters order (M-06) -->
     <div id="t-filters" class="hidden">
-      <div class="desc" style="margin-bottom:12px">Drag ⠿ (or use ▲▼) to set the order users see the filters. Rename a filter, turn it off as a filter, or hide the column from the table.</div>
+      <div class="desc" style="margin-bottom:12px">Drag ⠿ (or use ▲▼) to set the order of the filters. Rename a filter, turn it off, or hide the column.<br>
+        <b>Everyone</b> ticked = default filter for all users. Unticked = only for users allowed to <b>see all filters</b> (set in <a href="#users">Users &amp; usage</a> — per user or per role).</div>
       <ul class="forder" id="forder"></ul>
       <div class="row" style="margin-top:12px"><button class="btn btn-accent" id="saveOrder">Save order</button><span class="desc" id="orderPreview"></span></div>
     </div>
@@ -279,6 +281,10 @@ body.locked #sidebar,body.locked main,body.locked #burger,body.locked #userChip,
   <div class="cards" id="cards"></div>
   <div class="scard"><h3>Visits per day</h3><div class="bars" id="bars" style="margin-top:12px"></div><div class="bx" id="bx"></div></div>
   <div class="scard">
+    <h3>Filter access</h3><div class="desc" style="margin-bottom:10px">Everyone sees the <b>default</b> filters (set in LOB Grids → Filters &amp; columns). Tick the roles that see <b>all filters</b>; single users can be allowed in the table below.</div>
+    <div class="row" id="faRoles"></div>
+  </div>
+  <div class="scard">
     <div class="row"><h3 style="margin:0">Users</h3><div style="flex:1"></div><span class="desc" id="unote"></span><button class="btn btn-navy" id="addBtn">＋ Add user</button></div>
     <div class="addu hidden" id="addForm">
       <div><label class="fl">Name</label><input id="nuName" placeholder="Full name"></div>
@@ -288,7 +294,7 @@ body.locked #sidebar,body.locked main,body.locked #burger,body.locked #userChip,
       <div class="row"><button class="mini" id="genPw" type="button">Generate</button><button class="btn btn-navy" id="saveUser" type="button">Create user</button></div>
     </div>
     <div class="okmsg hidden" id="okmsg"></div>
-    <div class="twrap" style="margin-top:12px;box-shadow:none;border:1px solid var(--line)"><div class="tscroll"><table class="utbl"><thead><tr><th>User</th><th>Sign-in</th><th>Role</th><th>Status</th><th>Last visit</th><th id="thv">Visits (30 d)</th><th id="ths">Searches (30 d)</th><th>Total visits</th><th></th></tr></thead><tbody id="ub"></tbody></table></div></div>
+    <div class="twrap" style="margin-top:12px;box-shadow:none;border:1px solid var(--line)"><div class="tscroll"><table class="utbl"><thead><tr><th>User</th><th>Sign-in</th><th>Role</th><th>Status</th><th title="Sees every filter, not only the default ones">All filters</th><th>Last visit</th><th id="thv">Visits (30 d)</th><th id="ths">Searches (30 d)</th><th>Total visits</th><th></th></tr></thead><tbody id="ub"></tbody></table></div></div>
   </div>
 </section>
 
@@ -487,21 +493,22 @@ async function openRate(r,after){
 let ORD=[];
 async function loadOrder(){ORD=await api('/api/lobs/'+encodeURIComponent(LOB)+'/columns');drawOrder();}
 function drawOrder(){
-  let n=0;$('forder').innerHTML=ORD.map((c,i)=>{const num=c.is_filter?++n:'–';return`<li draggable="true" data-i="${i}" class="${c.is_filter?'':'nf'}"><span class="h" title="Drag">⠿</span><span class="n">${num}</span>
+  let n=0;$('forder').innerHTML=ORD.map((c,i)=>{const num=c.is_filter?++n:'–';return`<li draggable="true" data-i="${i}" class="${c.is_filter?(c.is_default!==false?'':'adv'):'nf'}"><span class="h" title="Drag">⠿</span><span class="n">${num}</span>
     <span class="c"><b>${esc(c.col)}</b></span><input class="lab" type="text" data-lab="${i}" value="${esc(c.label||'')}" placeholder="Label shown to users (optional)">
-    <label class="chk"><input type="checkbox" data-f="${i}" ${c.is_filter?'checked':''}>Filter</label><label class="chk"><input type="checkbox" data-v="${i}" ${c.visible?'checked':''}>Show column</label>
+    <label class="chk"><input type="checkbox" data-f="${i}" ${c.is_filter?'checked':''}>Filter</label><label class="chk ${c.is_filter?'':'dis'}" title="Untick = only users with 'see all filters'"><input type="checkbox" data-e="${i}" ${c.is_default!==false?'checked':''}>Everyone</label><label class="chk"><input type="checkbox" data-v="${i}" ${c.visible?'checked':''}>Show column</label>
     <span><button class="mini" data-up="${i}" ${i?'':'disabled'}>▲</button> <button class="mini" data-dn="${i}" ${i<ORD.length-1?'':'disabled'}>▼</button></span></li>`;}).join('');
-  $('orderPreview').textContent='Users see: '+ORD.filter(c=>c.is_filter&&c.visible).map(c=>c.label||c.col).join(' → ');}
+  const f=ORD.filter(c=>c.is_filter&&c.visible),ev=f.filter(c=>c.is_default!==false),ad=f.filter(c=>c.is_default===false);
+  $('orderPreview').innerHTML='<b>Everyone:</b> '+esc(ev.map(c=>c.label||c.col).join(' → ')||'—')+(ad.length?'<br><b>Only “all filters” users also get:</b> '+esc(ad.map(c=>c.label||c.col).join(', ')):'');}
 const mv=(a,b)=>{const [x]=ORD.splice(a,1);ORD.splice(b,0,x);drawOrder();};
 $('forder').onclick=e=>{const u=e.target.dataset.up,d=e.target.dataset.dn;if(u!=null)mv(+u,+u-1);if(d!=null)mv(+d,+d+1);};
-$('forder').onchange=e=>{const t=e.target;if(t.dataset.f!=null){ORD[+t.dataset.f].is_filter=t.checked;drawOrder();}if(t.dataset.v!=null){ORD[+t.dataset.v].visible=t.checked;drawOrder();}};
+$('forder').onchange=e=>{const t=e.target;if(t.dataset.f!=null){ORD[+t.dataset.f].is_filter=t.checked;drawOrder();}if(t.dataset.v!=null){ORD[+t.dataset.v].visible=t.checked;drawOrder();}if(t.dataset.e!=null){ORD[+t.dataset.e].is_default=t.checked;drawOrder();}};
 $('forder').oninput=e=>{if(e.target.dataset.lab!=null)ORD[+e.target.dataset.lab].label=e.target.value;};
 let dragI=null;
 $('forder').ondragstart=e=>{const li=e.target.closest('li');if(!li)return;dragI=+li.dataset.i;li.classList.add('drag');};
 $('forder').ondragover=e=>{e.preventDefault();document.querySelectorAll('.forder li').forEach(x=>x.classList.remove('over'));e.target.closest('li')?.classList.add('over');};
 $('forder').ondrop=e=>{e.preventDefault();const li=e.target.closest('li');if(li&&dragI!=null)mv(dragI,+li.dataset.i);dragI=null;};
 $('forder').ondragend=()=>{dragI=null;document.querySelectorAll('.forder li').forEach(x=>x.classList.remove('drag','over'));};
-$('saveOrder').onclick=async()=>{try{await api('/api/lobs/'+encodeURIComponent(LOB)+'/columns',{method:'PUT',body:ORD.map((c,i)=>({col:c.col,position:i+1,label:(c.label||'').trim()||null,is_filter:c.is_filter,visible:c.visible}))});toast('Filter order saved — users see it on their next search');PV.key='';}catch(e){toast(e.message,1);}};
+$('saveOrder').onclick=async()=>{try{await api('/api/lobs/'+encodeURIComponent(LOB)+'/columns',{method:'PUT',body:ORD.map((c,i)=>({col:c.col,position:i+1,label:(c.label||'').trim()||null,is_filter:c.is_filter,visible:c.visible,is_default:c.is_default!==false}))});toast('Filter order saved — users see it on their next search');PV.key='';}catch(e){toast(e.message,1);}};
 
 /* history */
 async function loadHistory(){
@@ -579,8 +586,10 @@ function drawMasters(){
 $('mCols').onclick=e=>{const b=e.target.closest('button');if(b){MSC=b.dataset.c;drawMasters();}};
 
 /* ---------- users & usage ---------- */
+let FA=[];
 async function loadUsers(){
-  const days=$('days').value;const d=await api('/api/admin/usage?days='+days);const s=d.summary;
+  const days=$('days').value;const [d,fa]=await Promise.all([api('/api/admin/usage?days='+days),api('/api/admin/filter-access')]);const s=d.summary;FA=fa.roles||[];
+  $('faRoles').innerHTML=['viewer','admin','superadmin'].map(r=>`<label class="chk" style="background:#F7FAF7;border:1px solid var(--line);border-radius:9px;padding:9px 13px"><input type="checkbox" data-far="${r}" ${FA.includes(r)?'checked':''}>All <b>${r}</b>s see all filters</label>`).join('');
   $('cards').innerHTML=[['Total users',s.users_total],['Active in 7 days',s.users_active_7d],['Active in '+days+' days',s.users_active_period],['Visits today',s.visits_today],['Visits in 7 days',s.visits_7d],['Visits in '+days+' days',s.visits_period],['Searches in '+days+' days',s.hits_period]]
     .map(([k,v],i)=>`<div class="kpi ${['','n','g','m'][i%4]}"><div class="lbl">${esc(k)}</div><div class="val">${nf(v)}</div></div>`).join('');
   const mx=Math.max(1,...d.daily.map(x=>x.visits));
@@ -595,9 +604,14 @@ async function loadUsers(){
     <td><span class="pill ${u.auth_provider==='m365'?'ms':''}">${u.auth_provider==='m365'?'Microsoft':'Password'}</span></td>
     <td>${sup&&u.id!==ME.id?`<select data-role="${u.id}">${['viewer','admin','superadmin'].map(r=>`<option ${r===u.role?'selected':''}>${r}</option>`).join('')}</select>`:esc(u.role)}</td>
     <td>${u.active?'<span class="pill">Active</span>':'<span class="pill off">Blocked</span>'} ${(sup||u.role==='viewer')&&u.id!==ME.id?`<button class="mini" data-act="${u.id}" data-to="${u.active?0:1}">${u.active?'Block':'Allow'}</button>`:''}</td>
+    <td>${FA.includes(u.role)?'<span class="pill" title="All users with this role">✓ via role</span>':`<label class="chk"><input type="checkbox" data-af="${u.id}" ${u.all_filters?'checked':''} ${(sup||u.role==='viewer')&&u.id!==ME.id?'':'disabled'}>${u.all_filters?'Yes':'No'}</label>`}</td>
     <td>${when(u.last_visit)}</td><td>${nf(u.visits_period)}</td><td>${nf(u.hits_period)}</td><td>${nf(u.visits_total)}</td>
     <td>${u.has_password&&u.id!==ME.id&&(sup||u.role==='viewer')?`<button class="mini" data-reset="${u.id}" data-email="${esc(u.email)}">Reset password</button>`:''}${u.must_change?' <span class="pill gold" title="Has not set own password yet">temp pw</span>':''}</td></tr>`).join('');}
 $('days').onchange=loadUsers;
+$('faRoles').onchange=async()=>{const roles=[...document.querySelectorAll('[data-far]')].filter(x=>x.checked).map(x=>x.dataset.far);
+  try{await api('/api/admin/filter-access',{method:'PUT',body:{roles}});toast('Filter access saved');}catch(x){toast(x.message,1);}loadUsers();};
+$('ub').addEventListener('change',async e=>{const id=e.target.dataset.af;if(!id)return;
+  try{await api('/api/users/'+id,{method:'PATCH',body:{all_filters:e.target.checked}});toast(e.target.checked?'This user now sees all filters':'This user now sees the default filters');}catch(x){toast(x.message,1);}loadUsers();});
 $('ub').addEventListener('change',async e=>{const id=e.target.dataset.role;if(!id)return;try{await api('/api/users/'+id,{method:'PATCH',body:{role:e.target.value}});toast('Role changed');}catch(x){toast(x.message,1);}loadUsers();});
 $('ub').addEventListener('click',async e=>{
   const id=e.target.dataset.act;
@@ -616,7 +630,7 @@ $('saveUser').onclick=async()=>{
   catch(e){toast(e.message,1);}};
 
 /* ---------- activity ---------- */
-const ACT={publish:'Published upload',edit_rate:'Edited a rate',suggest:'Suggested a rate',suggest_approve:'Approved suggestion',suggest_reject:'Rejected suggestion',reorder_filters:'Changed filter order',masters_save:'Saved a master',lob_add:'Added a grid',lob_edit:'Edited grid settings',lob_delete:'Deleted a grid',user_save:'Added / saved a user',user_update:'Changed a user',password_reset:'Reset a password',password_changed:'Set own password'};
+const ACT={publish:'Published upload',edit_rate:'Edited a rate',suggest:'Suggested a rate',suggest_approve:'Approved suggestion',suggest_reject:'Rejected suggestion',reorder_filters:'Changed filter order',filter_access:'Changed filter access',masters_save:'Saved a master',lob_add:'Added a grid',lob_edit:'Edited grid settings',lob_delete:'Deleted a grid',user_save:'Added / saved a user',user_update:'Changed a user',password_reset:'Reset a password',password_changed:'Set own password'};
 function actDetail(a){const d=a.detail||{};
   if(a.action==='publish')return `${d.fileName||''} · from ${dtxt(d.from)} · ${nf(d.rows)} rows (${nf(d.changed)} changed, ${nf(d.added)} new, ${nf(d.ended)} ended)`;
   if(a.action==='edit_rate')return `${d.old} → ${d.new} from ${dtxt(d.from)} (${d.source||''})`;

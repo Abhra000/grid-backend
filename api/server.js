@@ -107,7 +107,7 @@ app.get('/api/admin/usage', { preHandler: auth(['admin', 'superadmin']) }, async
 
 /* Reads are served from in-memory snapshots (lib/snapshot.js): rates valid on a date are loaded once from
    Postgres and shared by all users; any publish or filter change drops them so nobody sees stale rates. */
-const clearCache = () => { clearSnapshots(); COLS_CACHE.clear(); };
+const clearCache = () => { clearSnapshots(); COLS_CACHE.clear(); ACCESS.clear(); };
 
 /* ---------------- read (viewer) ---------------- */
 app.get('/api/lobs', { preHandler: viewer }, async () =>
@@ -120,26 +120,45 @@ async function lobColumns(lobId) {
   const v = await lobColumnsDb(lobId); COLS_CACHE.set(lobId, v); return v;
 }
 async function lobColumnsDb(lobId) {
-  return (await pool.query(`SELECT col, coalesce(label,col) AS label, position, is_filter, visible
+  return (await pool.query(`SELECT col, coalesce(label,col) AS label, position, is_filter, visible, is_default
                               FROM lob_columns WHERE lob_id=$1 ORDER BY position, col`, [lobId])).rows;
 }
+/* M-13: normal users get the DEFAULT filter set; users / roles with "see all filters" get every filter */
+const ACCESS = new Map();                                   // userId -> {v, t}, refreshed every 30 s or on change
+async function seesAll(user) {
+  const c = ACCESS.get(user.id); if (c && Date.now() - c.t < 30_000) return c.v;
+  const r = (await pool.query(`SELECT u.all_filters OR u.role IN (SELECT jsonb_array_elements_text(value) FROM settings WHERE key='all_filters_roles') AS v
+                                 FROM users u WHERE u.id=$1`, [user.id])).rows[0];
+  const v = !!r?.v; ACCESS.set(user.id, { v, t: Date.now() }); return v;
+}
+async function userColumns(lobId, user) {
+  const cols = await lobColumns(lobId);
+  if (await seesAll(user)) return cols;
+  return cols.map(c => c.is_filter && !c.is_default ? { ...c, is_filter: false } : c);
+}
+async function allowedFilters(lobId, user, filters) {
+  const ok = new Set((await userColumns(lobId, user)).filter(c => c.is_filter).map(c => c.col));
+  return Object.fromEntries(Object.entries(filters || {}).filter(([k]) => ok.has(k)));
+}
 app.get('/api/lobs/:id/config', { preHandler: viewer }, async req => ({
-  columns: await lobColumns(req.params.id), dates: await effectiveDates(pool, req.params.id) }));
+  columns: await userColumns(req.params.id, req.user), dates: await effectiveDates(pool, req.params.id), allFilters: await seesAll(req.user) }));
 
 // body: { filters:{col:[..]}, asOf:'YYYY-MM-DD', search:'', limit, offset }
 app.post('/api/lobs/:id/query', { preHandler: viewer }, async req => {
-  const b = req.body || {}; if (!+b.offset) touchVisit(pool, req.user, req).catch(() => {});
+  const b = { ...(req.body || {}) }; if (!+b.offset) touchVisit(pool, req.user, req).catch(() => {});
+  b.filters = await allowedFilters(req.params.id, req.user, b.filters);
   return querySnapshot(await getSnapshot(pool, req.params.id, b.asOf), b);
 });
 
 app.post('/api/lobs/:id/facets', { preHandler: viewer }, async req => {
-  const b = req.body || {};
-  const cols = (await lobColumns(req.params.id)).filter(c => c.is_filter).map(c => c.col);
+  const b = { ...(req.body || {}) };
+  b.filters = await allowedFilters(req.params.id, req.user, b.filters);
+  const cols = (await userColumns(req.params.id, req.user)).filter(c => c.is_filter).map(c => c.col);
   return facetsSnapshot(await getSnapshot(pool, req.params.id, b.asOf), b, cols);
 });
 
 app.post('/api/lobs/:id/export', { preHandler: viewer }, async (req, reply) => {
-  const rows = await exportRows(pool, req.params.id, req.body || {});
+  const rows = await exportRows(pool, req.params.id, { ...(req.body || {}), filters: await allowedFilters(req.params.id, req.user, (req.body || {}).filters) });
   const cols = (await lobColumns(req.params.id)).map(c => c.col);
   const aoa = [[...cols, 'Rate %', 'Effective From', 'Effective To', 'Notes'],
     ...rows.map(r => [...cols.map(c => r.params[c] ?? ''), r.rate_text, r.effective_from, r.effective_to || '', r.notes || ''])];
@@ -175,8 +194,8 @@ app.get('/api/lobs/:id/uploads', { preHandler: admin }, async req =>
 // M-06: admin re-arranges / renames / hides filters.  body: [{col, position, label, is_filter, visible}]
 app.put('/api/lobs/:id/columns', { preHandler: admin }, async req => {
   for (const c of req.body || []) await pool.query(
-    `UPDATE lob_columns SET position=$3, label=$4, is_filter=$5, visible=$6 WHERE lob_id=$1 AND col=$2`,
-    [req.params.id, c.col, +c.position || 0, c.label || null, c.is_filter !== false, c.visible !== false]);
+    `UPDATE lob_columns SET position=$3, label=$4, is_filter=$5, visible=$6, is_default=$7 WHERE lob_id=$1 AND col=$2`,
+    [req.params.id, c.col, +c.position || 0, c.label || null, c.is_filter !== false, c.visible !== false, c.is_default !== false]);
   clearCache(); audit(req.user.id, 'reorder_filters', { lob: req.params.id }); return lobColumns(req.params.id);
 });
 
@@ -208,13 +227,24 @@ app.post('/api/users/:uid/reset-password', { preHandler: admin }, async (req, re
   audit(req.user.id, 'password_reset', { id: t.id }); return { ok: true };
 });
 app.patch('/api/users/:uid', { preHandler: admin }, async (req, reply) => {
-  const { role, active } = req.body || {};
+  const { role, active, all_filters } = req.body || {};
   const t = (await pool.query('SELECT id, role FROM users WHERE id=$1', [req.params.uid])).rows[0];
   if (!t) return reply.code(404).send({ error: 'User not found' });
   if (req.user.role !== 'superadmin' && (role !== undefined || t.role !== 'viewer')) return reply.code(403).send({ error: 'Only the super admin can change roles or admins' });
   if (+req.params.uid === req.user.id) return reply.code(400).send({ error: 'You cannot change your own account here' });
-  await pool.query('UPDATE users SET role=coalesce($2,role), active=coalesce($3,active) WHERE id=$1', [req.params.uid, role ?? null, active ?? null]);
-  audit(req.user.id, 'user_update', { id: req.params.uid, role, active }); return { ok: true };
+  await pool.query('UPDATE users SET role=coalesce($2,role), active=coalesce($3,active), all_filters=coalesce($4,all_filters) WHERE id=$1',
+                   [req.params.uid, role ?? null, active ?? null, typeof all_filters === 'boolean' ? all_filters : null]);
+  ACCESS.delete(+req.params.uid);
+  audit(req.user.id, 'user_update', { id: req.params.uid, role, active, all_filters }); return { ok: true };
+});
+
+// M-13: which roles see every filter (default: admin + super admin)
+app.get('/api/admin/filter-access', { preHandler: admin }, async () =>
+  ({ roles: (await pool.query(`SELECT value FROM settings WHERE key='all_filters_roles'`)).rows[0]?.value || [] }));
+app.put('/api/admin/filter-access', { preHandler: admin }, async req => {
+  const roles = ((req.body || {}).roles || []).filter(r => ['viewer', 'admin', 'superadmin'].includes(r));
+  await pool.query(`INSERT INTO settings (key, value) VALUES ('all_filters_roles', $1) ON CONFLICT (key) DO UPDATE SET value=EXCLUDED.value`, [JSON.stringify(roles)]);
+  ACCESS.clear(); audit(req.user.id, 'filter_access', { roles }); return { roles };
 });
 
 registerAdmin(app, { pool, viewer, admin, superadmin, audit, clearCache, lobColumns });

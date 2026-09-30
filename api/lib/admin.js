@@ -134,7 +134,7 @@ export function registerAdmin(app, { pool, viewer, admin, superadmin, audit, cle
 
   // admin filter settings: every column (visible or not)
   app.get('/api/lobs/:id/columns', { preHandler: admin }, async req =>
-    (await pool.query(`SELECT col, label, position, is_filter, visible FROM lob_columns WHERE lob_id=$1 ORDER BY position, col`, [req.params.id])).rows);
+    (await pool.query(`SELECT col, label, position, is_filter, visible, is_default FROM lob_columns WHERE lob_id=$1 ORDER BY position, col`, [req.params.id])).rows);
 
   /* ---------- upload history ---------- */
   app.get('/api/lobs/:id/uploads/:uid/download', { preHandler: admin }, async (req, reply) => {

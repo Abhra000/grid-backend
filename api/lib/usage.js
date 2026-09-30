@@ -34,7 +34,7 @@ export async function usageReport(pool, days = 30) {
                   FROM generate_series(current_date - ($1::int - 1), current_date, interval '1 day') d
                   LEFT JOIN visits v ON v.started_at::date = d::date
                  GROUP BY d ORDER BY d`, [days]),
-    pool.query(`SELECT u.id, u.email, u.name, u.role, u.active, u.auth_provider, u.created_at, u.last_login, u.must_change, (u.pass_hash IS NOT NULL) AS has_password,
+    pool.query(`SELECT u.id, u.email, u.name, u.role, u.active, u.auth_provider, u.created_at, u.last_login, u.must_change, u.all_filters, (u.pass_hash IS NOT NULL) AS has_password,
                        max(v.last_seen) AS last_visit,
                        count(v.id) FILTER (WHERE v.started_at > now()-($1||' days')::interval)::int AS visits_period,
                        count(v.id)::int AS visits_total,

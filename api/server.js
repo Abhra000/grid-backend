@@ -113,7 +113,7 @@ const clearCache = () => { clearSnapshots(); COLS_CACHE.clear(); ACCESS.clear();
 /* ---------------- read (viewer) ---------------- */
 app.get('/api/lobs', { preHandler: viewer }, async () =>
   (await pool.query(`SELECT l.id, l.name, l.rate_col, max(r.effective_from)::text AS latest
-                       FROM lobs l LEFT JOIN rates r ON r.lob_id=l.id GROUP BY l.id ORDER BY l.name`)).rows);
+                       FROM lobs l LEFT JOIN rates r ON r.lob_id=l.id GROUP BY l.id ORDER BY l.created_at, l.name`)).rows);   // first grid created (Motor) opens first
 
 const COLS_CACHE = new Map();
 async function lobColumns(lobId) {

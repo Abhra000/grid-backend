@@ -1,7 +1,7 @@
 // Hot "snapshot" engine: the rates valid on a date are loaded once from Postgres into the API's memory
 // and shared by all users. Filtering / filter options then take a few milliseconds instead of a DB round trip.
 // Postgres stays the single source of truth; snapshots are dropped whenever anything is published.
-import { locStates, rtoState, isRtoCol, isLocCol } from './geo.js';
+import { locStates, rtoState, isRtoCol, isLocCol, locStateNames, cleanLoc, isCcCol, ccOptions, CC_BUCKETS } from './geo.js';
 const isAll = v => String(v ?? '').trim().toLowerCase() === 'all';
 const SNAP = new Map(); const MAX_SNAPS = 40;
 const today = () => new Date().toISOString().slice(0, 10);
@@ -23,9 +23,16 @@ export async function getSnapshot(pool, lobId, asOf) {
         ORDER BY (r.rate_num = 0), r.insurer, r.product_type, r.id`, [lobId, d]);
     const rows = r.rows;
     for (const x of rows) {
+      const lc = Object.keys(x.params).find(isLocCol);
+      if (lc) x.params[lc] = cleanLoc(x.params[lc]);                            // P-04: one spelling per place
+      x._st = lc ? locStates(x.params[lc]) : new Set();                          // P-07: state(s) of the row's location
+      if (lc && !('State' in x.params)) {                                       // P-04: State filter worked out from Location
+        x._stN = locStateNames(x.params[lc]);
+        x.params = { ...x.params, State: x._stN.length ? x._stN.join(' / ') : 'All' };
+      } else x._stN = null;
+      const cc = Object.keys(x.params).find(isCcCol);
+      x._cc = cc ? ccOptions(x.params[cc]) : null;                               // P-04: CC as 3 clean ranges
       x._s = (Object.values(x.params).join(' ') + ' ' + (x.notes || '') + ' ' + x.rate_text).toLowerCase();
-      const lc = Object.keys(x.params).find(isLocCol);                          // P-07: state(s) of the row's location
-      x._st = lc ? locStates(x.params[lc]) : new Set();
     }
     return { date: d, rows };
   })();
@@ -39,6 +46,8 @@ export async function getSnapshot(pool, lobId, asOf) {
 // (WB-01 -> West Bengal / Kolkata / Rest of West Bengal …) or is not tied to any state (All India, North (Ref) …).
 const passes = (row, col, set) => {
   const v = row.params[col];
+  if (col === 'State' && row._stN) return !row._stN.length || row._stN.some(n => set.has(n));   // no state = applies everywhere
+  if (row._cc && isCcCol(col)) return isAll(v) || set.has(v) || row._cc.some(o => set.has(o));
   if (set.has(v)) return true;
   if (!isAll(v)) return false;
   if (!set.rto || set.has('All')) return true;
@@ -90,10 +99,17 @@ function facetsCompute(snap, q, cols) {
     let fails = 0, failCol = null;
     for (const [c, s] of f) { if (!passes(r, c, s)) { fails++; failCol = c; if (fails > 1) break; } }
     if (fails > 1) continue;
-    if (fails === 0) { for (const c of cols) { const v = r.params[c]; if (v) sets[c].add(isAll(v) ? 'All' : v); } }
-    else if (sets[failCol]) { const v = r.params[failCol]; if (v) sets[failCol].add(isAll(v) ? 'All' : v); }
+    if (fails === 0) { for (const c of cols) if (sets[c]) for (const o of optsOf(r, c)) sets[c].add(o); }
+    else if (sets[failCol]) { for (const o of optsOf(r, failCol)) sets[failCol].add(o); }
   }
   return Object.fromEntries(cols.map(c => [c, [...sets[c]].sort(byAllFirst)]));
 }
 // "All" (= blank / applies to every value) is offered as a choice of its own, listed first
-const byAllFirst = (a, b) => (b === 'All') - (a === 'All') || a.localeCompare(b, 'en', { numeric: true });
+const CC_ORDER = Object.fromEntries(CC_BUCKETS.map((b, i) => [b[0], i]));
+const byAllFirst = (a, b) => (b === 'All') - (a === 'All') || ((a in CC_ORDER && b in CC_ORDER) ? CC_ORDER[a] - CC_ORDER[b] : a.localeCompare(b, 'en', { numeric: true }));
+// the choices one row contributes to a filter list
+function optsOf(r, c) {
+  if (c === 'State' && r._stN) return r._stN.length ? r._stN : ['All'];
+  if (r._cc && isCcCol(c)) return r._cc;
+  const v = r.params[c]; return v ? [isAll(v) ? 'All' : v] : [];
+}

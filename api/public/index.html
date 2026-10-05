@@ -353,6 +353,10 @@ async function loadRows(reset){
 function hl(v){const s=esc(v),t=$('q').value.trim().split(/\s+/).filter(Boolean);if(!t.length)return s;
   const re=new RegExp('('+t.map(x=>esc(x).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).sort((a,b)=>b.length-a.length).join('|')+')','gi');
   return s.replace(re,'<mark class="dl-hl">$1</mark>');}
+function xlsLabel(){                        // Excel = exactly what is on screen (filters + search + date); no filter = full grid
+  const f=Object.keys(S.sel).length||$('q').value.trim();
+  $('xls').textContent='⬇ Excel'+(S.total?` (${f?'':'all '}${nf(S.total)})`:'');
+  $('xls').title=f?'Download the '+nf(S.total)+' rows matching your filters':'Download the full grid ('+nf(S.total)+' rows)';}
 function prevHtml(r){                       // M-07: earlier rate of the same row, small and faded
   if(!r.prev_rate||r.prev_rate===r.rate_text)return'';
   const a=parseFloat(r.rate_text),b=parseFloat(r.prev_rate);
@@ -369,6 +373,7 @@ function render(newRows,reset){
     `<td class="dl-rate" data-label="Base Commission %"><span class="rv">${hl(r.rate_text)}${prevHtml(r)}</span></td>`+
     `<td data-label="Effective From">${esc(dtxt(r.effective_from))}${r.effective_to?`<div class="dl-still">till ${esc(dtxt(r.effective_to))}</div>`:''}</td>`+
     `<td class="dl-notes" data-label="Notes">${r.notes?hl(r.notes):'—'}</td></tr>`).join(''));
+  xlsLabel();
   $('count').textContent=S.total?`${nf(S.rows.length)} of ${nf(S.total)} rows`:'0 rows';
   $('empty').classList.toggle('hidden',S.total>0);
   $('more').innerHTML=S.done?'':'Scroll for more…';
@@ -383,8 +388,9 @@ $('fbtn').onclick=()=>setBar(!$('fbar').classList.contains('open'));
 $('xls').onclick=async()=>{
   const b=$('xls');b.disabled=true;b.textContent='Preparing…';
   try{const r=await api('/api/lobs/'+encodeURIComponent(S.lob)+'/export',qbody(),true);const blob=await r.blob();
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=S.lob+'_rates_'+S.asOf+'.xlsx';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);}
-  finally{b.disabled=false;b.textContent='⬇ Excel';}
+    const tag=Object.values(S.sel).flat().slice(0,3).join('_').replace(/[^\w.-]+/g,'-').slice(0,60);
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=S.lob+(tag?'_'+tag:'_all')+'_'+S.asOf+'.xlsx';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);}
+  finally{b.disabled=false;xlsLabel();}
 };
 $('go').onclick=login;$('pw').onkeydown=e=>{if(e.key==='Enter')login();};$('em').onkeydown=e=>{if(e.key==='Enter')$('pw').focus();};
 $('logout').onclick=async()=>{await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'});showLogin();};

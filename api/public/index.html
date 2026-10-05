@@ -154,6 +154,7 @@ footer{text-align:center;color:#93A695;font-size:12px;margin-top:26px}
 .spill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#FBF1DC;color:#8a6412}.spill.approved{background:#e2f7ee;color:#0b7a52}.spill.rejected{background:#fdecec;color:var(--red)}
 @media(max-width:760px){#mysug .t{display:none}.hd small{display:none}.hd h1{font-size:15px;white-space:nowrap}.lobsel{max-width:130px}#liveText{display:none}.hd{gap:8px}header{padding:0 12px}}
 .devby{font-size:10px;color:#93A695;opacity:.3;letter-spacing:.3px;text-align:center;margin-top:6px}
+.dl-allv{color:var(--muted);font-style:italic}
 </style>
 </head>
 <body>
@@ -373,14 +374,15 @@ function prevHtml(r){                       // M-07: earlier rate of the same ro
   return `<span class="dl-prev" title="Previous rate${r.prev_to?' (till '+esc(dtxt(r.prev_to))+')':''}">${arr}was <s>${esc(r.prev_rate)}</s>${r.prev_to?' · till '+esc(dtxt(r.prev_to)):''}</span>`;}
 function render(newRows,reset){
   if(reset){
-    const used=S.cols.filter(c=>S.rows.some(r=>{const v=r.params[c.col];return v&&!isAll(v);}));
+    // a column is shown if some row has a real value in it, or the user is filtering on it (then its "All" rows say All)
+    const used=S.cols.filter(c=>(S.sel[c.col]||[]).length||S.rows.some(r=>{const v=r.params[c.col];return v&&!isAll(v);}));
     const AFTER=/^reward$|total\s*%|rate depends/i;                 // shown right after the rate (Fire / Engineering)
     S.shown=used.filter(c=>!AFTER.test(c.col));S.after=used.filter(c=>AFTER.test(c.col));
     $('thr').innerHTML=S.shown.map(c=>`<th>${esc(c.label)}</th>`).join('')+`<th>${esc(S.rateCol||'Base Commission %')}</th>`+S.after.map(c=>`<th>${esc(c.label)}</th>`).join('')+'<th>Effective From</th><th>Notes</th>';
   }
   const base=S.rows.length-newRows.length;
   $('tb').insertAdjacentHTML('beforeend',newRows.map((r,i)=>'<tr data-i="'+(base+i)+'">'+S.shown.map((c,k)=>{const v=r.params[c.col];
-      return `<td class="${k===0?'dl-k0':''}" data-label="${esc(c.label)}">${v&&!isAll(v)?hl(v):'—'}</td>`;}).join('')+
+      return `<td class="${k===0?'dl-k0':''}" data-label="${esc(c.label)}">${v&&!isAll(v)?hl(v):((S.sel[c.col]||[]).length?'<span class="dl-allv" title="Applies to every '+esc(c.label)+'">All</span>':'—')}</td>`;}).join('')+
     `<td class="dl-rate" data-label="${esc(S.rateCol||'Base Commission %')}"><span class="rv">${hl(r.rate_text)}${prevHtml(r)}</span></td>`+
     (S.after||[]).map(c=>{const v=r.params[c.col];return `<td data-label="${esc(c.label)}">${v&&!isAll(v)?hl(v):'—'}</td>`;}).join('')+
     `<td data-label="Effective From">${esc(dtxt(r.effective_from))}${r.effective_to?`<div class="dl-still">till ${esc(dtxt(r.effective_to))}</div>`:''}</td>`+

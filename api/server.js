@@ -107,7 +107,7 @@ app.get('/api/admin/usage', { preHandler: auth(['admin', 'superadmin']) }, async
 
 /* Reads are served from in-memory snapshots (lib/snapshot.js): rates valid on a date are loaded once from
    Postgres and shared by all users; any publish or filter change drops them so nobody sees stale rates. */
-const clearCache = () => { clearSnapshots(); COLS_CACHE.clear(); ACCESS.clear(); };
+const clearCache = () => { clearSnapshots(); COLS_CACHE.clear(); ACCESS.clear(); ensureStateColumn().catch(() => {}); };   // publish / grid change
 
 /* ---------------- read (viewer) ---------------- */
 app.get('/api/lobs', { preHandler: viewer }, async () =>
@@ -256,6 +256,18 @@ app.put('/api/admin/filter-access', { preHandler: admin }, async req => {
 
 registerAdmin(app, { pool, viewer, admin, superadmin, audit, clearCache, lobColumns });
 
+/* P-04: every grid with a Location column gets a "State" filter (worked out from Location), placed just before Location */
+async function ensureStateColumn() {
+  const r = await pool.query(`SELECT l.lob_id, l.position FROM lob_columns l WHERE lower(l.col)='location'
+                                AND NOT EXISTS (SELECT 1 FROM lob_columns s WHERE s.lob_id=l.lob_id AND lower(s.col)='state')`);
+  for (const x of r.rows) {
+    await pool.query('UPDATE lob_columns SET position=position+1 WHERE lob_id=$1 AND position>=$2', [x.lob_id, x.position]);
+    await pool.query(`INSERT INTO lob_columns (lob_id, col, position) VALUES ($1,'State',$2) ON CONFLICT DO NOTHING`, [x.lob_id, x.position]);
+  }
+  if (r.rows.length) { clearSnapshots(); COLS_CACHE.clear(); }
+}
+
+
 app.get('/api/health', async () => { await pool.query('select 1'); return { ok: true }; });
 import fsImport from 'node:fs';
 app.get('/import', async (req, reply) => reply.redirect('/admin#lobs'));   // old temporary uploader -> full admin
@@ -266,5 +278,6 @@ app.get('/', async (req, reply) => noCache(reply).type('text/html; charset=utf-8
 const ADMIN_HTML = fsImport.readFileSync(new URL('./public/admin.html', import.meta.url), 'utf8');
 app.get('/admin', async (req, reply) => noCache(reply).type('text/html; charset=utf-8').send(ADMIN_HTML));
 
+await ensureStateColumn().catch(e => console.warn('State column:', e.message));
 if (process.env.NODE_ENV !== 'test') app.listen({ port: +PORT, host: process.env.HOST || '127.0.0.1' }).then(() => console.log('API on :' + PORT));
 export default app;

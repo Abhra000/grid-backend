@@ -164,7 +164,12 @@ app.post('/api/lobs/:id/export', { preHandler: viewer }, async (req, reply) => {
     ...rows.map(r => [...cols.map(c => r.params[c] ?? ''), r.rate_text, r.prev_rate && r.prev_rate !== r.rate_text ? r.prev_rate : '',
                       r.prev_rate && r.prev_rate !== r.rate_text ? (r.prev_to || '') : '', r.effective_from, r.effective_to || '', r.notes || ''])];
   const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Rates');
-  audit(req.user.id, 'export', { lob: req.params.id, rows: rows.length });
+  const fl = Object.entries((req.body || {}).filters || {}).filter(([, v]) => Array.isArray(v) && v.length);
+  const info = [['Grid', req.params.id], ['Rates as on', (req.body || {}).asOf || new Date().toISOString().slice(0, 10)], ['Rows', rows.length],
+    ['Filters', fl.length || (req.body || {}).search ? '' : 'None — full grid'], ...fl.map(([k, v]) => [k, v.join(', ')]),
+    ...((req.body || {}).search ? [['Search', req.body.search]] : []), ['Downloaded', new Date().toISOString().replace('T', ' ').slice(0, 16) + ' UTC'], ['By', req.user.email]];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(info), 'Filters used');
+  audit(req.user.id, 'export', { lob: req.params.id, rows: rows.length, filters: Object.fromEntries(fl) });
   reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
        .header('Content-Disposition', `attachment; filename="${req.params.id}_rates.xlsx"`);
   return reply.send(XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' }));

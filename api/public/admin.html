@@ -401,7 +401,7 @@ $('lobPick').onchange=()=>{LOB=$('lobPick').value;$('mLob').value=LOB;PV.key='';
 let UP={wb:null,name:'',aoa:null,checked:false};
 function resetUpload(){UP={wb:null,name:'',aoa:null,checked:false};$('drop').classList.remove('has');$('drop').querySelector('h2').textContent='Drag & drop your Excel grid here';
   $('sheet').innerHTML='<option>— choose a file —</option>';$('sheet').disabled=true;$('upResult').innerHTML='';$('file').value='';updUp();}
-function updUp(){const ready=!!UP.aoa&&!!$('from').value;$('checkBtn').disabled=!ready;$('pubBtn').disabled=!(ready&&UP.checked);
+function updUp(){const ready=!!UP.aoa&&!!$('from').value&&!UP.wrong;$('checkBtn').disabled=!ready;$('pubBtn').disabled=!(ready&&UP.checked);
   $('upHint').textContent=!UP.aoa?'Choose a file and the Effective From date.':!$('from').value?'Set the Effective From date.':UP.checked?'Looks right? Publish makes it live for all users.':'Check the changes first — nothing is saved yet.';}
 $('drop').onclick=()=>$('file').click();
 $('drop').ondragover=e=>{e.preventDefault();$('drop').classList.add('over');};
@@ -415,10 +415,16 @@ async function readFile(f){
   const l=curLob();const names=UP.wb.SheetNames;
   let best=names[0];for(const n of names){const h=(XLSX.utils.sheet_to_json(UP.wb.Sheets[n],{header:1,range:0})[0]||[]).map(String);if(l&&h.includes(l.rate_col)){best=n;break;}}
   $('sheet').innerHTML=names.map(n=>`<option ${n===best?'selected':''}>${esc(n)}</option>`).join('');$('sheet').disabled=names.length<2;pickSheet();}
-function pickSheet(){const ws=UP.wb.Sheets[$('sheet').value];UP.aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false}).filter(r=>r.some(v=>String(v).trim()!==''));
+function pickSheet(){UP.wrong=false;const ws=UP.wb.Sheets[$('sheet').value];UP.aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false}).filter(r=>r.some(v=>String(v).trim()!==''));
   UP.checked=false;const hdr=(UP.aoa[0]||[]).map(String);const l=curLob();
   $('upResult').innerHTML=`<div class="desc" style="margin-top:12px">${nf(UP.aoa.length-1)} rows · columns: ${hdr.map(esc).join(' · ')}</div>`+
-    (l&&!hdr.includes(l.rate_col)?`<div class="errmsg">The rate column “${esc(l.rate_col)}” is not in this sheet. Pick another sheet or fix the header.</div>`:'');updUp();}
+    (l&&!hdr.includes(l.rate_col)?`<div class="errmsg">The rate column “${esc(l.rate_col)}” is not in this sheet. Pick another sheet or fix the header.</div>`:'')+gridMismatch(hdr);updUp();}
+// wrong grid selected? compare the file's columns with every grid's template
+function gridMismatch(hdr){const l=curLob();if(!l||!(l.columns||[]).length)return '';const skip=/insurer|company|note|remark/i;
+  const fc=hdr.filter(c=>c!==l.rate_col&&!skip.test(c));const score=g=>fc.filter(c=>(g.columns||[]).includes(c)).length;
+  if(score(l)>=Math.min(2,fc.length))return '';
+  const best=LOBS.filter(g=>g.id!==l.id).sort((a,b)=>score(b)-score(a))[0];
+  UP.wrong=true;return `<div class="errmsg">⚠ This file does not match the <b>${esc(l.name)}</b> grid${best&&score(best)>=2?` — it looks like a <b>${esc(best.name)}</b> file. Choose “${esc(best.name)}” in the grid list at the top`:''}.</div>`;}
 $('sheet').onchange=pickSheet;$('from').onchange=()=>{UP.checked=false;updUp();};$('rep').onchange=()=>{UP.checked=false;updUp();};
 function payload(dry){return{columns:UP.aoa[0].map(v=>String(v).trim()),rows:UP.aoa.slice(1),effectiveFrom:$('from').value,fileName:UP.name,replaceScope:$('rep').checked,dryRun:dry};}
 function resultHtml(d,dry){

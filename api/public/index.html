@@ -70,8 +70,9 @@ header{background:linear-gradient(120deg,var(--navy) 0%,var(--navy2) 60%,#4E7A54
 .fbar.open{max-height:900px;opacity:1;transform:none}
 .fbar.shown{overflow:visible}
 .fsteps{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px 14px;align-items:end;padding:16px}
-.fstep{min-width:0}
-.fstep.new{animation:slideIn .4s cubic-bezier(.2,.8,.2,1) both}
+.fstep{min-width:0;position:relative;z-index:1}
+.fstep:has(.dl-dd.open),.fstep.top{z-index:60}
+.fstep.new{animation:slideIn .4s cubic-bezier(.2,.8,.2,1) backwards}
 @keyframes slideIn{from{opacity:0;transform:translateX(-22px)}to{opacity:1;transform:none}}
 .fstep .lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:800;margin:0 0 6px 2px;display:flex;gap:6px;align-items:center}
 .dl-dd.na>button{background:#F4F6F4;color:#9AA89C;cursor:not-allowed}
@@ -298,6 +299,7 @@ async function loadOptions(){
   const n=Object.values(S.sel).reduce((a,v)=>a+v.length,0);$('fcount').textContent=n?String(n):'';
 }
 function renderDate(){}
+new MutationObserver(()=>document.querySelectorAll('#fhost .fstep').forEach(f=>f.classList.toggle('top',!!f.querySelector('.dl-dd.open')))).observe(document.getElementById('fhost'),{subtree:true,attributes:true,attributeFilter:['class'],childList:true});
 document.addEventListener('click',e=>{
   const dd=e.target.closest('.dl-dd');
   document.querySelectorAll('.dl-dd.open').forEach(x=>{if(x!==dd)x.classList.remove('open');});

@@ -1,0 +1,1397 @@
+RTO Code,State Code,State,District,City / Office,Status,Source
+AN-01,AN,Andaman and Nicobar Islands,South Andaman,Sri Vijaya Puram (Port Blair),active,rto-codes repo
+AN-02,AN,Andaman and Nicobar Islands,Nicobar,Car Nicobar,active,rto-codes repo
+AP-02,AP,Andhra Pradesh,Ananthapuramu,Ananthapuramu (Anantapur),not-in-use,rto-codes repo
+AP-03,AP,Andhra Pradesh,Chittoor,Chittoor,not-in-use,rto-codes repo
+AP-04,AP,Andhra Pradesh,YSR Kadapa,Kadapa,not-in-use,rto-codes repo
+AP-05,AP,Andhra Pradesh,East Godavari,Kakinada,not-in-use,rto-codes repo
+AP-07,AP,Andhra Pradesh,Guntur,Guntur,not-in-use,rto-codes repo
+AP-09,TS,Telangana,Hyderabad,Hyderabad,active,HDFC Location Master
+AP-10,TS,Telangana,Hyderabad,Secunderabad Hyderabad North,active,HDFC Location Master
+AP-11,TS,Telangana,Hyderabad,Malakpet Hyderabad East,active,HDFC Location Master
+AP-12,TS,Telangana,Hyderabad,Kisanbagh Hyderabad South,active,HDFC Location Master
+AP-13,TS,Telangana,Hyderabad,Tolichowki Hyderabad West,active,HDFC Location Master
+AP-16,AP,Andhra Pradesh,Krishna,Vijayawada,not-in-use,rto-codes repo
+AP-21,AP,Andhra Pradesh,Kurnool,Kurnool,not-in-use,rto-codes repo
+AP-26,AP,Andhra Pradesh,Sri Potti Sriramulu Nellore,Nellore,not-in-use,rto-codes repo
+AP-27,AP,Andhra Pradesh,Prakasam,Ongole,not-in-use,rto-codes repo
+AP-30,AP,Andhra Pradesh,Srikakulam,Srikakulam,not-in-use,rto-codes repo
+AP-31,AP,Andhra Pradesh,Visakhapatnam,Visakhapatnam,not-in-use,rto-codes repo
+AP-32,AP,Andhra Pradesh,Visakhapatnam,Visakhapatnam,active,HDFC Location Master
+AP-34,AP,Andhra Pradesh,Visakhapatnam,Visakhapatnam,active,HDFC Location Master
+AP-35,AP,Andhra Pradesh,Vizianagaram,Vizianagaram,not-in-use,rto-codes repo
+AP-37,AP,Andhra Pradesh,West Godavari,Eluru,not-in-use,rto-codes repo
+AP-39,AP,Andhra Pradesh,State-wide,Andhra Pradesh State (Vijayawada),active,rto-codes repo
+AP-40,AP,Andhra Pradesh,State-wide,Andhra Pradesh State (Vijayawada),active,rto-codes repo
+AR-01,AR,Arunachal Pradesh,Papum Pare,Itanagar,active,rto-codes repo
+AR-02,AR,Arunachal Pradesh,Papum Pare,Yupia,active,rto-codes repo
+AR-03,AR,Arunachal Pradesh,Tawang,Tawang,active,rto-codes repo
+AR-04,AR,Arunachal Pradesh,West Kameng,Bomdila,active,rto-codes repo
+AR-05,AR,Arunachal Pradesh,East Kameng,Seppa,active,rto-codes repo
+AR-06,AR,Arunachal Pradesh,Lower Subansiri,Ziro,active,rto-codes repo
+AR-07,AR,Arunachal Pradesh,Upper Subansiri,Daporijo,active,rto-codes repo
+AR-08,AR,Arunachal Pradesh,West Siang,Along,active,rto-codes repo
+AR-09,AR,Arunachal Pradesh,East Siang,Pasighat,active,rto-codes repo
+AR-10,AR,Arunachal Pradesh,Dibang Valley,Anini,active,rto-codes repo
+AR-11,AR,Arunachal Pradesh,Lohit,Tezu,active,rto-codes repo
+AR-12,AR,Arunachal Pradesh,Changlang,Changlang,active,rto-codes repo
+AR-13,AR,Arunachal Pradesh,Tirap,Khonsa,active,rto-codes repo
+AR-14,AR,Arunachal Pradesh,Upper Siang,Yingkiong,active,rto-codes repo
+AR-15,AR,Arunachal Pradesh,Kurung Kumey,Kurung Kumey (Koloriang),active,rto-codes repo
+AR-16,AR,Arunachal Pradesh,Lower Dibang Valley,Roing,active,rto-codes repo
+AR-17,AR,Arunachal Pradesh,Anjaw,Anjaw (Hawai),active,rto-codes repo
+AR-18,AR,Arunachal Pradesh,Longding,Longding,active,rto-codes repo
+AR-19,AR,Arunachal Pradesh,Kra Daadi,Palin,active,rto-codes repo
+AR-20,AR,Arunachal Pradesh,Namsai,Namsai,active,rto-codes repo
+AR-21,AR,Arunachal Pradesh,Siang,Siang District (Boleng),active,rto-codes repo
+AR-22,AR,Arunachal Pradesh,Lower Siang,Lower Siang (Likabali),active,rto-codes repo
+AS-01,AS,Assam,Kamrup Metropolitan,Guwahati,active,rto-codes repo
+AS-02,AS,Assam,Nagaon,Nagaon,active,rto-codes repo
+AS-03,AS,Assam,Jorhat,Jorhat,active,rto-codes repo
+AS-04,AS,Assam,Sivasagar,Sivasagar,active,rto-codes repo
+AS-05,AS,Assam,Golaghat,Golaghat,active,rto-codes repo
+AS-06,AS,Assam,Dibrugarh,Dibrugarh,active,rto-codes repo
+AS-07,AS,Assam,Lakhimpur,Lakhimpur (North Lakhimpur),active,rto-codes repo
+AS-08,AS,Assam,Dima Hasao,"Haflong, Dima Hasao",active,rto-codes repo
+AS-09,AS,Assam,Karbi Anglong,Karbi Anglong (Diphu),active,rto-codes repo
+AS-10,AS,Assam,Karimganj,Karimganj,active,rto-codes repo
+AS-11,AS,Assam,Cachar,Silchar,active,rto-codes repo
+AS-12,AS,Assam,Sonitpur,Tezpur,active,rto-codes repo
+AS-13,AS,Assam,Darrang,Mangaldoi,active,rto-codes repo
+AS-14,AS,Assam,Nalbari,Nalbari,active,rto-codes repo
+AS-15,AS,Assam,Barpeta,Barpeta,active,rto-codes repo
+AS-16,AS,Assam,Kokrajhar,Kokrajhar,active,rto-codes repo
+AS-17,AS,Assam,Dhubri,Dhubri,active,rto-codes repo
+AS-18,AS,Assam,Goalpara,Goalpara,active,rto-codes repo
+AS-19,AS,Assam,Bongaigaon,Bongaigaon,active,rto-codes repo
+AS-20,AS,Assam,Kamrup Metropolitan,Assam State Transport Corporation (ASTC) (Guwahati),active,rto-codes repo
+AS-21,AS,Assam,Morigaon,Morigaon,active,rto-codes repo
+AS-22,AS,Assam,Dhemaji,Dhemaji,active,rto-codes repo
+AS-23,AS,Assam,Tinsukia,Tinsukia,active,rto-codes repo
+AS-24,AS,Assam,Hailakandi,Hailakandi,active,rto-codes repo
+AS-25,AS,Assam,Kamrup,Kamrup Rural (Amingaon),active,rto-codes repo
+AS-26,AS,Assam,Chirang,Chirang,active,rto-codes repo
+AS-27,AS,Assam,Udalguri,Udalguri,active,rto-codes repo
+AS-28,AS,Assam,Baksa,Baksa (Mushalpur),active,rto-codes repo
+AS-29,AS,Assam,Majuli,Majuli (Kamalabari),active,rto-codes repo
+AS-30,AS,Assam,Kamrup Metropolitan,Assam Police (Guwahati),active,rto-codes repo
+AS-31,AS,Assam,Hojai,Hojai,active,rto-codes repo
+AS-32,AS,Assam,Biswanath,Biswanath (Biswanath Chariali),active,rto-codes repo
+AS-33,AS,Assam,Charaideo,Charaideo (Sonari),active,rto-codes repo
+AS-34,AS,Assam,South Salmara-Mankachar,South Salmara-Mankachar (Hatsingimari),active,rto-codes repo
+BR-01,BR,Bihar,Patna,Patna,active,rto-codes repo
+BR-02,BR,Bihar,Gaya,Gaya,active,rto-codes repo
+BR-03,BR,Bihar,Bhojpur,Bhojpur (Arrah),active,rto-codes repo
+BR-04,BR,Bihar,Saran,Saran (Chapra),active,rto-codes repo
+BR-05,BR,Bihar,East Champaran,Motihari,active,rto-codes repo
+BR-06,BR,Bihar,Muzaffarpur,Muzaffarpur,active,rto-codes repo
+BR-07,BR,Bihar,Darbhanga,Darbhanga,active,rto-codes repo
+BR-08,BR,Bihar,Munger,Munger,active,rto-codes repo
+BR-09,BR,Bihar,Begusarai,Begusarai,active,rto-codes repo
+BR-10,BR,Bihar,Bhagalpur,Bhagalpur,active,rto-codes repo
+BR-11,BR,Bihar,Purnia,Purnia,active,rto-codes repo
+BR-19,BR,Bihar,Saharsa,Saharsa,active,rto-codes repo
+BR-21,BR,Bihar,Nalanda,Nalanda (Bihar Sharif),active,rto-codes repo
+BR-22,BR,Bihar,West Champaran,Bettiah,active,rto-codes repo
+BR-24,BR,Bihar,Rohtas,Dehri-on-Sone,active,rto-codes repo
+BR-25,BR,Bihar,Jehanabad,Jehanabad,active,rto-codes repo
+BR-26,BR,Bihar,Aurangabad,Aurangabad,active,rto-codes repo
+BR-27,BR,Bihar,Nawada,Nawada,active,rto-codes repo
+BR-28,BR,Bihar,Gopalganj,Gopalganj,active,rto-codes repo
+BR-29,BR,Bihar,Siwan,Siwan,active,rto-codes repo
+BR-30,BR,Bihar,Sitamarhi,Sitamarhi,active,rto-codes repo
+BR-31,BR,Bihar,Vaishali,Hajipur,active,rto-codes repo
+BR-32,BR,Bihar,Madhubani,Madhubani,active,rto-codes repo
+BR-33,BR,Bihar,Samastipur,Samastipur,active,rto-codes repo
+BR-34,BR,Bihar,Khagaria,Khagaria,active,rto-codes repo
+BR-37,BR,Bihar,Kishanganj,Kishanganj,active,rto-codes repo
+BR-38,BR,Bihar,Araria,Araria,active,rto-codes repo
+BR-39,BR,Bihar,Katihar,Katihar,active,rto-codes repo
+BR-43,BR,Bihar,Madhepura,Madhepura,active,rto-codes repo
+BR-44,BR,Bihar,Buxar,Buxar,active,rto-codes repo
+BR-45,BR,Bihar,Kaimur,Bhabua,active,rto-codes repo
+BR-46,BR,Bihar,Jamui,Jamui,active,rto-codes repo
+BR-50,BR,Bihar,Supaul,Supaul,active,rto-codes repo
+BR-51,BR,Bihar,Banka,Banka,active,rto-codes repo
+BR-52,BR,Bihar,Sheikhpura,Sheikhpura,active,rto-codes repo
+BR-53,BR,Bihar,Lakhisarai,Lakhisarai,active,rto-codes repo
+BR-55,BR,Bihar,Sheohar,Sheohar,active,rto-codes repo
+BR-56,BR,Bihar,Arwal,Arwal,active,rto-codes repo
+BR-57,BR,Bihar,Rohtas,Sasaram,active,rto-codes repo
+CG-01,CG,Chhattisgarh,Raipur,Governor of Chhattisgarh (Raipur),active,rto-codes repo
+CG-02,CG,Chhattisgarh,Raipur,Chhattisgarh State Government (Raipur),active,rto-codes repo
+CG-03,CG,Chhattisgarh,Raipur,Chhattisgarh Police Department (Raipur),active,rto-codes repo
+CG-04,CG,Chhattisgarh,Raipur,Raipur,active,rto-codes repo
+CG-05,CG,Chhattisgarh,Dhamtari,Dhamtari,active,rto-codes repo
+CG-06,CG,Chhattisgarh,Mahasamund,Mahasamund,active,rto-codes repo
+CG-07,CG,Chhattisgarh,Durg,Durg,active,rto-codes repo
+CG-08,CG,Chhattisgarh,Rajnandgaon,Rajnandgaon,active,rto-codes repo
+CG-09,CG,Chhattisgarh,Kabirdham,Kabirdham (Kawardha),active,rto-codes repo
+CG-10,CG,Chhattisgarh,Bilaspur,Bilaspur,active,rto-codes repo
+CG-11,CG,Chhattisgarh,Janjgir-Champa,Janjgir-Champa,active,rto-codes repo
+CG-12,CG,Chhattisgarh,Korba,Korba,active,rto-codes repo
+CG-13,CG,Chhattisgarh,Raigarh,Raigarh,active,rto-codes repo
+CG-14,CG,Chhattisgarh,Jashpur,Jashpur (Jashpur Nagar),active,rto-codes repo
+CG-15,CG,Chhattisgarh,Surguja,Ambikapur,active,rto-codes repo
+CG-16,CG,Chhattisgarh,Koriya,Baikunthpur,active,rto-codes repo
+CG-17,CG,Chhattisgarh,Bastar,Jagdalpur,active,rto-codes repo
+CG-18,CG,Chhattisgarh,Dantewada,Dantewada,active,rto-codes repo
+CG-19,CG,Chhattisgarh,Kanker,Kanker,active,rto-codes repo
+CG-20,CG,Chhattisgarh,Bijapur,Bijapur,active,rto-codes repo
+CG-21,CG,Chhattisgarh,Narayanpur,Narayanpur,active,rto-codes repo
+CG-22,CG,Chhattisgarh,Baloda Bazar-Bhatapara,Baloda Bazar,active,rto-codes repo
+CG-23,CG,Chhattisgarh,Gariaband,Gariaband,active,rto-codes repo
+CG-24,CG,Chhattisgarh,Balod,Balod,active,rto-codes repo
+CG-25,CG,Chhattisgarh,Bemetara,Bemetara,active,rto-codes repo
+CG-26,CG,Chhattisgarh,Sukma,Sukma,active,rto-codes repo
+CG-27,CG,Chhattisgarh,Kondagaon,Kondagaon,active,rto-codes repo
+CG-28,CG,Chhattisgarh,Mungeli,Mungeli,active,rto-codes repo
+CG-29,CG,Chhattisgarh,Surajpur,Surajpur,active,rto-codes repo
+CG-30,CG,Chhattisgarh,Balrampur-Ramanujganj,Balrampur,active,rto-codes repo
+CH-01,CH,Chandigarh,Chandigarh,Chandigarh,active,rto-codes repo
+CH-02,CH,Chandigarh,Chandigarh,Chandigarh (Industrial Area),active,rto-codes repo
+CH-03,CH,Chandigarh,Chandigarh,"Sector 17, Chandigarh",active,rto-codes repo
+CH-04,CH,Chandigarh,Chandigarh,Chandigarh,active,rto-codes repo
+CH-12,CH,Chandigarh,Chandigarh,Chandigarh,active,HDFC Location Master
+CH-23,CH,Chandigarh,Chandigarh,Chandigarh,active,HDFC Location Master
+CH-24,CH,Chandigarh,Chandigarh,Rto Chandigarh,active,HDFC Location Master
+CH-45,CH,Chandigarh,Chandigarh,Chandigarh,active,HDFC Location Master
+CH-83,CH,Chandigarh,Chandigarh,Chandigarh,active,HDFC Location Master
+CH-90,CH,Chandigarh,Chandigarh,Chandigarh,active,HDFC Location Master
+DD-01,DD,Dadra and Nagar Haveli and Daman and Diu,Dadra and Nagar Haveli,Dadra and Nagar Haveli (Silvassa),active,rto-codes repo
+DD-02,DD,Dadra and Nagar Haveli and Daman and Diu,Diu,Diu,active,rto-codes repo
+DD-03,DD,Dadra and Nagar Haveli and Daman and Diu,Daman,Daman (Nani Daman),active,rto-codes repo
+DL-01,DL,Delhi,North Delhi,North Delhi (Mall Road),active,rto-codes repo
+DL-02,DL,Delhi,New Delhi,New Delhi (Tilak Marg),active,rto-codes repo
+DL-03,DL,Delhi,South Delhi,South Delhi (Sheikh Sarai) (New Delhi),active,rto-codes repo
+DL-04,DL,Delhi,West Delhi,West Delhi (Janakpuri) (New Delhi),active,rto-codes repo
+DL-05,DL,Delhi,North East Delhi,North East Delhi (Loni Road),active,rto-codes repo
+DL-06,DL,Delhi,South East Delhi,Sarai Kale Khan (New Delhi),active,rto-codes repo
+DL-07,DL,Delhi,East Delhi,East Delhi District-I (Mayur Vihar),active,rto-codes repo
+DL-08,DL,Delhi,North West Delhi,Wazirpur (New Delhi),active,rto-codes repo
+DL-09,DL,Delhi,South West Delhi,Dwarka (New Delhi),active,rto-codes repo
+DL-10,DL,Delhi,West Delhi,Raja Garden (Delhi),active,rto-codes repo
+DL-11,DL,Delhi,North West Delhi,Rohini (New Delhi),active,rto-codes repo
+DL-12,DL,Delhi,South West Delhi,South West Delhi - II (Vasant Vihar) (New Delhi),active,rto-codes repo
+DL-13,DL,Delhi,East Delhi,Surajmal Vihar (East Delhi),active,rto-codes repo
+DL-14,DL,Delhi,Shahdara,Surajmal Vihar (Delhi),active,rto-codes repo
+DL-15,DL,Delhi,North Delhi,Civil Lines (GNCTD vehicles) (Delhi),active,rto-codes repo
+DL-16,DL,Delhi,Ncr,Faridabad,active,HDFC Location Master
+DL-17,DL,Delhi,Ncr,Noida,active,HDFC Location Master
+DL-18,DL,Delhi,Ncr,Ghaziabad,active,HDFC Location Master
+DL-30,DL,Delhi,Ncr,Noida,active,HDFC Location Master
+GA-01,GA,Goa,North Goa,Panaji,not-in-use,rto-codes repo
+GA-02,GA,Goa,South Goa,Margao,not-in-use,rto-codes repo
+GA-03,GA,Goa,North Goa,Mapusa,active,rto-codes repo
+GA-04,GA,Goa,North Goa,Bicholim,active,rto-codes repo
+GA-05,GA,Goa,South Goa,Ponda,active,rto-codes repo
+GA-06,GA,Goa,South Goa,Vasco da Gama,active,rto-codes repo
+GA-07,GA,Goa,North Goa,Panaji,active,rto-codes repo
+GA-08,GA,Goa,South Goa,Margao,active,rto-codes repo
+GA-09,GA,Goa,South Goa,Quepem,active,rto-codes repo
+GA-10,GA,Goa,South Goa,Canacona,active,rto-codes repo
+GA-11,GA,Goa,North Goa,Pernem,active,rto-codes repo
+GA-12,GA,Goa,South Goa,Dharbandora,active,rto-codes repo
+GJ-01,GJ,Gujarat,Ahmedabad,Ahmedabad (West),active,rto-codes repo
+GJ-02,GJ,Gujarat,Mehsana,Mehsana,active,rto-codes repo
+GJ-03,GJ,Gujarat,Rajkot,Rajkot,active,rto-codes repo
+GJ-04,GJ,Gujarat,Bhavnagar,Bhavnagar,active,rto-codes repo
+GJ-05,GJ,Gujarat,Surat,Surat City,active,rto-codes repo
+GJ-06,GJ,Gujarat,Vadodara,Vadodara City,active,rto-codes repo
+GJ-07,GJ,Gujarat,Kheda,Nadiad,active,rto-codes repo
+GJ-08,GJ,Gujarat,Banaskantha,Palanpur,active,rto-codes repo
+GJ-09,GJ,Gujarat,Sabarkantha,Himmatnagar,active,rto-codes repo
+GJ-10,GJ,Gujarat,Jamnagar,Jamnagar,active,rto-codes repo
+GJ-11,GJ,Gujarat,Junagadh,Junagadh,active,rto-codes repo
+GJ-12,GJ,Gujarat,Kutch,Bhuj,active,rto-codes repo
+GJ-13,GJ,Gujarat,Surendranagar,Surendranagar,active,rto-codes repo
+GJ-14,GJ,Gujarat,Amreli,Amreli,active,rto-codes repo
+GJ-15,GJ,Gujarat,Valsad,Valsad,active,rto-codes repo
+GJ-16,GJ,Gujarat,Bharuch,Bharuch,active,rto-codes repo
+GJ-17,GJ,Gujarat,Panchmahal,Godhra,active,rto-codes repo
+GJ-18,GJ,Gujarat,Gandhinagar,Gandhinagar,active,rto-codes repo
+GJ-19,GJ,Gujarat,Surat,Bardoli,active,rto-codes repo
+GJ-20,GJ,Gujarat,Dahod,Dahod,active,rto-codes repo
+GJ-21,GJ,Gujarat,Navsari,Navsari,active,rto-codes repo
+GJ-22,GJ,Gujarat,Narmada,Rajpipla,active,rto-codes repo
+GJ-23,GJ,Gujarat,Anand,Anand,active,rto-codes repo
+GJ-24,GJ,Gujarat,Patan,Patan,active,rto-codes repo
+GJ-25,GJ,Gujarat,Porbandar,Porbandar,active,rto-codes repo
+GJ-26,GJ,Gujarat,Tapi,Vyara,active,rto-codes repo
+GJ-27,GJ,Gujarat,Ahmedabad,Ahmedabad East (Vastral),active,rto-codes repo
+GJ-28,GJ,Gujarat,Surat,Surat Rural,active,rto-codes repo
+GJ-29,GJ,Gujarat,Vadodara,Vadodara Rural,active,rto-codes repo
+GJ-30,GJ,Gujarat,Dang,Ahwa,active,rto-codes repo
+GJ-31,GJ,Gujarat,Aravalli,Modasa,active,rto-codes repo
+GJ-32,GJ,Gujarat,Gir Somnath,Veraval,active,rto-codes repo
+GJ-33,GJ,Gujarat,Botad,Botad,active,rto-codes repo
+GJ-34,GJ,Gujarat,Chhota Udaipur,Chhota Udepur,active,rto-codes repo
+GJ-35,GJ,Gujarat,Mahisagar,Mahisagar (Lunawada),active,rto-codes repo
+GJ-36,GJ,Gujarat,Morbi,Morbi,active,rto-codes repo
+GJ-37,GJ,Gujarat,Devbhumi Dwarka,Khambhaliya,active,rto-codes repo
+HP-01,HP,Himachal Pradesh,Shimla,Shimla Urban,active,rto-codes repo
+HP-02,HP,Himachal Pradesh,Shimla,Shimla (Commercial/Tourist),active,rto-codes repo
+HP-03,HP,Himachal Pradesh,Shimla,Shimla Urban,active,rto-codes repo
+HP-04,HP,Himachal Pradesh,Kangra,Dharamshala,active,rto-codes repo
+HP-05,HP,Himachal Pradesh,Mandi,Mandi,active,rto-codes repo
+HP-06,HP,Himachal Pradesh,Shimla,Rampur Bushahr,active,rto-codes repo
+HP-07,HP,Himachal Pradesh,Shimla,Shimla (Commercial),active,rto-codes repo
+HP-08,HP,Himachal Pradesh,Shimla,Chopal,active,rto-codes repo
+HP-09,HP,Himachal Pradesh,Shimla,Theog,active,rto-codes repo
+HP-10,HP,Himachal Pradesh,Shimla,Rohru,active,rto-codes repo
+HP-11,HP,Himachal Pradesh,Solan,Arki,active,rto-codes repo
+HP-12,HP,Himachal Pradesh,Solan,Nalagarh,active,rto-codes repo
+HP-13,HP,Himachal Pradesh,Solan,Kandaghat,active,rto-codes repo
+HP-14,HP,Himachal Pradesh,Solan,Solan,active,rto-codes repo
+HP-15,HP,Himachal Pradesh,Solan,Parwanoo,active,rto-codes repo
+HP-16,HP,Himachal Pradesh,Sirmaur,Rajgarh,active,rto-codes repo
+HP-17,HP,Himachal Pradesh,Sirmaur,Paonta Sahib,active,rto-codes repo
+HP-18,HP,Himachal Pradesh,Sirmaur,Nahan,active,rto-codes repo
+HP-19,HP,Himachal Pradesh,Una,Amb,active,rto-codes repo
+HP-19AA,HP,Himachal Pradesh,Himachal Pradesh,Gagret,active,HDFC Location Master
+HP-20,HP,Himachal Pradesh,Una,Una,active,rto-codes repo
+HP-21,HP,Himachal Pradesh,Hamirpur,Barsar,active,rto-codes repo
+HP-22,HP,Himachal Pradesh,Hamirpur,Hamirpur,active,rto-codes repo
+HP-23,HP,Himachal Pradesh,Bilaspur,Ghumarwin,active,rto-codes repo
+HP-24,HP,Himachal Pradesh,Bilaspur,Bilaspur,active,rto-codes repo
+HP-25,HP,Himachal Pradesh,Kinnaur,Kalpa,active,rto-codes repo
+HP-26,HP,Himachal Pradesh,Kinnaur,Nichar,active,rto-codes repo
+HP-27,HP,Himachal Pradesh,Kinnaur,Pooh,active,rto-codes repo
+HP-28,HP,Himachal Pradesh,Mandi,Sarkaghat,active,rto-codes repo
+HP-29,HP,Himachal Pradesh,Mandi,Jogindernagar,active,rto-codes repo
+HP-30,HP,Himachal Pradesh,Mandi,Karsog,active,rto-codes repo
+HP-31,HP,Himachal Pradesh,Mandi,Sundernagar,active,rto-codes repo
+HP-32,HP,Himachal Pradesh,Mandi,Gohar,active,rto-codes repo
+HP-33,HP,Himachal Pradesh,Mandi,Mandi Sadar,active,rto-codes repo
+HP-34,HP,Himachal Pradesh,Kullu,Kullu,active,rto-codes repo
+HP-35,HP,Himachal Pradesh,Kullu,Anni,active,rto-codes repo
+HP-36,HP,Himachal Pradesh,Kangra,Dehra,active,rto-codes repo
+HP-37,HP,Himachal Pradesh,Kangra,Palampur,active,rto-codes repo
+HP-38,HP,Himachal Pradesh,Kangra,Nurpur,active,rto-codes repo
+HP-39,HP,Himachal Pradesh,Kangra,Dharamshala,active,rto-codes repo
+HP-40,HP,Himachal Pradesh,Kangra,Kangra Sub-division,active,rto-codes repo
+HP-41,HP,Himachal Pradesh,Lahaul and Spiti,Kaza,active,rto-codes repo
+HP-42,HP,Himachal Pradesh,Lahaul and Spiti,Keylong,active,rto-codes repo
+HP-43,HP,Himachal Pradesh,Lahaul and Spiti,Udaipur (Lahaul and Spiti),active,rto-codes repo
+HP-44,HP,Himachal Pradesh,Chamba,Churah (Tissa),active,rto-codes repo
+HP-45,HP,Himachal Pradesh,Chamba,Pangi (Killar),active,rto-codes repo
+HP-46,HP,Himachal Pradesh,Chamba,Bharmour,active,rto-codes repo
+HP-47,HP,Himachal Pradesh,Chamba,Dalhousie,active,rto-codes repo
+HP-48,HP,Himachal Pradesh,Chamba,Chamba (Sadar),active,rto-codes repo
+HP-49,HP,Himachal Pradesh,Kullu,Banjar,active,rto-codes repo
+HP-50,HP,Himachal Pradesh,Shimla,Shimla (Auto-rickshaws),active,rto-codes repo
+HP-51,HP,Himachal Pradesh,Shimla,Shimla Rural,active,rto-codes repo
+HP-52,HP,Himachal Pradesh,Shimla,Shimla (Rural),active,rto-codes repo
+HP-53,HP,Himachal Pradesh,Kangra,Baijnath,active,rto-codes repo
+HP-54,HP,Himachal Pradesh,Kangra,Jawali,active,rto-codes repo
+HP-55,HP,Himachal Pradesh,Hamirpur,Nadaun,active,rto-codes repo
+HP-56,HP,Himachal Pradesh,Kangra,Jaisinghpur,active,rto-codes repo
+HP-57,HP,Himachal Pradesh,Chamba,Chowari (Bhattiyat),active,rto-codes repo
+HP-58,HP,Himachal Pradesh,Kullu,Manali,active,rto-codes repo
+HP-59,HP,Himachal Pradesh,Solan,Solan (Baddi),active,rto-codes repo
+HP-60,HP,Himachal Pradesh,Hamirpur,Hamirpur,active,rto-codes repo
+HP-61,HP,Himachal Pradesh,Kullu,Kullu,active,rto-codes repo
+HP-62,HP,Himachal Pradesh,Shimla,State Transport Authority (STA) (Shimla),active,rto-codes repo
+HP-63,HP,Himachal Pradesh,Shimla,Shimla Rural,active,rto-codes repo
+HP-64,HP,Himachal Pradesh,Solan,Solan,active,rto-codes repo
+HP-65,HP,Himachal Pradesh,Mandi,Mandi,active,rto-codes repo
+HP-66,HP,Himachal Pradesh,Kullu,Kullu,active,rto-codes repo
+HP-67,HP,Himachal Pradesh,Hamirpur,Hamirpur RTO,active,rto-codes repo
+HP-68,HP,Himachal Pradesh,Kangra,Dharamshala,active,rto-codes repo
+HP-69,HP,Himachal Pradesh,Bilaspur,Bilaspur,active,rto-codes repo
+HP-70,HP,Himachal Pradesh,Bilaspur,Bilaspur,active,rto-codes repo
+HP-71,HP,Himachal Pradesh,Sirmaur,Sirmaur (Nahan),active,rto-codes repo
+HP-72,HP,Himachal Pradesh,Una,Una,active,rto-codes repo
+HP-73,HP,Himachal Pradesh,Chamba,Chamba,active,rto-codes repo
+HP-74,HP,Himachal Pradesh,Hamirpur,Bhoranj,active,rto-codes repo
+HP-75,HP,Himachal Pradesh,Shimla,Jubbal,active,rto-codes repo
+HP-75RLA,HP,Himachal Pradesh,Himachal Pradesh,Jubbal,active,HDFC Location Master
+HP-76,HP,Himachal Pradesh,Mandi,Paddhar,active,rto-codes repo
+HP-77,HP,Himachal Pradesh,Shimla,Dodra Kawar,active,rto-codes repo
+HP-78,HP,Himachal Pradesh,Una,Bangana,active,rto-codes repo
+HP-79,HP,Himachal Pradesh,Sirmaur,Sangrah,active,rto-codes repo
+HP-80,HP,Himachal Pradesh,Una,Haroli,active,rto-codes repo
+HP-81,HP,Himachal Pradesh,Chamba,Salooni,active,rto-codes repo
+HP-82,HP,Himachal Pradesh,Mandi,Balh (Ner Chowk),active,rto-codes repo
+HP-83,HP,Himachal Pradesh,Kangra,Jawalamukhi,active,rto-codes repo
+HP-84,HP,Himachal Pradesh,Hamirpur,Sujanpur (Sujanpur Tihra),active,rto-codes repo
+HP-85,HP,Himachal Pradesh,Sirmaur,Shillai,active,rto-codes repo
+HP-86,HP,Himachal Pradesh,Mandi,Dharampur,active,rto-codes repo
+HP-87,HP,Himachal Pradesh,Mandi,Janjehli (Thunag),active,rto-codes repo
+HP-88,HP,Himachal Pradesh,Kangra,Fatehpur,active,rto-codes repo
+HP-89,HP,Himachal Pradesh,Bilaspur,Jhandutta,active,rto-codes repo
+HP-90,HP,Himachal Pradesh,Kangra,Shahpur,active,rto-codes repo
+HP-91,HP,Himachal Pradesh,Bilaspur,Shri Naina Devi Ji at Swarghat,active,rto-codes repo
+HP-92,HP,Himachal Pradesh,Shimla,Rampur Bushahr,active,rto-codes repo
+HP-93,HP,Himachal Pradesh,Solan,Baddi,active,rto-codes repo
+HP-94,HP,Himachal Pradesh,Kangra,Nagrota Bagwan,active,rto-codes repo
+HP-95,HP,Himachal Pradesh,Shimla,Kumarsain,active,rto-codes repo
+HP-96,HP,Himachal Pradesh,Kangra,Dheera,active,rto-codes repo
+HP-97,HP,Himachal Pradesh,Kangra,Indora,active,rto-codes repo
+HP-98,HP,Himachal Pradesh,Solan,Kasauli,active,rto-codes repo
+HP-99,HP,Himachal Pradesh,Shimla,Kotkhai,active,rto-codes repo
+HR-01,HR,Haryana,Ambala,Ambala City,active,rto-codes repo
+HR-02,HR,Haryana,Yamuna Nagar,Jagadhri,active,rto-codes repo
+HR-03,HR,Haryana,Panchkula,Panchkula,active,rto-codes repo
+HR-04,HR,Haryana,Ambala,Naraingarh,active,rto-codes repo
+HR-05,HR,Haryana,Karnal,Karnal,active,rto-codes repo
+HR-06,HR,Haryana,Panipat,Panipat,active,rto-codes repo
+HR-07,HR,Haryana,Kurukshetra,Thanesar,active,rto-codes repo
+HR-08,HR,Haryana,Kaithal,Kaithal,active,rto-codes repo
+HR-09,HR,Haryana,Kaithal,Guhla,active,rto-codes repo
+HR-10,HR,Haryana,Sonipat,Sonepat,active,rto-codes repo
+HR-11,HR,Haryana,Sonipat,Gohana,active,rto-codes repo
+HR-12,HR,Haryana,Rohtak,Rohtak,active,rto-codes repo
+HR-13,HR,Haryana,Jhajjar,Bahadurgarh,active,rto-codes repo
+HR-14,HR,Haryana,Jhajjar,Jhajjar,active,rto-codes repo
+HR-15,HR,Haryana,Rohtak,Meham,active,rto-codes repo
+HR-16,HR,Haryana,Bhiwani,Bhiwani,active,rto-codes repo
+HR-17,HR,Haryana,Bhiwani,Siwani,active,rto-codes repo
+HR-18,HR,Haryana,Bhiwani,Loharu,active,rto-codes repo
+HR-19,HR,Haryana,Charkhi Dadri,Charkhi Dadri,active,rto-codes repo
+HR-20,HR,Haryana,Hisar,Hisar,active,rto-codes repo
+HR-21,HR,Haryana,Hisar,Hansi,active,rto-codes repo
+HR-22,HR,Haryana,Fatehabad,Fatehabad,active,rto-codes repo
+HR-23,HR,Haryana,Fatehabad,Tohana,active,rto-codes repo
+HR-24,HR,Haryana,Sirsa,Sirsa,active,rto-codes repo
+HR-25,HR,Haryana,Sirsa,Dabwali (Mandi Dabwali),active,rto-codes repo
+HR-26,HR,Haryana,Gurugram,Gurugram (North),active,rto-codes repo
+HR-27,HR,Haryana,Nuh,Nuh,active,rto-codes repo
+HR-28,HR,Haryana,Nuh,Ferozepur Jhirka,active,rto-codes repo
+HR-29,HR,Haryana,Faridabad,Ballabgarh,active,rto-codes repo
+HR-30,HR,Haryana,Palwal,Palwal,active,rto-codes repo
+HR-31,HR,Haryana,Jind,Jind,active,rto-codes repo
+HR-32,HR,Haryana,Jind,Narwana,active,rto-codes repo
+HR-33,HR,Haryana,Jind,Safidon,active,rto-codes repo
+HR-34,HR,Haryana,Mahendragarh,Mahendragarh,active,rto-codes repo
+HR-35,HR,Haryana,Mahendragarh,Narnaul,active,rto-codes repo
+HR-36,HR,Haryana,Rewari,Rewari,active,rto-codes repo
+HR-37,HR,Haryana,Ambala,Ambala (Commercial Vehicles),active,rto-codes repo
+HR-38,HR,Haryana,Faridabad,Faridabad,active,rto-codes repo
+HR-39,HR,Haryana,Hisar,Hisar,active,rto-codes repo
+HR-40,HR,Haryana,Karnal,Assandh,active,rto-codes repo
+HR-41,HR,Haryana,Kurukshetra,Pehowa,active,rto-codes repo
+HR-42,HR,Haryana,Sonipat,Ganaur,active,rto-codes repo
+HR-43,HR,Haryana,Rewari,Kosli,active,rto-codes repo
+HR-44,HR,Haryana,Sirsa,Ellenabad,active,rto-codes repo
+HR-45,HR,Haryana,Karnal,Karnal,active,rto-codes repo
+HR-46,HR,Haryana,Rohtak,Rohtak,active,rto-codes repo
+HR-47,HR,Haryana,Rewari,Rewari,active,rto-codes repo
+HR-48,HR,Haryana,Bhiwani,Tosham,active,rto-codes repo
+HR-49,HR,Haryana,Panchkula,Kalka,active,rto-codes repo
+HR-50,HR,Haryana,Palwal,Hodal,active,rto-codes repo
+HR-51,HR,Haryana,Faridabad,Faridabad (Private Vehicles),active,rto-codes repo
+HR-52,HR,Haryana,Palwal,Hathin,active,rto-codes repo
+HR-53,HR,Haryana,Hisar,Adampur,active,rto-codes repo
+HR-54,HR,Haryana,Ambala,Barara,active,rto-codes repo
+HR-55,HR,Haryana,Gurugram,Gurugram Commercial,active,rto-codes repo
+HR-56,HR,Haryana,Jind,Jind (Commercial Vehicles),active,rto-codes repo
+HR-57,HR,Haryana,Sirsa,Sirsa (Transport/Commercial),active,rto-codes repo
+HR-58,HR,Haryana,Yamuna Nagar,Jagadhari,active,rto-codes repo
+HR-59,HR,Haryana,Fatehabad,Ratia,active,rto-codes repo
+HR-60,HR,Haryana,Panipat,Samalkha,active,rto-codes repo
+HR-61,HR,Haryana,Bhiwani,Bhiwani (Commercial/Transport),active,rto-codes repo
+HR-62,HR,Haryana,Fatehabad,Fatehabad,active,rto-codes repo
+HR-63,HR,Haryana,Jhajjar,Jhajjar (Commercial),active,rto-codes repo
+HR-64,HR,Haryana,Kaithal,Kaithal RTA,active,rto-codes repo
+HR-65,HR,Haryana,Kurukshetra,Kurukshetra (Commercial),active,rto-codes repo
+HR-66,HR,Haryana,Mahendragarh,Narnaul,active,rto-codes repo
+HR-67,HR,Haryana,Panipat,Panipat,active,rto-codes repo
+HR-68,HR,Haryana,Panchkula,Panchkula (RTA),active,rto-codes repo
+HR-69,HR,Haryana,Sonipat,Sonipat,active,rto-codes repo
+HR-70,HR,Haryana,Chandigarh,State Transport Commissioner (Chandigarh),active,rto-codes repo
+HR-71,HR,Haryana,Yamunanagar,Bilaspur (Yamunanagar),active,rto-codes repo
+HR-72,HR,Haryana,Gurugram,Gurugram (South),active,rto-codes repo
+HR-73,HR,Haryana,Palwal,Palwal,active,rto-codes repo
+HR-74,HR,Haryana,Nuh,Nuh,active,rto-codes repo
+HR-75,HR,Haryana,Karnal,Indri,active,rto-codes repo
+HR-76,HR,Haryana,Gurugram,Pataudi,active,rto-codes repo
+HR-77,HR,Haryana,Jhajjar,Beri,active,rto-codes repo
+HR-78,HR,Haryana,Kurukshetra,Shahabad (Shahabad Markanda),active,rto-codes repo
+HR-79,HR,Haryana,Sonipat,Kharkhoda,active,rto-codes repo
+HR-80,HR,Haryana,Hisar,Barwala,active,rto-codes repo
+HR-81,HR,Haryana,Rewari,Bawal,active,rto-codes repo
+HR-82,HR,Haryana,Mahendragarh,Kanina,active,rto-codes repo
+HR-83,HR,Haryana,Kaithal,Kalayat,active,rto-codes repo
+HR-84,HR,Haryana,Charkhi Dadri,Charkhi Dadri,active,rto-codes repo
+HR-85,HR,Haryana,Ambala,Ambala Cantonment South,active,rto-codes repo
+HR-86,HR,Haryana,Hisar,Narnaud,active,rto-codes repo
+HR-87,HR,Haryana,Faridabad,Badkhal (Faridabad),active,rto-codes repo
+HR-88,HR,Haryana,Charkhi Dadri,Badhra,active,rto-codes repo
+HR-89,HR,Haryana,Jhajjar,Badli,active,rto-codes repo
+HR-90,HR,Haryana,Jind,Uchana,active,rto-codes repo
+HR-91,HR,Haryana,Karnal,Gharaunda,active,rto-codes repo
+HR-92,HR,Haryana,Yamuna Nagar,Radaur,active,rto-codes repo
+HR-93,HR,Haryana,Nuh,Punhana,active,rto-codes repo
+HR-94,HR,Haryana,Sirsa,Kalanwali,active,rto-codes repo
+HR-95,HR,Haryana,Rohtak,Sampla,active,rto-codes repo
+HR-96,HR,Haryana,Nuh,Tauru,active,rto-codes repo
+HR-97,HR,Haryana,Kurukshetra,Ladwa,active,rto-codes repo
+HR-98,HR,Haryana,Gurugram,Badshahpur,active,rto-codes repo
+JH-01,JH,Jharkhand,Ranchi,Ranchi,active,rto-codes repo
+JH-02,JH,Jharkhand,Hazaribagh,Hazaribagh,active,rto-codes repo
+JH-03,JH,Jharkhand,Palamu,Daltonganj (Daltonganj (Medininagar)),active,rto-codes repo
+JH-04,JH,Jharkhand,Dumka,Dumka,active,rto-codes repo
+JH-05,JH,Jharkhand,East Singhbhum,Jamshedpur,active,rto-codes repo
+JH-06,JH,Jharkhand,West Singhbhum,Chaibasa,active,rto-codes repo
+JH-07,JH,Jharkhand,Gumla,Gumla,active,rto-codes repo
+JH-08,JH,Jharkhand,Lohardaga,Lohardaga,active,rto-codes repo
+JH-09,JH,Jharkhand,Bokaro,Bokaro (Bokaro Steel City),active,rto-codes repo
+JH-10,JH,Jharkhand,Dhanbad,Dhanbad,active,rto-codes repo
+JH-11,JH,Jharkhand,Giridih,Giridih,active,rto-codes repo
+JH-12,JH,Jharkhand,Koderma,Koderma,active,rto-codes repo
+JH-13,JH,Jharkhand,Chatra,Chatra,active,rto-codes repo
+JH-14,JH,Jharkhand,Garhwa,Garhwa,active,rto-codes repo
+JH-15,JH,Jharkhand,Deoghar,Deoghar,active,rto-codes repo
+JH-16,JH,Jharkhand,Pakur,Pakur,active,rto-codes repo
+JH-17,JH,Jharkhand,Godda,Godda,active,rto-codes repo
+JH-18,JH,Jharkhand,Sahebganj,Sahibganj,active,rto-codes repo
+JH-19,JH,Jharkhand,Latehar,Latehar,active,rto-codes repo
+JH-20,JH,Jharkhand,Simdega,Simdega,active,rto-codes repo
+JH-21,JH,Jharkhand,Jamtara,Jamtara,active,rto-codes repo
+JH-22,JH,Jharkhand,Seraikela Kharsawan,Seraikela-Kharsawan,active,rto-codes repo
+JH-23,JH,Jharkhand,Khunti,Khunti,active,rto-codes repo
+JH-24,JH,Jharkhand,Ramgarh,Ramgarh,active,rto-codes repo
+JK-01,JK,Jammu and Kashmir,Srinagar,Srinagar,active,rto-codes repo
+JK-02,JK,Jammu and Kashmir,Jammu,Jammu,active,rto-codes repo
+JK-03,JK,Jammu and Kashmir,Anantnag,Anantnag,active,rto-codes repo
+JK-04,JK,Jammu and Kashmir,Budgam,Budgam,active,rto-codes repo
+JK-05,JK,Jammu and Kashmir,Baramulla,Baramulla,active,rto-codes repo
+JK-06,JK,Jammu and Kashmir,Doda,Doda,active,rto-codes repo
+JK-08,JK,Jammu and Kashmir,Kathua,Kathua,active,rto-codes repo
+JK-09,JK,Jammu and Kashmir,Kupwara,Kupwara,active,rto-codes repo
+JK-10,JK,Jammu and Kashmir,Leh,Leh,active,rto-codes repo
+JK-11,JK,Jammu and Kashmir,Rajouri,Rajouri,active,rto-codes repo
+JK-12,JK,Jammu and Kashmir,Poonch,Poonch,active,rto-codes repo
+JK-13,JK,Jammu and Kashmir,Pulwama,Pulwama,active,rto-codes repo
+JK-14,JK,Jammu and Kashmir,Udhampur,Udhampur,active,rto-codes repo
+JK-15,JK,Jammu and Kashmir,Bandipora,Bandipora,active,rto-codes repo
+JK-16,JK,Jammu and Kashmir,Ganderbal,Ganderbal,active,rto-codes repo
+JK-17,JK,Jammu and Kashmir,Kishtwar,Kishtwar,active,rto-codes repo
+JK-18,JK,Jammu and Kashmir,Kulgam,Kulgam,active,rto-codes repo
+JK-19,JK,Jammu and Kashmir,Ramban,Ramban,active,rto-codes repo
+JK-20,JK,Jammu and Kashmir,Reasi,Reasi,active,rto-codes repo
+JK-21,JK,Jammu and Kashmir,Samba,Samba,active,rto-codes repo
+JK-22,JK,Jammu and Kashmir,Shopian,Shopian,active,rto-codes repo
+KA-01,KA,Karnataka,Bengaluru Urban,Koramangala (Bengaluru),active,rto-codes repo
+KA-02,KA,Karnataka,Bengaluru Urban,Rajajinagar (Bengaluru),active,rto-codes repo
+KA-03,KA,Karnataka,Bengaluru Urban,Kasturi Nagar (Bengaluru),active,rto-codes repo
+KA-04,KA,Karnataka,Bengaluru Urban,Yeshwanthpur (Bengaluru),active,rto-codes repo
+KA-05,KA,Karnataka,Bengaluru Urban,Jayanagar (Bengaluru),active,rto-codes repo
+KA-06,KA,Karnataka,Tumakuru,Tumkur,active,rto-codes repo
+KA-07,KA,Karnataka,Kolar,Kolar,active,rto-codes repo
+KA-08,KA,Karnataka,Kolar,KGF,active,rto-codes repo
+KA-09,KA,Karnataka,Mysuru,Mysuru West,active,rto-codes repo
+KA-10,KA,Karnataka,Chamarajanagar,Chamarajanagar,active,rto-codes repo
+KA-11,KA,Karnataka,Mandya,Mandya,active,rto-codes repo
+KA-12,KA,Karnataka,Kodagu,Madikeri,active,rto-codes repo
+KA-13,KA,Karnataka,Hassan,Hassan,active,rto-codes repo
+KA-14,KA,Karnataka,Shivamogga,Shivamogga,active,rto-codes repo
+KA-15,KA,Karnataka,Shivamogga,Sagar,active,rto-codes repo
+KA-16,KA,Karnataka,Chitradurga,Chitradurga,active,rto-codes repo
+KA-17,KA,Karnataka,Davanagere,Davanagere,active,rto-codes repo
+KA-18,KA,Karnataka,Chikkamagaluru,Chikmagalur,active,rto-codes repo
+KA-19,KA,Karnataka,Dakshina Kannada,Mangalore,active,rto-codes repo
+KA-20,KA,Karnataka,Udupi,Udupi,active,rto-codes repo
+KA-21,KA,Karnataka,Dakshina Kannada,Puttur,active,rto-codes repo
+KA-22,KA,Karnataka,Belagavi,Belagavi,active,rto-codes repo
+KA-23,KA,Karnataka,Belagavi,Chikkodi,active,rto-codes repo
+KA-24,KA,Karnataka,Belagavi,Bailhongal,active,rto-codes repo
+KA-25,KA,Karnataka,Dharwad,Dharwad,active,rto-codes repo
+KA-26,KA,Karnataka,Gadag,Gadag,active,rto-codes repo
+KA-27,KA,Karnataka,Haveri,Haveri,active,rto-codes repo
+KA-28,KA,Karnataka,Vijayapura,Vijayapura,active,rto-codes repo
+KA-29,KA,Karnataka,Bagalkot,Bagalkot,active,rto-codes repo
+KA-30,KA,Karnataka,Uttara Kannada,Karwar,active,rto-codes repo
+KA-31,KA,Karnataka,Uttara Kannada,Sirsi,active,rto-codes repo
+KA-32,KA,Karnataka,Kalaburagi,Kalaburagi,active,rto-codes repo
+KA-33,KA,Karnataka,Yadgir,Yadgir,active,rto-codes repo
+KA-34,KA,Karnataka,Ballari,Ballari,active,rto-codes repo
+KA-35,KA,Karnataka,Vijayanagara,Hospet,active,rto-codes repo
+KA-36,KA,Karnataka,Raichur,Raichur,active,rto-codes repo
+KA-37,KA,Karnataka,Koppal,Koppal,active,rto-codes repo
+KA-38,KA,Karnataka,Bidar,Bidar,active,rto-codes repo
+KA-39,KA,Karnataka,Bidar,Bhalki,active,rto-codes repo
+KA-40,KA,Karnataka,Chikkaballapura,Chikkaballapura,active,rto-codes repo
+KA-41,KA,Karnataka,Bengaluru Urban,Jnanabharathi (Bengaluru),active,rto-codes repo
+KA-42,KA,Karnataka,Ramanagara,Ramanagara,active,rto-codes repo
+KA-43,KA,Karnataka,Bengaluru Rural,Devanahalli (Bengaluru),active,rto-codes repo
+KA-44,KA,Karnataka,Tumakuru,Tiptur,active,rto-codes repo
+KA-45,KA,Karnataka,Mysuru,Hunsur,active,rto-codes repo
+KA-46,KA,Karnataka,Hassan,Sakleshpur,active,rto-codes repo
+KA-47,KA,Karnataka,Uttara Kannada,Honnavar,active,rto-codes repo
+KA-48,KA,Karnataka,Bagalkot,Jamkhandi,active,rto-codes repo
+KA-49,KA,Karnataka,Belagavi,Gokak,active,rto-codes repo
+KA-50,KA,Karnataka,Bengaluru Urban,Yelahanka (Bengaluru),active,rto-codes repo
+KA-51,KA,Karnataka,Bengaluru Urban,Electronic City (Bengaluru),active,rto-codes repo
+KA-52,KA,Karnataka,Bengaluru Rural,Nelamangala (Bengaluru),active,rto-codes repo
+KA-53,KA,Karnataka,Bengaluru Urban,KR Puram (Bengaluru),active,rto-codes repo
+KA-54,KA,Karnataka,Mandya,Nagamangala,active,rto-codes repo
+KA-55,KA,Karnataka,Mysuru,Mysuru East,active,rto-codes repo
+KA-56,KA,Karnataka,Bidar,Basavakalyan,active,rto-codes repo
+KA-57,KA,Karnataka,Bengaluru Urban,Shanthinagar (Bengaluru),active,rto-codes repo
+KA-58,KA,Karnataka,Belagavi,Belagavi East,active,rto-codes repo
+KA-59,KA,Karnataka,Bengaluru Urban,Chandapura (Bengaluru),active,rto-codes repo
+KA-60,KA,Karnataka,Uttara Kannada,Yellapur,active,rto-codes repo
+KA-61,KA,Karnataka,Udupi,Karkala,active,rto-codes repo
+KA-62,KA,Karnataka,Dakshina Kannada,Sullia,active,rto-codes repo
+KA-63,KA,Karnataka,Dharwad,Hubli,active,rto-codes repo
+KA-64,KA,Karnataka,Tumakuru,Madhugiri,active,rto-codes repo
+KA-65,KA,Karnataka,Uttara Kannada,Dandeli,active,rto-codes repo
+KA-66,KA,Karnataka,Chikkamagaluru,Tarikere,active,rto-codes repo
+KA-67,KA,Karnataka,Chikkaballapura,Chintamani,active,rto-codes repo
+KA-68,KA,Karnataka,Haveri,Ranebennur,active,rto-codes repo
+KA-69,KA,Karnataka,Belagavi,Ramdurg,active,rto-codes repo
+KA-70,KA,Karnataka,Dakshina Kannada,Bantwal,active,rto-codes repo
+KA-71,KA,Karnataka,Belagavi,Athani,active,rto-codes repo
+KL-01,KL,Kerala,Thiruvananthapuram,Thiruvananthapuram,active,rto-codes repo
+KL-02,KL,Kerala,Kollam,Kollam,active,rto-codes repo
+KL-03,KL,Kerala,Pathanamthitta,Pathanamthitta,active,rto-codes repo
+KL-04,KL,Kerala,Alappuzha,Alappuzha,active,rto-codes repo
+KL-05,KL,Kerala,Kottayam,Kottayam,active,rto-codes repo
+KL-06,KL,Kerala,Idukki,Idukki (Painavu),active,rto-codes repo
+KL-07,KL,Kerala,Ernakulam,Ernakulam (Kochi),active,rto-codes repo
+KL-08,KL,Kerala,Thrissur,Thrissur,active,rto-codes repo
+KL-09,KL,Kerala,Palakkad,Palakkad,active,rto-codes repo
+KL-10,KL,Kerala,Malappuram,Malappuram,active,rto-codes repo
+KL-11,KL,Kerala,Kozhikode,Kozhikode,active,rto-codes repo
+KL-12,KL,Kerala,Wayanad,Kalpetta,active,rto-codes repo
+KL-13,KL,Kerala,Kannur,Kannur,active,rto-codes repo
+KL-14,KL,Kerala,Kasaragod,Kasaragod,active,rto-codes repo
+KL-15,KL,Kerala,Thiruvananthapuram,Nationalised Sector (KSRTC) (Thiruvananthapuram),active,rto-codes repo
+KL-16,KL,Kerala,Thiruvananthapuram,Attingal,active,rto-codes repo
+KL-17,KL,Kerala,Ernakulam,Muvattupuzha,active,rto-codes repo
+KL-18,KL,Kerala,Kozhikode,Vadakara,active,rto-codes repo
+KL-19,KL,Kerala,Thiruvananthapuram,Parassala,active,rto-codes repo
+KL-20,KL,Kerala,Thiruvananthapuram,Neyyattinkara,active,rto-codes repo
+KL-21,KL,Kerala,Thiruvananthapuram,Nedumangad,active,rto-codes repo
+KL-22,KL,Kerala,Thiruvananthapuram,Kazhakkoottam,active,rto-codes repo
+KL-23,KL,Kerala,Kollam,Karunagappally,active,rto-codes repo
+KL-24,KL,Kerala,Kollam,Kottarakara,active,rto-codes repo
+KL-25,KL,Kerala,Kollam,Punalur,active,rto-codes repo
+KL-26,KL,Kerala,Pathanamthitta,Adoor,active,rto-codes repo
+KL-27,KL,Kerala,Pathanamthitta,Thiruvalla,active,rto-codes repo
+KL-28,KL,Kerala,Pathanamthitta,Mallappally,active,rto-codes repo
+KL-29,KL,Kerala,Alappuzha,Kayamkulam,active,rto-codes repo
+KL-30,KL,Kerala,Alappuzha,Chengannur,active,rto-codes repo
+KL-31,KL,Kerala,Alappuzha,Mavelikara,active,rto-codes repo
+KL-32,KL,Kerala,Alappuzha,Cherthala,active,rto-codes repo
+KL-33,KL,Kerala,Kottayam,Changanassery,active,rto-codes repo
+KL-34,KL,Kerala,Kottayam,Kanjirappally,active,rto-codes repo
+KL-35,KL,Kerala,Kottayam,Pala,active,rto-codes repo
+KL-36,KL,Kerala,Kottayam,Vaikom,active,rto-codes repo
+KL-37,KL,Kerala,Idukki,Vandiperiyar,active,rto-codes repo
+KL-38,KL,Kerala,Idukki,Thodupuzha,active,rto-codes repo
+KL-39,KL,Kerala,Ernakulam,Thripunithura,active,rto-codes repo
+KL-40,KL,Kerala,Ernakulam,Perumbavoor,active,rto-codes repo
+KL-41,KL,Kerala,Ernakulam,Aluva,active,rto-codes repo
+KL-42,KL,Kerala,Ernakulam,North Paravur,active,rto-codes repo
+KL-43,KL,Kerala,Ernakulam,Mattancherry (Kochi),active,rto-codes repo
+KL-44,KL,Kerala,Ernakulam,Kothamangalam,active,rto-codes repo
+KL-45,KL,Kerala,Thrissur,Irinjalakuda,active,rto-codes repo
+KL-46,KL,Kerala,Thrissur,Guruvayur,active,rto-codes repo
+KL-47,KL,Kerala,Thrissur,Kodungallur,active,rto-codes repo
+KL-48,KL,Kerala,Thrissur,Wadakkancherry,active,rto-codes repo
+KL-49,KL,Kerala,Palakkad,Alathur,active,rto-codes repo
+KL-50,KL,Kerala,Palakkad,Mannarkkad,active,rto-codes repo
+KL-51,KL,Kerala,Palakkad,Ottappalam,active,rto-codes repo
+KL-52,KL,Kerala,Palakkad,Pattambi,active,rto-codes repo
+KL-53,KL,Kerala,Malappuram,Perinthalmanna,active,rto-codes repo
+KL-54,KL,Kerala,Malappuram,Ponnani,active,rto-codes repo
+KL-55,KL,Kerala,Malappuram,Tirur,active,rto-codes repo
+KL-56,KL,Kerala,Kozhikode,Koyilandi,active,rto-codes repo
+KL-57,KL,Kerala,Kozhikode,Koduvally,active,rto-codes repo
+KL-58,KL,Kerala,Kannur,Thalassery,active,rto-codes repo
+KL-59,KL,Kerala,Kannur,Taliparamba,active,rto-codes repo
+KL-60,KL,Kerala,Kasaragod,Kanhangad,active,rto-codes repo
+KL-61,KL,Kerala,Kollam,Kunnathur,active,rto-codes repo
+KL-62,KL,Kerala,Pathanamthitta,Ranni,active,rto-codes repo
+KL-63,KL,Kerala,Ernakulam,Angamaly,active,rto-codes repo
+KL-64,KL,Kerala,Thrissur,Chalakudy,active,rto-codes repo
+KL-65,KL,Kerala,Malappuram,Tirurangadi,active,rto-codes repo
+KL-66,KL,Kerala,Alappuzha,Kuttanad,active,rto-codes repo
+KL-67,KL,Kerala,Kottayam,Uzhavoor,active,rto-codes repo
+KL-68,KL,Kerala,Idukki,Devikulam,active,rto-codes repo
+KL-69,KL,Kerala,Idukki,Udumbanchola (Nedumkandam),active,rto-codes repo
+KL-70,KL,Kerala,Palakkad,Chittur (Chittur-Thathamangalam),active,rto-codes repo
+KL-71,KL,Kerala,Malappuram,Nilambur,active,rto-codes repo
+KL-72,KL,Kerala,Wayanad,Mananthavady,active,rto-codes repo
+KL-73,KL,Kerala,Wayanad,Sulthan Bathery,active,rto-codes repo
+KL-74,KL,Kerala,Thiruvananthapuram,Kattakkada,active,rto-codes repo
+KL-75,KL,Kerala,Thrissur,Thriprayar,active,rto-codes repo
+KL-76,KL,Kerala,Kozhikode,Nanmanda,active,rto-codes repo
+KL-77,KL,Kerala,Kozhikode,Perambra,active,rto-codes repo
+KL-78,KL,Kerala,Kannur,Iritty,active,rto-codes repo
+KL-79,KL,Kerala,Kasaragod,Vellarikundu,active,rto-codes repo
+KL-80,KL,Kerala,Kollam,Pathanapuram,active,rto-codes repo
+KL-81,KL,Kerala,Thiruvananthapuram,Varkala,active,rto-codes repo
+KL-82,KL,Kerala,Kollam,Chadayamangalam,active,rto-codes repo
+KL-83,KL,Kerala,Pathanamthitta,Konni,active,rto-codes repo
+KL-84,KL,Kerala,Malappuram,Kondotty,active,rto-codes repo
+KL-85,KL,Kerala,Kozhikode,Ramanattukara,active,rto-codes repo
+KL-86,KL,Kerala,Kannur,Payyanur,active,rto-codes repo
+LA-01,LA,Ladakh,Kargil,Kargil District,active,rto-codes repo
+LA-02,LA,Ladakh,Leh,Leh,active,rto-codes repo
+LD-01,LD,Lakshadweep,Lakshadweep,Kavaratti,active,rto-codes repo
+LD-02,LD,Lakshadweep,Lakshadweep,Agatti,active,rto-codes repo
+LD-03,LD,Lakshadweep,Lakshadweep,Amini,active,rto-codes repo
+LD-04,LD,Lakshadweep,Lakshadweep,Andrott Island (Androth),active,rto-codes repo
+LD-05,LD,Lakshadweep,Lakshadweep,Kadmat,active,rto-codes repo
+LD-06,LD,Lakshadweep,Lakshadweep,Kiltan,active,rto-codes repo
+LD-07,LD,Lakshadweep,Lakshadweep,Chetlat,active,rto-codes repo
+LD-08,LD,Lakshadweep,Lakshadweep,Kalpeni,active,rto-codes repo
+LD-09,LD,Lakshadweep,Lakshadweep,Minicoy,active,rto-codes repo
+MH-01,MH,Maharashtra,Mumbai City,Mumbai (Central),active,rto-codes repo
+MH-02,MH,Maharashtra,Mumbai Suburban,Mumbai (West),active,rto-codes repo
+MH-03,MH,Maharashtra,Mumbai Suburban,Mumbai (East),active,rto-codes repo
+MH-04,MH,Maharashtra,Thane,Thane,active,rto-codes repo
+MH-05,MH,Maharashtra,Thane,Kalyan,active,rto-codes repo
+MH-06,MH,Maharashtra,Raigad,Pen (Raigad),active,rto-codes repo
+MH-07,MH,Maharashtra,Sindhudurg,Sindhudurg (Sindhudurg Nagari),active,rto-codes repo
+MH-08,MH,Maharashtra,Ratnagiri,Ratnagiri,active,rto-codes repo
+MH-09,MH,Maharashtra,Kolhapur,Kolhapur,active,rto-codes repo
+MH-10,MH,Maharashtra,Sangli,Sangli,active,rto-codes repo
+MH-11,MH,Maharashtra,Satara,Satara,active,rto-codes repo
+MH-12,MH,Maharashtra,Pune,Pune City,active,rto-codes repo
+MH-13,MH,Maharashtra,Solapur,Solapur,active,rto-codes repo
+MH-14,MH,Maharashtra,Pune,Pimpri-Chinchwad,active,rto-codes repo
+MH-15,MH,Maharashtra,Nashik,Nashik,active,rto-codes repo
+MH-16,MH,Maharashtra,Ahmednagar,Ahmednagar,active,rto-codes repo
+MH-17,MH,Maharashtra,Ahmednagar,Shrirampur,active,rto-codes repo
+MH-18,MH,Maharashtra,Dhule,Dhule,active,rto-codes repo
+MH-19,MH,Maharashtra,Jalgaon,Jalgaon,active,rto-codes repo
+MH-20,MH,Maharashtra,Aurangabad,Aurangabad,active,rto-codes repo
+MH-21,MH,Maharashtra,Jalna,Jalna,active,rto-codes repo
+MH-22,MH,Maharashtra,Parbhani,Parbhani,active,rto-codes repo
+MH-23,MH,Maharashtra,Beed,Beed,active,rto-codes repo
+MH-24,MH,Maharashtra,Latur,Latur,active,rto-codes repo
+MH-25,MH,Maharashtra,Osmanabad,Osmanabad (Dharashiv),active,rto-codes repo
+MH-26,MH,Maharashtra,Nanded,Nanded,active,rto-codes repo
+MH-27,MH,Maharashtra,Amravati,Amravati,active,rto-codes repo
+MH-28,MH,Maharashtra,Buldhana,Buldhana,active,rto-codes repo
+MH-29,MH,Maharashtra,Yavatmal,Yavatmal,active,rto-codes repo
+MH-30,MH,Maharashtra,Akola,Akola,active,rto-codes repo
+MH-31,MH,Maharashtra,Nagpur,Nagpur Urban,active,rto-codes repo
+MH-32,MH,Maharashtra,Wardha,Wardha,active,rto-codes repo
+MH-33,MH,Maharashtra,Gadchiroli,Gadchiroli,active,rto-codes repo
+MH-34,MH,Maharashtra,Chandrapur,Chandrapur,active,rto-codes repo
+MH-35,MH,Maharashtra,Gondia,Gondia,active,rto-codes repo
+MH-36,MH,Maharashtra,Bhandara,Bhandara,active,rto-codes repo
+MH-37,MH,Maharashtra,Washim,Washim,active,rto-codes repo
+MH-38,MH,Maharashtra,Hingoli,Hingoli,active,rto-codes repo
+MH-39,MH,Maharashtra,Nandurbar,Nandurbar,active,rto-codes repo
+MH-40,MH,Maharashtra,Nagpur,Nagpur Rural,active,rto-codes repo
+MH-41,MH,Maharashtra,Nashik,Malegaon,active,rto-codes repo
+MH-42,MH,Maharashtra,Pune,Baramati,active,rto-codes repo
+MH-43,MH,Maharashtra,Thane,Navi Mumbai (Vashi),active,rto-codes repo
+MH-44,MH,Maharashtra,Beed,Ambajogai,active,rto-codes repo
+MH-45,MH,Maharashtra,Solapur,Akluj,active,rto-codes repo
+MH-46,MH,Maharashtra,Raigad,Panvel,active,rto-codes repo
+MH-47,MH,Maharashtra,Mumbai Suburban,Mumbai North,active,rto-codes repo
+MH-48,MH,Maharashtra,Palghar,Vasai-Virar,active,rto-codes repo
+MH-49,MH,Maharashtra,Nagpur,Nagpur East,active,rto-codes repo
+MH-50,MH,Maharashtra,Satara,Karad,active,rto-codes repo
+MH-51,MH,Maharashtra,Kolhapur,Ichalkaranji,active,rto-codes repo
+MH-52,MH,Maharashtra,Jalgaon,Chalisgaon,active,rto-codes repo
+MH-53,MH,Maharashtra,Pune,Pune South,active,rto-codes repo
+MH-54,MH,Maharashtra,Jalgaon,Bhadgaon,active,rto-codes repo
+MH-55,MH,Maharashtra,Latur,Udgir,active,rto-codes repo
+MH-56,MH,Maharashtra,Mumbai,Thane Rural,active,HDFC Location Master
+ML-01,ML,Meghalaya,East Khasi Hills,Shillong (Meghalaya Government Vehicles),active,rto-codes repo
+ML-02,ML,Meghalaya,East Khasi Hills,Meghalaya Police Department (Shillong),active,rto-codes repo
+ML-03,ML,Meghalaya,East Khasi Hills,Meghalaya Transport Corporation (Shillong),active,rto-codes repo
+ML-04,ML,Meghalaya,West Jaintia Hills,Jowai,active,rto-codes repo
+ML-05,ML,Meghalaya,East Khasi Hills,Shillong,active,rto-codes repo
+ML-06,ML,Meghalaya,West Khasi Hills,West Khasi Hills (Nongstoin),active,rto-codes repo
+ML-07,ML,Meghalaya,East Garo Hills,Williamnagar,active,rto-codes repo
+ML-08,ML,Meghalaya,West Garo Hills,West Garo Hills (Tura),active,rto-codes repo
+ML-09,ML,Meghalaya,South Garo Hills,Baghmara,active,rto-codes repo
+ML-10,ML,Meghalaya,Ri-Bhoi,Nongpoh,active,rto-codes repo
+ML-11,ML,Meghalaya,East Jaintia Hills,Khliehriat,active,rto-codes repo
+ML-12,ML,Meghalaya,South West Khasi Hills,Mawkyrwat,active,rto-codes repo
+ML-13,ML,Meghalaya,North Garo Hills,Resubelpara,active,rto-codes repo
+MN-01,MN,Manipur,Imphal West,Imphal West,active,rto-codes repo
+MN-02,MN,Manipur,Churachandpur,Churachandpur,active,rto-codes repo
+MN-03,MN,Manipur,Kangpokpi,Kangpokpi,active,rto-codes repo
+MN-04,MN,Manipur,Thoubal,Thoubal,active,rto-codes repo
+MN-05,MN,Manipur,Bishnupur,Bishnupur,active,rto-codes repo
+MN-06,MN,Manipur,Imphal East,Imphal East,active,rto-codes repo
+MN-07,MN,Manipur,Ukhrul,Ukhrul,active,rto-codes repo
+MN-08,MN,Manipur,Senapati,Senapati,active,rto-codes repo
+MN-09,MN,Manipur,Chandel,Chandel,active,rto-codes repo
+MN-10,MN,Manipur,Jiribam,Jiribam,active,rto-codes repo
+MN-11,MN,Manipur,Kakching,Kakching,active,rto-codes repo
+MN-12,MN,Manipur,Tengnoupal,Tengnoupal,active,rto-codes repo
+MN-13,MN,Manipur,Kamjong,Kamjong,active,rto-codes repo
+MN-14,MN,Manipur,Noney,Noney,active,rto-codes repo
+MN-15,MN,Manipur,Pherzawl,Pherzawl,active,rto-codes repo
+MN-16,MN,Manipur,Kakching,Kakching,active,rto-codes repo
+MP-01,MP,Madhya Pradesh,Bhopal,Governor of Madhya Pradesh (Bhopal),active,rto-codes repo
+MP-02,MP,Madhya Pradesh,Bhopal,Madhya Pradesh State Government (Bhopal),active,rto-codes repo
+MP-03,MP,Madhya Pradesh,Bhopal,Madhya Pradesh Police (Bhopal),active,rto-codes repo
+MP-04,MP,Madhya Pradesh,Bhopal,Bhopal,active,rto-codes repo
+MP-05,MP,Madhya Pradesh,Narmadapuram,Narmadapuram,active,rto-codes repo
+MP-06,MP,Madhya Pradesh,Morena,Morena,active,rto-codes repo
+MP-07,MP,Madhya Pradesh,Gwalior,Gwalior,active,rto-codes repo
+MP-08,MP,Madhya Pradesh,Guna,Guna,active,rto-codes repo
+MP-09,MP,Madhya Pradesh,Indore,Indore,active,rto-codes repo
+MP-10,MP,Madhya Pradesh,Khargone,Khargone,active,rto-codes repo
+MP-11,MP,Madhya Pradesh,Dhar,Dhar,active,rto-codes repo
+MP-12,MP,Madhya Pradesh,Khandwa,Khandwa,active,rto-codes repo
+MP-13,MP,Madhya Pradesh,Ujjain,Ujjain,active,rto-codes repo
+MP-14,MP,Madhya Pradesh,Mandsaur,Mandsaur,active,rto-codes repo
+MP-15,MP,Madhya Pradesh,Sagar,Sagar,active,rto-codes repo
+MP-16,MP,Madhya Pradesh,Chhatarpur,Chhatarpur,active,rto-codes repo
+MP-17,MP,Madhya Pradesh,Rewa,Rewa,active,rto-codes repo
+MP-18,MP,Madhya Pradesh,Shahdol,Shahdol,active,rto-codes repo
+MP-19,MP,Madhya Pradesh,Satna,Satna,active,rto-codes repo
+MP-20,MP,Madhya Pradesh,Jabalpur,Jabalpur,active,rto-codes repo
+MP-21,MP,Madhya Pradesh,Katni,Katni,active,rto-codes repo
+MP-22,MP,Madhya Pradesh,Seoni,Seoni,active,rto-codes repo
+MP-28,MP,Madhya Pradesh,Chhindwara,Chhindwara,active,policybazaar
+MP-30,MP,Madhya Pradesh,Bhind,Bhind,active,policybazaar
+MP-31,MP,Madhya Pradesh,Sheopur,Sheopur,active,policybazaar
+MP-32,MP,Madhya Pradesh,Datia,Datia,active,policybazaar
+MP-33,MP,Madhya Pradesh,Shivpuri,Shivpuri,active,policybazaar
+MP-34,MP,Madhya Pradesh,Damoh,Damoh,active,policybazaar
+MP-35,MP,Madhya Pradesh,Panna,Panna,active,policybazaar
+MP-36,MP,Madhya Pradesh,Tikamgarh,Tikamgarh,active,policybazaar
+MP-37,MP,Madhya Pradesh,Sehore,Sehore,active,policybazaar
+MP-38,MP,Madhya Pradesh,Raisen,Raisen,active,policybazaar
+MP-39,MP,Madhya Pradesh,Rajgarh,Rajgarh,active,policybazaar
+MP-40,MP,Madhya Pradesh,Vidisha,Vidisha,active,policybazaar
+MP-41,MP,Madhya Pradesh,Dewas,Dewas,active,policybazaar
+MP-42,MP,Madhya Pradesh,Shajapur,Shajapur,active,policybazaar
+MP-43,MP,Madhya Pradesh,Ratlam,Ratlam,active,policybazaar
+MP-44,MP,Madhya Pradesh,Neemuch,Neemuch,active,policybazaar
+MP-45,MP,Madhya Pradesh,Jhabua,Jhabua,active,policybazaar
+MP-46,MP,Madhya Pradesh,Barwani,Badwani,active,policybazaar
+MP-47,MP,Madhya Pradesh,Harda,Harda,active,policybazaar
+MP-48,MP,Madhya Pradesh,Betul,Betul,active,policybazaar
+MP-49,MP,Madhya Pradesh,Narsinghpur,Narsinghpur,active,policybazaar
+MP-50,MP,Madhya Pradesh,Balaghat,Balaghat,active,policybazaar
+MP-51,MP,Madhya Pradesh,Mandla,Mandla,active,policybazaar
+MP-52,MP,Madhya Pradesh,Dindori,Dindori,active,policybazaar
+MP-53,MP,Madhya Pradesh,Sidhi,Sidhi,active,policybazaar
+MP-54,MP,Madhya Pradesh,Umaria,Umaria,active,policybazaar
+MP-65,MP,Madhya Pradesh,Anuppur,Anuppur,active,policybazaar
+MP-66,MP,Madhya Pradesh,Singrauli,Singrauli,active,policybazaar
+MP-67,MP,Madhya Pradesh,Ashok Nagar,Ashok Nagar,active,policybazaar
+MP-68,MP,Madhya Pradesh,Burhanpur,Burhanpur,active,policybazaar
+MP-69,MP,Madhya Pradesh,Alirajpur,Alirajpur,active,policybazaar
+MP-70,MP,Madhya Pradesh,Agar Malwa,Agar-Malwa,active,policybazaar
+MZ-01,MZ,Mizoram,Aizawl,Aizawl (Urban/Main),active,rto-codes repo
+MZ-02,MZ,Mizoram,Lunglei,Lunglei,active,rto-codes repo
+MZ-03,MZ,Mizoram,Siaha,Siaha,active,rto-codes repo
+MZ-04,MZ,Mizoram,Champhai,Champhai,active,rto-codes repo
+MZ-05,MZ,Mizoram,Kolasib,Kolasib,active,rto-codes repo
+MZ-06,MZ,Mizoram,Serchhip,Serchhip,active,rto-codes repo
+MZ-07,MZ,Mizoram,Lawngtlai,Lawngtlai,active,rto-codes repo
+MZ-08,MZ,Mizoram,Mamit,Mamit,active,rto-codes repo
+MZ-09,MZ,Mizoram,Saitual,Saitual,active,rto-codes repo
+MZ-10,MZ,Mizoram,Khawzawl,Khawzawl,active,rto-codes repo
+MZ-11,MZ,Mizoram,Hnahthial,Hnahthial,active,rto-codes repo
+NL-01,NL,Nagaland,Kohima,Kohima,active,rto-codes repo
+NL-02,NL,Nagaland,Mokokchung,Mokokchung,active,rto-codes repo
+NL-03,NL,Nagaland,Tuensang,Tuensang,active,rto-codes repo
+NL-04,NL,Nagaland,Mon,Mon,active,rto-codes repo
+NL-05,NL,Nagaland,Wokha,Wokha,active,rto-codes repo
+NL-06,NL,Nagaland,Zunheboto,Zunheboto,active,rto-codes repo
+NL-07,NL,Nagaland,Dimapur,Dimapur,active,rto-codes repo
+NL-08,NL,Nagaland,Phek,Phek,active,rto-codes repo
+NL-10,NL,Nagaland,Kohima,Kohima (Government Non-Transport Vehicles),active,rto-codes repo
+NL-11,NL,Nagaland,Peren,Peren,active,rto-codes repo
+OD-01,OD,Odisha,Balasore,Balasore,active,rto-codes repo
+OD-02,OD,Odisha,Khurda,Bhubaneswar-I,active,rto-codes repo
+OD-03,OD,Odisha,Balangir,Balangir,active,rto-codes repo
+OD-04,OD,Odisha,Jajpur,Chandikhole,active,rto-codes repo
+OD-05,OD,Odisha,Cuttack,Cuttack,active,rto-codes repo
+OD-06,OD,Odisha,Dhenkanal,Dhenkanal,active,rto-codes repo
+OD-07,OD,Odisha,Ganjam,Ganjam (Chatrapur),active,rto-codes repo
+OD-08,OD,Odisha,Kalahandi,Kalahandi (Bhawanipatna),active,rto-codes repo
+OD-09,OD,Odisha,Keonjhar,Keonjhar,active,rto-codes repo
+OD-10,OD,Odisha,Koraput,Koraput,active,rto-codes repo
+OD-11,OD,Odisha,Mayurbhanj,Mayurbhanj (Baripada),active,rto-codes repo
+OD-12,OD,Odisha,Kandhamal,Phulbani,active,rto-codes repo
+OD-13,OD,Odisha,Puri,Puri,active,rto-codes repo
+OD-14,OD,Odisha,Sundargarh,Rourkela,active,rto-codes repo
+OD-15,OD,Odisha,Sambalpur,Sambalpur,active,rto-codes repo
+OD-16,OD,Odisha,Sundargarh,Sundargarh,active,rto-codes repo
+OD-17,OD,Odisha,Bargarh,Bargarh,active,rto-codes repo
+OD-18,OD,Odisha,Rayagada,Rayagada,active,rto-codes repo
+OD-19,OD,Odisha,Angul,Angul,active,rto-codes repo
+OD-20,OD,Odisha,Gajapati,Gajapati (Paralakhemundi),active,rto-codes repo
+OD-21,OD,Odisha,Jagatsinghpur,Jagatsinghpur,active,rto-codes repo
+OD-22,OD,Odisha,Bhadrak,Bhadrak,active,rto-codes repo
+OD-23,OD,Odisha,Jharsuguda,Jharsuguda,active,rto-codes repo
+OD-24,OD,Odisha,Nabarangpur,Nabarangpur,active,rto-codes repo
+OD-25,OD,Odisha,Nayagarh,Nayagarh,active,rto-codes repo
+OD-26,OD,Odisha,Nuapada,Nuapada,active,rto-codes repo
+OD-27,OD,Odisha,Boudh,Boudh,active,rto-codes repo
+OD-28,OD,Odisha,Deogarh,Deogarh,active,rto-codes repo
+OD-29,OD,Odisha,Kendrapara,Kendrapara,active,rto-codes repo
+OD-30,OD,Odisha,Malkangiri,Malkangiri,active,rto-codes repo
+OD-31,OD,Odisha,Subarnapur,Subarnapur (Sonepur),active,rto-codes repo
+OD-32,OD,Odisha,Ganjam,Bhanjanagar,active,rto-codes repo
+OD-33,OD,Odisha,Khurda,Bhubaneswar-II,active,rto-codes repo
+OD-34,OD,Odisha,Jajpur,Jajpur (Jajpur Town),active,rto-codes repo
+OD-35,OD,Odisha,Angul,Talcher,active,rto-codes repo
+PB-01,PB,Punjab,Chandigarh,"State Transport Authority, Punjab (Chandigarh)",active,rto-codes repo
+PB-02,PB,Punjab,Amritsar,Amritsar,active,rto-codes repo
+PB-03,PB,Punjab,Bathinda,Bathinda,active,rto-codes repo
+PB-04,PB,Punjab,Faridkot,Faridkot,active,rto-codes repo
+PB-05,PB,Punjab,Ferozepur,Ferozepur,active,rto-codes repo
+PB-06,PB,Punjab,Gurdaspur,Gurdaspur,active,rto-codes repo
+PB-07,PB,Punjab,Hoshiarpur,Hoshiarpur,active,rto-codes repo
+PB-08,PB,Punjab,Jalandhar,Jalandhar,active,rto-codes repo
+PB-09,PB,Punjab,Kapurthala,Kapurthala,active,rto-codes repo
+PB-10,PB,Punjab,Ludhiana,Ludhiana,active,rto-codes repo
+PB-11,PB,Punjab,Patiala,Patiala,active,rto-codes repo
+PB-12,PB,Punjab,Rupnagar,Ropar (Rupnagar),active,rto-codes repo
+PB-13,PB,Punjab,Sangrur,Sangrur,active,rto-codes repo
+PB-14,PB,Punjab,Amritsar,Ajnala,active,rto-codes repo
+PB-15,PB,Punjab,Fazilka,Abohar,active,rto-codes repo
+PB-16,PB,Punjab,Rupnagar,Anandpur Sahib,active,rto-codes repo
+PB-17,PB,Punjab,Amritsar,Baba Bakala (Baba Bakala Sahib),active,rto-codes repo
+PB-18,PB,Punjab,Gurdaspur,Batala,active,rto-codes repo
+PB-19,PB,Punjab,Barnala,Barnala,active,rto-codes repo
+PB-20,PB,Punjab,Shahid Bhagat Singh Nagar,Balachaur,active,rto-codes repo
+PB-21,PB,Punjab,Hoshiarpur,Dasuya,active,rto-codes repo
+PB-22,PB,Punjab,Fazilka,Fazilka,active,rto-codes repo
+PB-23,PB,Punjab,Fatehgarh Sahib,Fatehgarh Sahib,active,rto-codes repo
+PB-24,PB,Punjab,Hoshiarpur,Garhshankar,active,rto-codes repo
+PB-25,PB,Punjab,Ludhiana,Jagraon,active,rto-codes repo
+PB-26,PB,Punjab,Ludhiana,Khanna,active,rto-codes repo
+PB-27,PB,Punjab,Sahibzada Ajit Singh Nagar,Kharar,active,rto-codes repo
+PB-28,PB,Punjab,Malerkotla,Malerkotla,active,rto-codes repo
+PB-29,PB,Punjab,Moga,Moga,active,rto-codes repo
+PB-30,PB,Punjab,Muktsar,Sri Muktsar Sahib,active,rto-codes repo
+PB-31,PB,Punjab,Mansa,Mansa,active,rto-codes repo
+PB-32,PB,Punjab,Shahid Bhagat Singh Nagar,Nawanshahr,active,rto-codes repo
+PB-33,PB,Punjab,Jalandhar,Nakodar,active,rto-codes repo
+PB-34,PB,Punjab,Patiala,Nabha,active,rto-codes repo
+PB-35,PB,Punjab,Pathankot,Pathankot,active,rto-codes repo
+PB-36,PB,Punjab,Kapurthala,Phagwara,active,rto-codes repo
+PB-37,PB,Punjab,Jalandhar,Phillour,active,rto-codes repo
+PB-38,PB,Punjab,Tarn Taran,Patti,active,rto-codes repo
+PB-39,PB,Punjab,Patiala,Rajpura,active,rto-codes repo
+PB-40,PB,Punjab,Bathinda,Rampura Phul,active,rto-codes repo
+PB-41,PB,Punjab,Kapurthala,Sultanpur Lodhi,active,rto-codes repo
+PB-42,PB,Punjab,Patiala,Samana,active,rto-codes repo
+PB-43,PB,Punjab,Ludhiana,Samrala,active,rto-codes repo
+PB-44,PB,Punjab,Sangrur,Sunam,active,rto-codes repo
+PB-45,PB,Punjab,Bathinda,Talwandi Sabo,active,rto-codes repo
+PB-46,PB,Punjab,Tarn Taran,Tarn Taran (Tarn Taran Sahib),active,rto-codes repo
+PB-47,PB,Punjab,Ferozepur,Zira,active,rto-codes repo
+PB-48,PB,Punjab,Fatehgarh Sahib,Amloh,active,rto-codes repo
+PB-49,PB,Punjab,Fatehgarh Sahib,Khamanon,active,rto-codes repo
+PB-50,PB,Punjab,Mansa,Budhlada,active,rto-codes repo
+PB-51,PB,Punjab,Mansa,Sardulgarh,active,rto-codes repo
+PB-52,PB,Punjab,Fatehgarh Sahib,Bassi Pathana,active,rto-codes repo
+PB-53,PB,Punjab,Sri Muktsar Sahib,Malout,active,rto-codes repo
+PB-54,PB,Punjab,Hoshiarpur,Mukerian,active,rto-codes repo
+PB-55,PB,Punjab,Ludhiana,Payal,active,rto-codes repo
+PB-56,PB,Punjab,Ludhiana,Raikot,active,rto-codes repo
+PB-57,PB,Punjab,Kapurthala,Bhulath,active,rto-codes repo
+PB-58,PB,Punjab,Gurdaspur,Dera Baba Nanak,active,rto-codes repo
+PB-59,PB,Punjab,Sangrur,Dhuri,active,rto-codes repo
+PB-60,PB,Punjab,Sri Muktsar Sahib,Gidderbaha,active,rto-codes repo
+PB-61,PB,Punjab,Fazilka,Jalalabad (West),active,rto-codes repo
+PB-62,PB,Punjab,Faridkot,Jaitu,active,rto-codes repo
+PB-63,PB,Punjab,Tarn Taran,Khadoor Sahib,active,rto-codes repo
+PB-64,PB,Punjab,Sangrur,Moonak,active,rto-codes repo
+PB-65,PB,Punjab,Mohali,SAS Nagar (Mohali),active,rto-codes repo
+PB-66,PB,Punjab,Moga,Nihal Singh Wala,active,rto-codes repo
+PB-67,PB,Punjab,Jalandhar,Shahkot,active,rto-codes repo
+PB-68,PB,Punjab,Pathankot,Dhar Kalan,active,rto-codes repo
+PB-69,PB,Punjab,Moga,Bagha Purana,active,rto-codes repo
+PB-70,PB,Punjab,SAS Nagar,Dera Bassi,active,rto-codes repo
+PB-71,PB,Punjab,Rupnagar,Chamkaur Sahib,active,rto-codes repo
+PB-72,PB,Punjab,Patiala,Patran,active,rto-codes repo
+PB-73,PB,Punjab,Barnala,Tappa Mandi,active,rto-codes repo
+PB-74,PB,Punjab,Rupnagar,Nangal,active,rto-codes repo
+PB-75,PB,Punjab,Sangrur,Lehragaga,active,rto-codes repo
+PB-76,PB,Punjab,Moga,Dharamkot,active,rto-codes repo
+PB-77,PB,Punjab,Ferozepur,Guru Har Sahai,active,rto-codes repo
+PB-78,PB,Punjab,Shahid Bhagat Singh Nagar,Banga,active,rto-codes repo
+PB-79,PB,Punjab,Faridkot,Kotkapura,active,rto-codes repo
+PB-80,PB,Punjab,Bathinda,Maur Mandi,active,rto-codes repo
+PB-81,PB,Punjab,Amritsar,Majitha,active,rto-codes repo
+PB-82,PB,Punjab,Malerkotla,Ahmedgarh,active,rto-codes repo
+PB-83,PB,Punjab,Patiala,Dudhan Sadhan,active,rto-codes repo
+PB-84,PB,Punjab,Sangrur,Bhawanigarh,active,rto-codes repo
+PB-85,PB,Punjab,Gurdaspur,Kalanaur,active,rto-codes repo
+PB-86,PB,Punjab,Sangrur,Dirba,active,rto-codes repo
+PB-87,PB,Punjab,Rupnagar,Morinda,active,rto-codes repo
+PB-88,PB,Punjab,Tarn Taran,Bhikhiwind,active,rto-codes repo
+PB-89,PB,Punjab,Amritsar,Amritsar-2,active,rto-codes repo
+PB-90,PB,Punjab,Jalandhar,Jalandhar-2,active,rto-codes repo
+PB-91,PB,Punjab,Ludhiana,Ludhiana,active,policybazaar
+PB-92,PB,Punjab,Malerkotla,Amargarh,active,rto-codes repo
+PB-93,PB,Punjab,Amritsar,Lopoke,active,rto-codes repo
+PB-99,PB,Punjab,Gurdaspur,Dinanagar,active,rto-codes repo
+PY-01,PY,Puducherry,Puducherry,Puducherry,active,rto-codes repo
+PY-02,PY,Puducherry,Karaikal,Karaikal,active,rto-codes repo
+PY-03,PY,Puducherry,Mahe,Mahe,active,rto-codes repo
+PY-04,PY,Puducherry,Yanam,Yanam,active,rto-codes repo
+PY-05,PY,Puducherry,Puducherry,Oulgaret (Puducherry),active,rto-codes repo
+RJ-01,RJ,Rajasthan,Ajmer,Ajmer,active,policybazaar
+RJ-02,RJ,Rajasthan,Alwar,Alwar,active,policybazaar
+RJ-03,RJ,Rajasthan,Banswara,Banswara,active,policybazaar
+RJ-04,RJ,Rajasthan,Barmer,Barmer,active,policybazaar
+RJ-05,RJ,Rajasthan,Bharatpur,Bharatpur,active,policybazaar
+RJ-06,RJ,Rajasthan,Bhilwara,Bhilwara,active,policybazaar
+RJ-07,RJ,Rajasthan,Bikaner,Bikaner,active,policybazaar
+RJ-08,RJ,Rajasthan,Bundi,Bundi,active,policybazaar
+RJ-09,RJ,Rajasthan,Chittorgarh,Chittorgarh,active,policybazaar
+RJ-10,RJ,Rajasthan,Churu,Churu,active,policybazaar
+RJ-11,RJ,Rajasthan,Dholpur,Dholpur,active,policybazaar
+RJ-12,RJ,Rajasthan,Dungarpur,Dungarpur,active,policybazaar
+RJ-13,RJ,Rajasthan,Sri Ganganagar,Ganganagar,active,policybazaar
+RJ-14,RJ,Rajasthan,Jaipur,Jaipur,active,policybazaar
+RJ-15,RJ,Rajasthan,Jaisalmer,Jaisalmer,active,policybazaar
+RJ-16,RJ,Rajasthan,Jalore,Jalore,active,policybazaar
+RJ-17,RJ,Rajasthan,Jhalawar,Jhalawar,active,policybazaar
+RJ-18,RJ,Rajasthan,Jhunjhunu,Jhunjhunu,active,policybazaar
+RJ-19,RJ,Rajasthan,Jodhpur,Jodhpur,active,policybazaar
+RJ-20,RJ,Rajasthan,Kota,Kota,active,policybazaar
+RJ-21,RJ,Rajasthan,Nagaur,Nagaur,active,policybazaar
+RJ-22,RJ,Rajasthan,Pali,Pali,active,policybazaar
+RJ-23,RJ,Rajasthan,Sikar,Sikar,active,policybazaar
+RJ-24,RJ,Rajasthan,Sirohi,Sirohi,active,policybazaar
+RJ-25,RJ,Rajasthan,Sawai Madhopur,Sawai Madhopur,active,policybazaar
+RJ-26,RJ,Rajasthan,Tonk,Tonk,active,policybazaar
+RJ-27,RJ,Rajasthan,Udaipur,Udaipur,active,policybazaar
+RJ-28,RJ,Rajasthan,Baran,Baran,active,policybazaar
+RJ-29,RJ,Rajasthan,Dausa,Dausa,active,policybazaar
+RJ-30,RJ,Rajasthan,Rajsamand,Rajsamand,active,policybazaar
+RJ-31,RJ,Rajasthan,Hanumangarh,Hanumangarh,active,policybazaar
+RJ-32,RJ,Rajasthan,Kotputli-Behror,Kotputli,active,policybazaar
+RJ-33,RJ,Rajasthan,Kota,Ramganj Mandi,active,policybazaar
+RJ-34,RJ,Rajasthan,Karauli,Karauli,active,policybazaar
+RJ-35,RJ,Rajasthan,Pratapgarh,Pratapgarh,active,policybazaar
+RJ-36,RJ,Rajasthan,Beawar,Beawar,active,policybazaar
+RJ-37,RJ,Rajasthan,Didwana-Kuchaman,Didwana,active,policybazaar
+RJ-38,RJ,Rajasthan,Chittorgarh,Chittorgarh,active,policybazaar
+RJ-39,RJ,Rajasthan,Balotra,Balotra,active,policybazaar
+RJ-40,RJ,Rajasthan,Khairthal-Tijara,Bhiwadi,active,policybazaar
+RJ-41,RJ,Rajasthan,Jaipur,Chomu,active,policybazaar
+RJ-42,RJ,Rajasthan,Ajmer,Kishangarh,active,policybazaar
+RJ-43,RJ,Rajasthan,Phalodi,Phalodi,active,policybazaar
+RJ-44,RJ,Rajasthan,Churu,Sujangarh,active,policybazaar
+RJ-45,RJ,Rajasthan,Jaipur,Jaipur North,active,policybazaar
+RJ-46,RJ,Rajasthan,Jalore,Bhinmal,active,policybazaar
+RJ-47,RJ,Rajasthan,Jaipur,Dudu,active,policybazaar
+RJ-48,RJ,Rajasthan,Ajmer,Kekri,active,policybazaar
+RJ-49,RJ,Rajasthan,Hanumangarh,Nohar,active,policybazaar
+RJ-50,RJ,Rajasthan,Bikaner,Nokha,active,policybazaar
+RJ-51,RJ,Rajasthan,Bhilwara,Shahpura,active,policybazaar
+RJ-52,RJ,Rajasthan,Jaipur,Shahpura,active,policybazaar
+RJ-53,RJ,Rajasthan,Jhunjhunu,Khetri,active,policybazaar
+RJ-54,RJ,Rajasthan,Jodhpur,Pipar,active,policybazaar
+RJ-55,RJ,Rajasthan,Jaisalmer,Pokhran,active,policybazaar
+RJ-56,RJ,Rajasthan,Sri Ganganagar,Sadulshahar,active,policybazaar
+RJ-57,RJ,Rajasthan,Pali,Sumerpur,active,policybazaar
+RJ-58,RJ,Rajasthan,Salumbar,Salumber,active,policybazaar
+RJ-59,RJ,Rajasthan,Jaipur,Shahpura,active,HDFC Location Master
+RJ-60,RJ,Rajasthan,Jaipur,Jaipur,active,policybazaar
+SK-01,SK,Sikkim,Gangtok (East Sikkim),Gangtok,active,policybazaar
+SK-02,SK,Sikkim,Gangtok (East Sikkim),Gangtok,active,policybazaar
+SK-03,SK,Sikkim,Mangan (North Sikkim),North Sikkim,active,policybazaar
+SK-04,SK,Sikkim,Gangtok (East Sikkim),Gangtok,active,policybazaar
+SK-05,SK,Sikkim,Gangtok (East Sikkim),Gangtok,active,policybazaar
+SK-06,SK,Sikkim,Gangtok (East Sikkim),Gangtok,active,policybazaar
+SK-07,SK,Sikkim,,Sikkim,active,policybazaar
+SK-08,SK,Sikkim,Gangtok (East Sikkim),Singtam,active,policybazaar
+TG-01,TS,Telangana,Adilabad,Adilabad,active,policybazaar
+TG-02,TS,Telangana,Karimnagar,Karimnagar / Huzurabad,active,policybazaar
+TG-03,TS,Telangana,Hanumakonda,Hanumakonda,active,policybazaar
+TG-04,TS,Telangana,Khammam,Khammam / Sattupalli / Wyra,active,policybazaar
+TG-05,TS,Telangana,Nalgonda,Miryalaguda / Nalgonda,active,policybazaar
+TG-06,TS,Telangana,Mahabubnagar,Mahaboobnagar,active,policybazaar
+TG-07,TS,Telangana,Rangareddy,Rangareddy / Ibrahimpatnam / Shadnagar,active,policybazaar
+TG-08,TS,Telangana,Medchal-Malkajgiri,Kukatpally / Medchal / Uppal,active,policybazaar
+TG-09,TS,Telangana,Hyderabad,Hyderabad Khairtabad,active,HDFC Location Master
+TG-10,TS,Telangana,Hyderabad,Hyderabad-Nz,active,policybazaar
+TG-11,TS,Telangana,Hyderabad,Hyderabad Malakpet,active,HDFC Location Master
+TG-12,TS,Telangana,Hyderabad,Hyderabad-Sz,active,policybazaar
+TG-13,TS,Telangana,Hyderabad,Hyderabad Mehidipatnam,active,HDFC Location Master
+TG-14,TS,Telangana,Hyderabad,Hyderabad,active,HDFC Location Master
+TG-15,TS,Telangana,Sangareddy,Patancheruvu / Sangareddy / Zahirabad,active,policybazaar
+TG-16,TS,Telangana,Nizamabad,Bhodan / Nizamabad / Armoor,active,policybazaar
+TG-17,TS,Telangana,Kamareddy,Kamareddy,active,policybazaar
+TG-18,TS,Telangana,Nirmal,Nirmal,active,policybazaar
+TG-19,TS,Telangana,Mancherial,Mancherial,active,policybazaar
+TG-20,TS,Telangana,Kumuram Bheem Asifabad,Komrambheem,active,policybazaar
+TG-21,TS,Telangana,Jagtial,Jagityal / Korutla,active,policybazaar
+TG-22,TS,Telangana,Peddapalli,Peddapalli / Ramagundam,active,policybazaar
+TG-23,TS,Telangana,Rajanna Sircilla,Rajanna,active,policybazaar
+TG-24,TS,Telangana,Warangal,Warangal,active,policybazaar
+TG-25,TS,Telangana,Jayashankar Bhupalpally,Jayashankar,active,policybazaar
+TG-26,TS,Telangana,Mahabubabad,Mahabubabad,active,policybazaar
+TG-27,TS,Telangana,Jangaon,Jangoan,active,policybazaar
+TG-28,TS,Telangana,Bhadradri Kothagudem,Bhadrachalam / Bhadradri,active,policybazaar
+TG-29,TS,Telangana,Suryapet,Kodad / Suryapet,active,policybazaar
+TG-30,TS,Telangana,Yadadri Bhuvanagiri,Yadadri,active,policybazaar
+TG-31,TS,Telangana,Nagarkurnool,Kalwakurthy / Nagarkurnool,active,policybazaar
+TG-32,TS,Telangana,Wanaparthy,Pebbair / Wanaparthy,active,policybazaar
+TG-33,TS,Telangana,Jogulamba Gadwal,Jogulamba,active,policybazaar
+TG-34,TS,Telangana,Vikarabad,Pargi / Vikarabad,active,policybazaar
+TG-35,TS,Telangana,Medak,Medak,active,policybazaar
+TG-36,TS,Telangana,Siddipet,Siddipet,active,policybazaar
+TG-37,TS,Telangana,Mulugu,Mulugu,active,policybazaar
+TG-38,TS,Telangana,Narayanpet,Narayanpet,active,policybazaar
+TN-01,TN,Tamil Nadu,Chennai,Chennai (Central),active,policybazaar; groww
+TN-02,TN,Tamil Nadu,Chennai,Chennai (North West),active,policybazaar; groww
+TN-03,TN,Tamil Nadu,Chennai,Chennai (North East),active,policybazaar; groww
+TN-04,TN,Tamil Nadu,Chennai,Chennai (East),active,policybazaar; groww
+TN-05,TN,Tamil Nadu,Chennai,Chennai (North),active,policybazaar; groww
+TN-06,TN,Tamil Nadu,Chennai,Chennai (South-East),active,policybazaar; groww
+TN-07,TN,Tamil Nadu,Chennai,Chennai (South),active,policybazaar; groww
+TN-09,TN,Tamil Nadu,Chennai,Chennai (West),active,policybazaar; groww
+TN-10,TN,Tamil Nadu,Chennai,Chennai (South-West),active,policybazaar; groww
+TN-11,TN,Tamil Nadu,Chengalpattu,Tambaram,active,policybazaar; groww
+TN-12,TN,Tamil Nadu,Tiruvallur,Paruthipattu (Poonamallee),active,policybazaar; groww
+TN-13,TN,Tamil Nadu,Chennai,Ambattur,active,policybazaar; groww
+TN-14,TN,Tamil Nadu,Chennai,Sholinganallur,active,policybazaar; groww
+TN-15,TN,Tamil Nadu,Kallakurichi,Ulundurpet,active,policybazaar; groww
+TN-15M,TN,Tamil Nadu,Kallakurichi,Kallakurichi,active,policybazaar; groww
+TN-16,TN,Tamil Nadu,Viluppuram,Tindivanam,active,policybazaar; groww
+TN-18,TN,Tamil Nadu,Tiruvallur,Redhills,active,policybazaar; groww
+TN-19,TN,Tamil Nadu,Chengalpattu,Chengalpattu,active,policybazaar; groww
+TN-20,TN,Tamil Nadu,Tiruvallur,Thiruvallur,active,policybazaar; groww
+TN-21,TN,Tamil Nadu,Kanchipuram,Kanchipuram,active,policybazaar; groww
+TN-22,TN,Tamil Nadu,Chennai,Meenambakkam,active,policybazaar; groww
+TN-23,TN,Tamil Nadu,Vellore,Vellore,active,policybazaar; groww
+TN-24,TN,Tamil Nadu,Krishnagiri,Krishnagiri,active,policybazaar; groww
+TN-25,TN,Tamil Nadu,Tiruvannamalai,Tiruvannamalai,active,policybazaar; groww
+TN-25Z,TN,Tamil Nadu,Tiruvannamalai,Arani,active,policybazaar
+TN-27,TN,Tamil Nadu,Salem,Salem,active,policybazaar
+TN-28,TN,Tamil Nadu,Namakkal,Namakkal (North),active,policybazaar; groww
+TN-29,TN,Tamil Nadu,Dharmapuri,Dharmapuri,active,policybazaar; groww
+TN-30,TN,Tamil Nadu,Salem,Salem (West),active,policybazaar; groww
+TN-31,TN,Tamil Nadu,Cuddalore,Cuddalore,active,policybazaar; groww
+TN-32,TN,Tamil Nadu,Viluppuram,Viluppuram,active,policybazaar; groww
+TN-33,TN,Tamil Nadu,Erode,Erode (East),active,policybazaar; groww
+TN-34,TN,Tamil Nadu,Namakkal,Tiruchengode,active,policybazaar; groww
+TN-34Z,TN,Tamil Nadu,Namakkal,Kumarapalayam,active,policybazaar
+TN-36,TN,Tamil Nadu,Erode,Gobichettipalayam,active,policybazaar; groww
+TN-37,TN,Tamil Nadu,Coimbatore,Coimbatore (South),active,policybazaar; groww
+TN-38,TN,Tamil Nadu,Coimbatore,Coimbatore (North),active,policybazaar; groww
+TN-39,TN,Tamil Nadu,Tiruppur,Tiruppur (North),active,policybazaar; groww
+TN-40,TN,Tamil Nadu,Coimbatore,Mettupalayam,active,policybazaar; groww
+TN-41,TN,Tamil Nadu,Coimbatore,Pollachi,active,policybazaar; groww
+TN-42,TN,Tamil Nadu,Tiruppur,Tiruppur (South),active,policybazaar; groww
+TN-43,TN,Tamil Nadu,Nilgiris,Ooty,active,policybazaar; groww
+TN-45,TN,Tamil Nadu,Tiruchirappalli,Trichy (West),active,policybazaar; groww
+TN-46,TN,Tamil Nadu,Perambalur,Perambalur,active,policybazaar; groww
+TN-47,TN,Tamil Nadu,Karur,Karur,active,policybazaar; groww
+TN-48,TN,Tamil Nadu,Tiruchirappalli,Srirangam,active,policybazaar; groww
+TN-48Z,TN,Tamil Nadu,Tiruchirappalli,Tiruchirappalli,active,policybazaar
+TN-49,TN,Tamil Nadu,Thanjavur,Thanjavur,active,policybazaar; groww
+TN-50,TN,Tamil Nadu,Tiruvarur,Tiruvarur,active,policybazaar; groww
+TN-51,TN,Tamil Nadu,Nagapattinam,Nagapattinam,active,policybazaar; groww
+TN-51Z,TN,Tamil Nadu,Mayiladuthurai,Mayiladuthurai,active,policybazaar
+TN-52,TN,Tamil Nadu,Salem,Sankagiri,active,policybazaar; groww
+TN-52Z,TN,Tamil Nadu,Salem,Mettur,active,policybazaar
+TN-54,TN,Tamil Nadu,Salem,Salem (East),active,policybazaar; groww
+TN-55,TN,Tamil Nadu,Pudukkottai,Pudukkottai,active,policybazaar; groww
+TN-56,TN,Tamil Nadu,Erode,Perundurai,active,policybazaar; groww
+TN-57,TN,Tamil Nadu,Dindigul,Dindigul,active,policybazaar; groww
+TN-57Z,TN,Tamil Nadu,Dindigul,Palani,active,policybazaar
+TN-58,TN,Tamil Nadu,Madurai,Madurai (South),active,policybazaar; groww
+TN-59,TN,Tamil Nadu,Madurai,Madurai (North),active,policybazaar; groww
+TN-60,TN,Tamil Nadu,Theni,Theni,active,policybazaar; groww
+TN-61,TN,Tamil Nadu,Ariyalur,Ariyalur,active,policybazaar; groww
+TN-63,TN,Tamil Nadu,Sivaganga,Sivagangai,active,policybazaar; groww
+TN-64,TN,Tamil Nadu,Madurai,Madurai (Central),active,policybazaar; groww
+TN-65,TN,Tamil Nadu,Ramanathapuram,Ramanathapuram,active,policybazaar; groww
+TN-66,TN,Tamil Nadu,Coimbatore,Coimbatore (Central),active,policybazaar; groww
+TN-67,TN,Tamil Nadu,Virudhunagar,Virudhunagar,active,policybazaar; groww
+TN-68,TN,Tamil Nadu,Thanjavur,Kumbakonam,active,policybazaar; groww
+TN-69,TN,Tamil Nadu,Thoothukudi,Tuticorin,active,policybazaar; groww
+TN-69Y,TN,Tamil Nadu,Thoothukudi,Tiruchendur,active,policybazaar
+TN-69Z,TN,Tamil Nadu,Thoothukudi,Kovilpatti,active,policybazaar
+TN-70,TN,Tamil Nadu,Krishnagiri,Hosur,active,policybazaar; groww
+TN-72,TN,Tamil Nadu,Tirunelveli,Tirunelveli,active,policybazaar; groww
+TN-73,TN,Tamil Nadu,Ranipet,Ranipet,active,policybazaar; groww
+TN-74,TN,Tamil Nadu,Kanniyakumari,Nagercoil,active,policybazaar; groww
+TN-75,TN,Tamil Nadu,Kanniyakumari,Marthandam,active,policybazaar; groww
+TN-76,TN,Tamil Nadu,Tenkasi,Tenkasi,active,policybazaar; groww
+TN-77,TN,Tamil Nadu,Salem,Attur,active,policybazaar; groww
+TN-78,TN,Tamil Nadu,Tiruppur,Dharapuram,active,policybazaar; groww
+TN-78Z,TN,Tamil Nadu,Tiruppur,Udumalpet,active,policybazaar
+TN-79,TN,Tamil Nadu,Tenkasi,Sankarankovil,active,policybazaar; groww
+TN-81,TN,Tamil Nadu,Tiruchirappalli,Trichy (East),active,policybazaar; groww
+TN-82,TN,Tamil Nadu,Mayiladuthurai,Mayiladuthurai,active,policybazaar; groww
+TN-83,TN,Tamil Nadu,Tirupathur,Vaniyambadi,active,policybazaar; groww
+TN-83M,TN,Tamil Nadu,Tirupathur,Tirupattur,active,policybazaar; groww
+TN-84,TN,Tamil Nadu,Virudhunagar,Srivilliputtur,active,policybazaar; groww
+TN-85,TN,Tamil Nadu,Kanchipuram,Kundrathur,active,policybazaar; groww
+TN-86,TN,Tamil Nadu,Erode,Erode (West),active,policybazaar; groww
+TN-87,TN,Tamil Nadu,Kanchipuram,Sriperumbudur,active,policybazaar; groww
+TN-88,TN,Tamil Nadu,Namakkal,Namakkal (South),active,policybazaar; groww
+TN-90,TN,Tamil Nadu,Salem,Salem (South),active,policybazaar; groww
+TN-91,TN,Tamil Nadu,Cuddalore,Chidambaram,active,policybazaar; groww
+TN-92,TN,Tamil Nadu,Thoothukudi,Thiruchendur,active,policybazaar; groww
+TN-93,TN,Tamil Nadu,Salem,Mettur,active,policybazaar; groww
+TN-94,TN,Tamil Nadu,Dindigul,Palani,active,policybazaar; groww
+TN-95,TN,Tamil Nadu,Virudhunagar,Sivakasi,active,policybazaar; groww
+TN-96,TN,Tamil Nadu,Thoothukudi,Kovilpatti,active,policybazaar; groww
+TN-97,TN,Tamil Nadu,Tiruvannamalai,Arani,active,policybazaar; groww
+TN-99,TN,Tamil Nadu,Coimbatore,Coimbatore (West),active,policybazaar; groww
+TR-01,TR,Tripura,West Tripura,Agartala,active,policybazaar
+TR-02,TR,Tripura,North Tripura,North Tripura,active,policybazaar
+TR-03,TR,Tripura,West Tripura,Agartala,active,policybazaar
+TR-04,TR,Tripura,Dhalai,Dhalai,active,policybazaar
+TR-05,TR,Tripura,Dhalai,Ambassa,active,policybazaar
+TR-06,TR,Tripura,Khowai,Khowai,active,policybazaar
+TR-07,TR,Tripura,Sepahijala,Sepahijala,active,policybazaar
+TR-08,TR,Tripura,South Tripura,Santirbazar,active,policybazaar
+TS-01,TS,Telangana,Adilabad,Adilabad,active,policybazaar
+TS-02,TS,Telangana,Karimnagar,Karimnagar,active,policybazaar
+TS-03,TS,Telangana,Hanumakonda,Warangal,active,policybazaar
+TS-04,TS,Telangana,Khammam,Khammam,active,policybazaar
+TS-05,TS,Telangana,Nalgonda,Nalgonda,active,policybazaar
+TS-06,TS,Telangana,Mahabubnagar,Mahbubnagar,active,policybazaar
+TS-07,TS,Telangana,Rangareddy,Attapur,active,policybazaar
+TS-08,TS,Telangana,Medchal-Malkajgiri,Uppal Kalan,active,policybazaar
+TS-09,TS,Telangana,Hyderabad,Hyderabad,active,policybazaar
+TS-10,TS,Telangana,Hyderabad,Hyderabad,active,policybazaar
+TS-108,TS,Telangana,Hyderabad,Uppal,active,HDFC Location Master
+TS-11,TS,Telangana,Hyderabad,Hyderabad,active,policybazaar
+TS-12,TS,Telangana,Hyderabad,Hyderabad,active,policybazaar
+TS-13,TS,Telangana,Hyderabad,Hyderabad,active,policybazaar
+TS-14,TS,Telangana,Hyderabad,Hyderabad,active,policybazaar
+TS-15,TS,Telangana,Sangareddy,Medak,active,policybazaar
+TS-16,TS,Telangana,Nizamabad,Nizamabad,active,policybazaar
+TS-17,TS,Telangana,Kamareddy,Kamareddy,active,policybazaar
+TS-18,TS,Telangana,Nirmal,Nirmal,active,policybazaar
+TS-19,TS,Telangana,Mancherial,Mancherial,active,policybazaar
+TS-20,TS,Telangana,Kumuram Bheem Asifabad,Asifabad,active,policybazaar
+TS-208,TS,Telangana,Hyderabad,Kukatpally,active,HDFC Location Master
+TS-21,TS,Telangana,Jagtial,Jagtial,active,policybazaar
+TS-22,TS,Telangana,Peddapalli,Peddapalli,active,policybazaar
+TS-23,TS,Telangana,Rajanna Sircilla,Sircilla,active,policybazaar
+TS-24,TS,Telangana,Warangal,Warangal,active,policybazaar
+TS-25,TS,Telangana,Jayashankar Bhupalpally,Bhupalpalle,active,policybazaar
+TS-26,TS,Telangana,Mahabubabad,Mahbubabad,active,policybazaar
+TS-27,TS,Telangana,Jangaon,Jangaon,active,policybazaar
+TS-28,TS,Telangana,Bhadradri Kothagudem,Kothagudem,active,policybazaar
+TS-29,TS,Telangana,Suryapet,Suryapet,active,policybazaar
+TS-30,TS,Telangana,Yadadri Bhuvanagiri,Bhongir,active,policybazaar
+TS-31,TS,Telangana,Nagarkurnool,Nagarkurnool,active,policybazaar
+TS-32,TS,Telangana,Wanaparthy,Wanaparthy,active,policybazaar
+TS-33,TS,Telangana,Jogulamba Gadwal,Gadwal,active,policybazaar
+TS-34,TS,Telangana,Vikarabad,Vikarabad,active,policybazaar
+TS-35,TS,Telangana,Medak,Medak,active,policybazaar
+TS-36,TS,Telangana,Siddipet,Siddipet,active,policybazaar
+TS-38,TS,Telangana,Narayanpet,Narayanpet,active,policybazaar
+UA-01,UK,Uttarakhand,Almora,Almora,legacy,policybazaar
+UA-02,UK,Uttarakhand,Bageshwar,Bageshwar,legacy,policybazaar
+UA-03,UK,Uttarakhand,Champawat,Champawat,legacy,policybazaar
+UA-04,UK,Uttarakhand,Nainital,Nainital,legacy,policybazaar
+UA-05,UK,Uttarakhand,Pithoragarh,Pithoragarh,legacy,policybazaar
+UA-06,UK,Uttarakhand,Udham Singh Nagar,Udham Singh Nagar,legacy,policybazaar
+UA-07,UK,Uttarakhand,Dehradun,Dehradun,legacy,policybazaar
+UA-08,UK,Uttarakhand,Haridwar,Haridwar,legacy,policybazaar
+UA-09,UK,Uttarakhand,Tehri Garhwal,Tehri,legacy,policybazaar
+UA-10,UK,Uttarakhand,Uttarkashi,Uttarkashi,legacy,policybazaar
+UA-11,UK,Uttarakhand,Chamoli,Chamoli,legacy,policybazaar
+UA-12,UK,Uttarakhand,Pauri Garhwal,Pauri,legacy,policybazaar
+UA-13,UK,Uttarakhand,Rudraprayag,Rudraprayag,legacy,policybazaar
+UK-01,UK,Uttarakhand,Almora,Almora,active,policybazaar
+UK-02,UK,Uttarakhand,Bageshwar,Bageshwar,active,policybazaar
+UK-03,UK,Uttarakhand,Champawat,Champawat,active,policybazaar
+UK-04,UK,Uttarakhand,Nainital,Nainital,active,policybazaar
+UK-05,UK,Uttarakhand,Pithoragarh,Pithoragarh,active,policybazaar
+UK-06,UK,Uttarakhand,Udham Singh Nagar,Udham Singh Nagar,active,policybazaar
+UK-07,UK,Uttarakhand,Dehradun,Dehradun,active,policybazaar
+UK-08,UK,Uttarakhand,Haridwar,Haridwar,active,policybazaar
+UK-09,UK,Uttarakhand,Tehri Garhwal,Tehri,active,policybazaar
+UK-10,UK,Uttarakhand,Uttarkashi,Uttarkashi,active,policybazaar
+UK-11,UK,Uttarakhand,Chamoli,Chamoli,active,policybazaar
+UK-12,UK,Uttarakhand,Pauri Garhwal,Pauri,active,policybazaar
+UK-13,UK,Uttarakhand,Rudraprayag,Rudraprayag,active,policybazaar
+UK-14,UK,Uttarakhand,Dehradun,Rishikesh,active,policybazaar
+UK-15,UK,Uttarakhand,Pauri Garhwal,Kotdwara,active,policybazaar
+UK-16,UK,Uttarakhand,Dehradun,Vikasnagar,active,policybazaar
+UK-17,UK,Uttarakhand,Haridwar,Roorkee,active,policybazaar
+UK-18,UK,Uttarakhand,Udham Singh Nagar,Kashipur,active,policybazaar
+UK-19,UK,Uttarakhand,Nainital,Ramnagar,active,policybazaar
+UK-20,UK,Uttarakhand,Almora,Ranikhet,active,policybazaar
+UP-11,UP,Uttar Pradesh,Saharanpur,Saharanpur,active,policybazaar
+UP-12,UP,Uttar Pradesh,Muzaffarnagar,Muzaffarnagar,active,policybazaar
+UP-13,UP,Uttar Pradesh,Bulandshahr,Bulandshahr,active,policybazaar
+UP-14,UP,Uttar Pradesh,Ghaziabad,Ghaziabad,active,policybazaar
+UP-15,UP,Uttar Pradesh,Meerut,Meerut,active,policybazaar
+UP-16,UP,Uttar Pradesh,Gautam Buddha Nagar,Noida (Gautam Buddha Nagar),active,policybazaar; groww
+UP-17,UP,Uttar Pradesh,Baghpat,Baghpat,active,policybazaar
+UP-18,UP,Uttar Pradesh,Gautam Buddha Nagar,Gautam Buddha Nagar,active,policybazaar
+UP-19,UP,Uttar Pradesh,Shamli,Shamli,active,policybazaar
+UP-20,UP,Uttar Pradesh,Bijnor,Bijnor,active,policybazaar
+UP-21,UP,Uttar Pradesh,Moradabad,Moradabad,active,policybazaar
+UP-22,UP,Uttar Pradesh,Rampur,Rampur,active,policybazaar
+UP-23,UP,Uttar Pradesh,Amroha,Amroha,active,policybazaar
+UP-24,UP,Uttar Pradesh,Budaun,Budaun,active,policybazaar
+UP-25,UP,Uttar Pradesh,Bareilly,Bareilly,active,policybazaar
+UP-26,UP,Uttar Pradesh,Pilibhit,Pilibhit,active,policybazaar
+UP-27,UP,Uttar Pradesh,Shahjahanpur,Shahjahanpur,active,policybazaar
+UP-28,UP,Uttar Pradesh,Ayodhya,Ayodhya,active,policybazaar
+UP-30,UP,Uttar Pradesh,Hardoi,Hardoi,active,policybazaar
+UP-31,UP,Uttar Pradesh,Lakhimpur Kheri,Lakhimpur Kheri,active,policybazaar
+UP-32,UP,Uttar Pradesh,Lucknow,Lucknow,active,policybazaar
+UP-33,UP,Uttar Pradesh,Raebareli,Raebareli,active,policybazaar
+UP-34,UP,Uttar Pradesh,Sitapur,Sitapur,active,policybazaar
+UP-35,UP,Uttar Pradesh,Unnao,Unnao,active,policybazaar
+UP-36,UP,Uttar Pradesh,Amethi,Amethi,active,policybazaar
+UP-37,UP,Uttar Pradesh,Hapur,Hapur,active,policybazaar
+UP-38,UP,Uttar Pradesh,Sambhal,Sambhal,active,policybazaar
+UP-40,UP,Uttar Pradesh,Bahraich,Bahraich,active,policybazaar
+UP-41,UP,Uttar Pradesh,Barabanki,Barabanki,active,policybazaar
+UP-42,UP,Uttar Pradesh,Ayodhya,Ayodhya,active,policybazaar
+UP-43,UP,Uttar Pradesh,Gonda,Gonda,active,policybazaar
+UP-44,UP,Uttar Pradesh,Sultanpur,Sultanpur,active,policybazaar
+UP-45,UP,Uttar Pradesh,Ambedkar Nagar,Akbarpur (Ambedkar Nagar),active,policybazaar; groww
+UP-46,UP,Uttar Pradesh,Shravasti,Shravasti,active,policybazaar
+UP-47,UP,Uttar Pradesh,Balrampur,Balrampur,active,policybazaar
+UP-50,UP,Uttar Pradesh,Azamgarh,Azamgarh,active,policybazaar
+UP-51,UP,Uttar Pradesh,Basti,Basti,active,policybazaar
+UP-52,UP,Uttar Pradesh,Deoria,Deoria,active,policybazaar
+UP-53,UP,Uttar Pradesh,Gorakhpur,Gorakhpur,active,policybazaar
+UP-54,UP,Uttar Pradesh,Mau,Mau,active,policybazaar
+UP-55,UP,Uttar Pradesh,Siddharthnagar,Siddharthnagar,active,policybazaar
+UP-56,UP,Uttar Pradesh,Maharajganj,Maharajganj,active,policybazaar
+UP-57,UP,Uttar Pradesh,Kushinagar,Padrauna (Kushinagar),active,policybazaar; groww
+UP-58,UP,Uttar Pradesh,Sant Kabir Nagar,Sant Kabir Nagar,active,policybazaar
+UP-60,UP,Uttar Pradesh,Ballia,Ballia,active,policybazaar
+UP-61,UP,Uttar Pradesh,Ghazipur,Ghazipur,active,policybazaar
+UP-62,UP,Uttar Pradesh,Jaunpur,Jaunpur,active,policybazaar
+UP-63,UP,Uttar Pradesh,Mirzapur,Mirzapur,active,policybazaar
+UP-64,UP,Uttar Pradesh,Sonbhadra,Sonbhadra,active,policybazaar
+UP-65,UP,Uttar Pradesh,Varanasi,Varanasi,active,policybazaar
+UP-65A,UP,Uttar Pradesh,Varanasi,Varanasi,active,policybazaar
+UP-66,UP,Uttar Pradesh,Bhadohi (Sant Ravidas Nagar),Bhadohi,active,policybazaar
+UP-67,UP,Uttar Pradesh,Chandauli,Chandauli,active,policybazaar
+UP-70,UP,Uttar Pradesh,Prayagraj,Allahabad (Prayagraj),active,policybazaar; groww
+UP-71,UP,Uttar Pradesh,Fatehpur,Fatehpur,active,policybazaar
+UP-72,UP,Uttar Pradesh,Pratapgarh,Pratapgarh,active,policybazaar
+UP-73,UP,Uttar Pradesh,Kaushambi,Kaushambi,active,policybazaar
+UP-74,UP,Uttar Pradesh,Kannauj,Kannauj,active,policybazaar
+UP-75,UP,Uttar Pradesh,Etawah,Etawah,active,policybazaar
+UP-76,UP,Uttar Pradesh,Farrukhabad,Farrukhabad,active,policybazaar
+UP-77,UP,Uttar Pradesh,Kanpur Dehat,Kanpur Dehat (Kanpur),active,policybazaar; groww
+UP-78,UP,Uttar Pradesh,Kanpur Nagar,Kanpur,active,policybazaar
+UP-79,UP,Uttar Pradesh,Auraiya,Auraiya,active,policybazaar
+UP-80,UP,Uttar Pradesh,Agra,Agra,active,policybazaar
+UP-81,UP,Uttar Pradesh,Aligarh,Aligarh,active,policybazaar
+UP-82,UP,Uttar Pradesh,Etah,Etah,active,policybazaar
+UP-83,UP,Uttar Pradesh,Firozabad,Firozabad,active,policybazaar
+UP-84,UP,Uttar Pradesh,Mainpuri,Mainpuri,active,policybazaar
+UP-85,UP,Uttar Pradesh,Mathura,Mathura,active,policybazaar
+UP-86,UP,Uttar Pradesh,Hathras,Hathras,active,policybazaar
+UP-87,UP,Uttar Pradesh,Kasganj,Kasganj,active,policybazaar
+UP-90,UP,Uttar Pradesh,Banda,Banda,active,policybazaar
+UP-91,UP,Uttar Pradesh,Hamirpur,Hamirpur,active,policybazaar
+UP-92,UP,Uttar Pradesh,Jalaun,Orai (Jalaun),active,policybazaar; groww
+UP-93,UP,Uttar Pradesh,Jhansi,Jhansi,active,policybazaar
+UP-94,UP,Uttar Pradesh,Lalitpur,Lalitpur,active,policybazaar
+UP-95,UP,Uttar Pradesh,Mahoba,Mahoba,active,policybazaar
+UP-96,UP,Uttar Pradesh,Chitrakoot,Chitrakoot Dham (Chitrakoot),active,policybazaar; groww
+WB-01,WB,West Bengal,Kolkata,Kolkata - Beltala (two-wheelers),active,policybazaar; ackodrive
+WB-02,WB,West Bengal,Kolkata,Kolkata - Beltala (private four-wheelers),active,policybazaar; ackodrive
+WB-03,WB,West Bengal,Kolkata,Kolkata - Beltala (goods carriages),active,policybazaar; ackodrive
+WB-04,WB,West Bengal,Kolkata,Kolkata - Beltala (commercial vehicles),active,policybazaar; ackodrive
+WB-05,WB,West Bengal,Kolkata,Kolkata - Kasba (commercial vehicles),active,policybazaar; ackodrive
+WB-06,WB,West Bengal,Kolkata,Kolkata - Kasba,active,policybazaar; ackodrive
+WB-07,WB,West Bengal,Kolkata,Kolkata - Salt Lake,active,policybazaar; ackodrive
+WB-08,WB,West Bengal,Kolkata,Kolkata - Salt Lake (private vehicles),active,policybazaar; ackodrive
+WB-09,WB,West Bengal,Kolkata,Kolkata,active,policybazaar
+WB-10,WB,West Bengal,Kolkata,Kolkata - Behala,active,policybazaar; ackodrive
+WB-11,WB,West Bengal,Howrah,Howrah,active,policybazaar
+WB-12,WB,West Bengal,Howrah,Howrah,active,policybazaar
+WB-13,WB,West Bengal,Howrah,Howrah,active,policybazaar
+WB-14,WB,West Bengal,Howrah,Howrah,active,policybazaar
+WB-15,WB,West Bengal,Hooghly,Hooghly,active,policybazaar
+WB-16,WB,West Bengal,Hooghly,Hooghly,active,policybazaar
+WB-17,WB,West Bengal,Hooghly,Hooghly,active,policybazaar
+WB-18,WB,West Bengal,Hooghly,Hooghly,active,policybazaar
+WB-19,WB,West Bengal,South 24 Parganas,Alipore,active,policybazaar
+WB-20,WB,West Bengal,South 24 Parganas,Alipore,active,policybazaar
+WB-21,WB,West Bengal,North 24 Parganas,Basirhat,active,policybazaar
+WB-22,WB,West Bengal,South 24 Parganas,Alipore,active,policybazaar
+WB-23,WB,West Bengal,North 24 Parganas,Barrackpore,active,policybazaar
+WB-24,WB,West Bengal,North 24 Parganas,Barrackpore,active,policybazaar
+WB-25,WB,West Bengal,North 24 Parganas,Barasat,active,policybazaar
+WB-26,WB,West Bengal,North 24 Parganas,Barasat,active,policybazaar
+WB-27,WB,West Bengal,North 24 Parganas,Bangaon,active,policybazaar
+WB-28,WB,West Bengal,North 24 Parganas,Bangaon,active,policybazaar
+WB-29,WB,West Bengal,Purba Medinipur,Tamluk,active,policybazaar
+WB-30,WB,West Bengal,Purba Medinipur,Contai,active,policybazaar
+WB-31,WB,West Bengal,Purba Medinipur,Contai,active,policybazaar
+WB-32,WB,West Bengal,Purba Medinipur,Contai,active,policybazaar
+WB-33,WB,West Bengal,Paschim Medinipur,Paschim Medinipur,active,policybazaar
+WB-34,WB,West Bengal,Paschim Medinipur,Paschim Medinipur,active,policybazaar
+WB-35,WB,West Bengal,Paschim Medinipur,Kharagpur,active,policybazaar
+WB-36,WB,West Bengal,Paschim Medinipur,Kharagpur,active,policybazaar
+WB-37,WB,West Bengal,Paschim Bardhaman,Asansol,active,policybazaar
+WB-38,WB,West Bengal,Paschim Bardhaman,Asansol,active,policybazaar
+WB-39,WB,West Bengal,Paschim Bardhaman,Durgapur,active,policybazaar
+WB-40,WB,West Bengal,Paschim Bardhaman,Durgapur,active,policybazaar
+WB-41,WB,West Bengal,Purba Bardhaman,Bardhaman,active,policybazaar
+WB-42,WB,West Bengal,Purba Bardhaman,Bardhaman,active,policybazaar
+WB-43,WB,West Bengal,Purba Bardhaman,Kalna,active,policybazaar
+WB-44,WB,West Bengal,Paschim Bardhaman,Asansol,active,policybazaar
+WB-45,WB,West Bengal,Birbhum,Rampurhat,active,policybazaar
+WB-46,WB,West Bengal,Birbhum,Rampurhat,active,policybazaar
+WB-47,WB,West Bengal,Birbhum,Birbhum,active,policybazaar
+WB-48,WB,West Bengal,Birbhum,Birbhum,active,policybazaar
+WB-49,WB,West Bengal,Jhargram,Jhargram,active,policybazaar
+WB-50,WB,West Bengal,Paschim Medinipur,Ghatal,active,policybazaar
+WB-51,WB,West Bengal,Nadia,Nadia,active,policybazaar
+WB-52,WB,West Bengal,Nadia,Nadia,active,policybazaar
+WB-53,WB,West Bengal,Birbhum,Birbhum,active,policybazaar
+WB-54,WB,West Bengal,Birbhum,Birbhum,active,policybazaar
+WB-55,WB,West Bengal,Purulia,Purulia,active,policybazaar
+WB-56,WB,West Bengal,Purulia,Purulia,active,policybazaar
+WB-57,WB,West Bengal,Murshidabad,Murshidabad,active,policybazaar
+WB-58,WB,West Bengal,Murshidabad,Murshidabad,active,policybazaar
+WB-59,WB,West Bengal,Uttar Dinajpur,Raiganj,active,policybazaar
+WB-60,WB,West Bengal,Uttar Dinajpur,Raiganj,active,policybazaar
+WB-61,WB,West Bengal,Dakshin Dinajpur,Balurghat,active,policybazaar
+WB-62,WB,West Bengal,Dakshin Dinajpur,Balurghat,active,policybazaar
+WB-63,WB,West Bengal,Cooch Behar,Cooch Behar,active,policybazaar
+WB-64,WB,West Bengal,Cooch Behar,Cooch Behar,active,policybazaar
+WB-65,WB,West Bengal,Malda,Malda,active,policybazaar
+WB-66,WB,West Bengal,Malda,Malda,active,policybazaar
+WB-67,WB,West Bengal,Bankura,Bankura,active,policybazaar
+WB-68,WB,West Bengal,Bankura,Bankura,active,policybazaar
+WB-69,WB,West Bengal,Alipurduar,Alipurduar,active,policybazaar
+WB-70,WB,West Bengal,Alipurduar,Alipurduar,active,policybazaar
+WB-71,WB,West Bengal,Jalpaiguri,Jalpaiguri,active,policybazaar
+WB-72,WB,West Bengal,Jalpaiguri,Jalpaiguri,active,policybazaar
+WB-73,WB,West Bengal,Darjeeling,Siliguri,active,policybazaar
+WB-74,WB,West Bengal,Darjeeling,Siliguri,active,policybazaar
+WB-76,WB,West Bengal,Darjeeling,Darjeeling,active,policybazaar
+WB-77,WB,West Bengal,Darjeeling,Darjeeling,active,policybazaar
+WB-78,WB,West Bengal,Kalimpong,Kalimpong,active,policybazaar
+WB-79,WB,West Bengal,Kalimpong,Kalimpong,active,policybazaar
+WB-81,WB,West Bengal,Purulia,Raghunathpur,active,policybazaar
+WB-82,WB,West Bengal,Purulia,Raghunathpur,active,policybazaar
+WB-83,WB,West Bengal,Malda,Chanchal,active,policybazaar
+WB-84,WB,West Bengal,Malda,Chanchal,active,policybazaar
+WB-85,WB,West Bengal,Cooch Behar,Mathabhanga,active,policybazaar
+WB-86,WB,West Bengal,Cooch Behar,Mathabhanga,active,policybazaar
+WB-87,WB,West Bengal,Bankura,Bishnupur,active,policybazaar
+WB-88,WB,West Bengal,Bankura,Bishnupur,active,policybazaar
+WB-89,WB,West Bengal,Nadia,Kalyani,active,policybazaar
+WB-90,WB,West Bengal,Nadia,Kalyani,active,policybazaar
+WB-91,WB,West Bengal,Uttar Dinajpur,Islampur,active,policybazaar
+WB-92,WB,West Bengal,Uttar Dinajpur,Islampur,active,policybazaar
+WB-93,WB,West Bengal,Murshidabad,Jangipur,active,policybazaar
+WB-94,WB,West Bengal,Murshidabad,Murshidabad,active,policybazaar
+WB-95,WB,West Bengal,South 24 Parganas,Baruipur,active,policybazaar
+WB-96,WB,West Bengal,Murshidabad,Jangipur,active,policybazaar
+WB-97,WB,West Bengal,South 24 Parganas,Diamond Harbour,active,policybazaar
+WB-98,WB,West Bengal,South 24 Parganas,Diamond Harbour,active,policybazaar
+WB-99,WB,West Bengal,South 24 Parganas,Jaynagar,active,ackodrive

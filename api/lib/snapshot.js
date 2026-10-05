@@ -1,6 +1,7 @@
 // Hot "snapshot" engine: the rates valid on a date are loaded once from Postgres into the API's memory
 // and shared by all users. Filtering / filter options then take a few milliseconds instead of a DB round trip.
 // Postgres stays the single source of truth; snapshots are dropped whenever anything is published.
+import { locStates, rtoState, isRtoCol, isLocCol } from './geo.js';
 const isAll = v => String(v ?? '').trim().toLowerCase() === 'all';
 const SNAP = new Map(); const MAX_SNAPS = 40;
 const today = () => new Date().toISOString().slice(0, 10);
@@ -21,7 +22,11 @@ export async function getSnapshot(pool, lobId, asOf) {
         WHERE r.lob_id = $1 AND r.period @> $2::date
         ORDER BY (r.rate_num = 0), r.insurer, r.product_type, r.id`, [lobId, d]);
     const rows = r.rows;
-    for (const x of rows) x._s = (Object.values(x.params).join(' ') + ' ' + (x.notes || '') + ' ' + x.rate_text).toLowerCase();
+    for (const x of rows) {
+      x._s = (Object.values(x.params).join(' ') + ' ' + (x.notes || '') + ' ' + x.rate_text).toLowerCase();
+      const lc = Object.keys(x.params).find(isLocCol);                          // P-07: state(s) of the row's location
+      x._st = lc ? locStates(x.params[lc]) : new Set();
+    }
     return { date: d, rows };
   })();
   SNAP.set(key, loading);
@@ -30,14 +35,35 @@ export async function getSnapshot(pool, lobId, asOf) {
 }
 
 // row passes filter col? ("All" in the row = applies to every value)
-const passes = (row, col, set) => { const v = row.params[col]; return set.has(v) || isAll(v); };
+// P-07: for the RTO filter, an "All"-RTO row only counts if its Location is in the state of a picked RTO
+// (WB-01 -> West Bengal / Kolkata / Rest of West Bengal …) or is not tied to any state (All India, North (Ref) …).
+const passes = (row, col, set) => {
+  const v = row.params[col];
+  if (set.has(v)) return true;
+  if (!isAll(v)) return false;
+  if (!set.rto || set.has('All')) return true;
+  if (!row._st || !row._st.size) return true;
+  for (const st of set.rto) if (row._st.has(st)) return true;
+  return false;
+};
 function prep(q) {
-  const f = Object.entries(q.filters || {}).filter(([, v]) => Array.isArray(v) && v.length).map(([c, v]) => [c, new Set(v.map(String))]);
+  const f = Object.entries(q.filters || {}).filter(([, v]) => Array.isArray(v) && v.length).map(([c, v]) => {
+    const set = new Set(v.map(String));
+    if (isRtoCol(c)) { const sts = new Set(v.map(rtoState).filter(Boolean)); if (sts.size) set.rto = sts; }
+    return [c, set];
+  });
   const terms = String(q.search || '').toLowerCase().split(/\s+/).filter(Boolean).slice(0, 6);
   return { f, terms };
 }
 const searchOk = (row, terms) => terms.every(t => row._s.includes(t));
 
+/** every matching row (for the Excel download — same rules as the screen) */
+export function filterSnapshot(snap, q, max = 200000) {
+  const { f, terms } = prep(q);
+  const out = [];
+  for (const r of snap.rows) { if (f.every(([c, s]) => passes(r, c, s)) && searchOk(r, terms)) { out.push(r); if (out.length >= max) break; } }
+  return out;
+}
 export function querySnapshot(snap, q) {
   const { f, terms } = prep(q);
   const limit = Math.min(Math.max(+q.limit || 50, 1), 200), offset = Math.max(+q.offset || 0, 0);

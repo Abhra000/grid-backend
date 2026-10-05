@@ -10,7 +10,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import XLSX from 'xlsx';
 import { publish, diffUpload, toRecords, effectiveDates, exportRows } from './lib/rates.js';
-import { getSnapshot, querySnapshot, facetsSnapshot, clearSnapshots, filterSnapshot } from './lib/snapshot.js';
+import { getSnapshot, querySnapshot, facetsSnapshot, clearSnapshots, filterSnapshot, setRtoMaps, rtoMaps } from './lib/snapshot.js';
+import { seedRtoMaster, loadMaps, buildWorkbook, saveUpload } from './lib/rtoadmin.js';
 import { m365Config, startLogin, finishLogin } from './lib/m365.js';
 import { touchVisit, usageReport } from './lib/usage.js';
 import { registerAdmin, masterWarnings } from './lib/admin.js';
@@ -141,7 +142,12 @@ async function allowedFilters(lobId, user, filters) {
   return Object.fromEntries(Object.entries(filters || {}).filter(([k]) => ok.has(k)));
 }
 app.get('/api/lobs/:id/config', { preHandler: viewer }, async req => ({
-  columns: await userColumns(req.params.id, req.user), dates: await effectiveDates(pool, req.params.id), allFilters: await seesAll(req.user) }));
+  columns: await userColumns(req.params.id, req.user), dates: await effectiveDates(pool, req.params.id), allFilters: await seesAll(req.user),
+  rtoStates: RTO_STATES() }));
+// P-10: RTO code -> State name (viewer picks State automatically when an RTO is chosen)
+let rtoStatesCache = null;
+const RTO_STATES = () => { const m = rtoMaps(); if (!m) return {}; if (rtoStatesCache?.m === m) return rtoStatesCache.v;
+  const v = {}; for (const code of m.master.keys()) v[code] = m.stateName(code); rtoStatesCache = { m, v }; return v; };
 
 // body: { filters:{col:[..]}, asOf:'YYYY-MM-DD', search:'', limit, offset }
 app.post('/api/lobs/:id/query', { preHandler: viewer }, async req => {
@@ -256,6 +262,22 @@ app.put('/api/admin/filter-access', { preHandler: admin }, async req => {
 
 registerAdmin(app, { pool, viewer, admin, superadmin, audit, clearCache, lobColumns });
 
+/* ---------- P-10: RTO master (download → edit in Excel → upload) ---------- */
+app.get('/api/admin/rto-master/export', { preHandler: admin }, async (req, reply) => {
+  const { buf } = await buildWorkbook(pool, rtoMaps() || await loadMaps(pool));
+  reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+       .header('Content-Disposition', 'attachment; filename="RTO_Master.xlsx"');
+  return reply.send(buf);
+});
+app.get('/api/admin/rto-master/stats', { preHandler: admin }, async () => (await buildWorkbook(pool, rtoMaps() || await loadMaps(pool))).stats);
+app.post('/api/admin/rto-master', { preHandler: admin }, async (req, reply) => {
+  try {
+    const res = await saveUpload(pool, req.body || {}, req.user.id);
+    setRtoMaps(await loadMaps(pool)); clearCache();
+    return { ok: true, ...res };
+  } catch (e) { return reply.code(400).send({ error: e.message }); }
+});
+
 /* P-04: every grid with a Location column gets a "State" filter (worked out from Location), placed just before Location */
 async function ensureStateColumn() {
   const r = await pool.query(`SELECT l.lob_id, l.position FROM lob_columns l WHERE lower(l.col)='location'
@@ -278,6 +300,11 @@ app.get('/', async (req, reply) => noCache(reply).type('text/html; charset=utf-8
 const ADMIN_HTML = fsImport.readFileSync(new URL('./public/admin.html', import.meta.url), 'utf8');
 app.get('/admin', async (req, reply) => noCache(reply).type('text/html; charset=utf-8').send(ADMIN_HTML));
 
+try {                                                        // keep the database up to date on every start (all statements are safe to re-run)
+  const sf = [new URL('../db/schema.sql', import.meta.url), new URL('/db/schema.sql', 'file:///')].find(u => fsImport.existsSync(u));
+  if (sf) await pool.query(fsImport.readFileSync(sf, 'utf8'));
+} catch (e) { console.warn('schema:', e.message); }
 await ensureStateColumn().catch(e => console.warn('State column:', e.message));
+try { await seedRtoMaster(pool); setRtoMaps(await loadMaps(pool)); } catch (e) { console.warn('RTO master:', e.message); }
 if (process.env.NODE_ENV !== 'test') app.listen({ port: +PORT, host: process.env.HOST || '127.0.0.1' }).then(() => console.log('API on :' + PORT));
 export default app;

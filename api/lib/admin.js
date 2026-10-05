@@ -83,7 +83,7 @@ export function registerAdmin(app, { pool, viewer, admin, superadmin, audit, cle
     const { paramCols } = splitColumns(columns, rateCol);                 // validates rate + insurer columns
     await db.query(`INSERT INTO lob_columns (lob_id, col, position)
                     SELECT $1, c, ord FROM unnest($2::text[]) WITH ORDINALITY AS t(c, ord) ON CONFLICT DO NOTHING`, [lobId, paramCols]);
-    await db.query(`DELETE FROM lob_columns WHERE lob_id=$1 AND NOT (col = ANY($2))`, [lobId, paramCols]);
+    await db.query(`DELETE FROM lob_columns WHERE lob_id=$1 AND NOT (col = ANY($2)) AND col <> 'State'`, [lobId, paramCols]);   // State = worked out from Location
   }
   const cleanCols = c => [...new Set((Array.isArray(c) ? c : String(c || '').split(/\n|,/)).map(x => String(x).trim()).filter(Boolean))];
 

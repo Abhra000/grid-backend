@@ -197,7 +197,12 @@ export async function effectiveDates(pool, lobId) {
 /** All matching rows for Excel download (M-02) */
 export async function exportRows(pool, lobId, q) {
   const { sql, args } = whereClause(lobId, q);
-  const r = await pool.query(`SELECT r.params, r.rate_text, r.notes, r.effective_from::text AS effective_from, r.effective_to::text AS effective_to
-                                FROM rates r WHERE ${sql} ORDER BY (r.rate_num = 0), r.insurer, r.product_type, r.id LIMIT 200000`, args);
+  const r = await pool.query(`SELECT r.params, r.rate_text, r.notes, r.effective_from::text AS effective_from, r.effective_to::text AS effective_to,
+                                     p.rate_text AS prev_rate, p.effective_to::text AS prev_to
+                                FROM rates r
+                                LEFT JOIN LATERAL (SELECT rate_text, effective_to FROM rates p
+                                                    WHERE p.lob_id = r.lob_id AND p.row_key = r.row_key AND p.effective_from < r.effective_from
+                                                    ORDER BY p.effective_from DESC LIMIT 1) p ON true
+                               WHERE ${sql} ORDER BY (r.rate_num = 0), r.insurer, r.product_type, r.id LIMIT 200000`, args);
   return r.rows;
 }

@@ -75,6 +75,7 @@ header{background:linear-gradient(120deg,var(--navy) 0%,var(--navy2) 60%,#4E7A54
 .fstep.new{animation:slideIn .4s cubic-bezier(.2,.8,.2,1) backwards}
 @keyframes slideIn{from{opacity:0;transform:translateX(-22px)}to{opacity:1;transform:none}}
 .fstep .lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:800;margin:0 0 6px 2px;display:flex;gap:6px;align-items:center}
+.dl-allopt{border-bottom:1px solid var(--line);border-radius:7px 7px 0 0!important;margin-bottom:3px}.dl-allopt b{color:var(--navy)}
 .dl-dd.na>button{background:#F4F6F4;color:#9AA89C;cursor:not-allowed}
 .fstep .lbl i{font-style:normal;background:#E7EFE7;color:var(--navy);border-radius:20px;padding:0 7px;font-size:10px}
 .fstep.date{padding-right:12px;border-right:1px dashed var(--line)}
@@ -295,7 +296,7 @@ async function loadOptions(){
     const sb=all.length>12?`<input class="dl-mss" placeholder="Type to filter…" data-mss>`:'';
     return `<div class="fstep${shownBefore.has(c.col)?'':' new'}" style="${shownBefore.has(c.col)?'':`animation-delay:${Math.min(k,12)*35}ms`}"><div class="lbl">${esc(c.label)}</div>
       <div class="dl-dd${sel.size?' on':''}${none?' na':''}" data-col="${esc(c.col)}"><button type="button" ${none?'disabled title="No values for the current choices"':''}>${sel.size?esc([...sel].join(', ')):(none?'— not applicable —':'All')}</button>
-      <div class="dl-pnl"><div class="dl-cl" data-clear>✕ Clear</div>${sb}${all.map(v=>`<label data-t="${esc(String(v).toLowerCase())}"><input type="checkbox" value="${esc(v)}" ${sel.has(v)?'checked':''}>${esc(v)}</label>`).join('')}</div></div></div>`;}).join('');
+      <div class="dl-pnl">${sb}<label class="dl-allopt" data-t="all"><input type="checkbox" data-all ${sel.size?'':'checked'}><b>All</b></label>${all.map(v=>`<label data-t="${esc(String(v).toLowerCase())}"><input type="checkbox" value="${esc(v)}" ${sel.has(v)?'checked':''}>${esc(v)}</label>`).join('')}</div></div></div>`;}).join('');
   const openCol=document.querySelector('.dl-dd.open[data-col]')?.dataset.col, mss=document.querySelector('.dl-dd.open .dl-mss')?.value||'';
   $('fhost').innerHTML=dateHtml+steps;
   if(openCol){const dd=document.querySelector(`.dl-dd[data-col="${CSS.escape(openCol)}"]`);if(dd){dd.classList.add('open');const m=dd.querySelector('.dl-mss');if(m&&mss){m.value=mss;m.dispatchEvent(new Event('input',{bubbles:true}));}}}
@@ -315,6 +316,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('change',e=>{
   if(e.target.name==='asof'){S.asOf=e.target.value;$('ddDate').classList.remove('open');refresh();return;}
   const dd=e.target.closest('.dl-dd[data-col]'); if(!dd||e.target.type!=='checkbox')return;
+  if(e.target.hasAttribute('data-all')){delete S.sel[dd.dataset.col];refresh();return;}   // "All" = no filter on this column
   const col=dd.dataset.col, set=new Set(S.sel[col]||[]);
   e.target.checked?set.add(e.target.value):set.delete(e.target.value);
   if(set.size)S.sel[col]=[...set];else delete S.sel[col];

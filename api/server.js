@@ -187,8 +187,15 @@ app.post('/api/lobs/:id/export', { preHandler: viewer }, async (req, reply) => {
 app.post('/api/lobs/:id/uploads', { preHandler: admin }, async (req, reply) => {
   const b = req.body || {};
   if (!/^\d{4}-\d{2}-\d{2}$/.test(b.effectiveFrom || '')) return reply.code(400).send({ error: 'Effective From (YYYY-MM-DD) is required' });
-  const lob = (await pool.query('SELECT rate_col FROM lobs WHERE id=$1', [req.params.id])).rows[0];
+  const lob = (await pool.query('SELECT rate_col, columns, name FROM lobs WHERE id=$1', [req.params.id])).rows[0];
   const rateCol = b.rateCol || lob?.rate_col || 'Base Commission %';
+  // guard: a file made for another grid (e.g. a Motor file while "Fire" is selected) must not be loaded here
+  const own = new Set((lob?.columns || []).map(String)), skip = /insurer|company|note|remark/i;
+  const hdr = (b.columns || []).map(String).filter(c => c !== rateCol && !skip.test(c));
+  if (own.size && hdr.length && !b.force) {
+    const common = hdr.filter(c => own.has(c)).length;
+    if (common < Math.min(2, hdr.length)) return reply.code(400).send({ error: `This file's columns do not match the "${lob.name}" grid — wrong grid selected? (file: ${hdr.slice(0, 6).join(', ')}…)` });
+  }
   try {
     const { records } = toRecords(b.columns, b.rows, rateCol);
     const warnings = await masterWarnings(pool, req.params.id, records);

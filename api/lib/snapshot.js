@@ -1,7 +1,11 @@
 // Hot "snapshot" engine: the rates valid on a date are loaded once from Postgres into the API's memory
 // and shared by all users. Filtering / filter options then take a few milliseconds instead of a DB round trip.
 // Postgres stays the single source of truth; snapshots are dropped whenever anything is published.
-import { locStates, rtoState, isRtoCol, isLocCol, locStateNames, cleanLoc, isCcCol, ccOptions, CC_BUCKETS } from './geo.js';
+import { locStates, rtoState, isRtoCol, isLocCol, locStateNames, cleanLoc, isCcCol, ccOptions, CC_BUCKETS, normRto, STATE_NAME } from './geo.js';
+// P-10: RTO master (which RTOs each insurer's location covers) — set by the server at start and after an upload
+let MAPS = null;
+export const setRtoMaps = m => { MAPS = m; SNAP.clear(); };
+export const rtoMaps = () => MAPS;
 const isAll = v => String(v ?? '').trim().toLowerCase() === 'all';
 const SNAP = new Map(); const MAX_SNAPS = 40;
 const today = () => new Date().toISOString().slice(0, 10);
@@ -22,12 +26,27 @@ export async function getSnapshot(pool, lobId, asOf) {
         WHERE r.lob_id = $1 AND r.period @> $2::date
         ORDER BY (r.rate_num = 0), r.insurer, r.product_type, r.id`, [lobId, d]);
     const rows = r.rows;
+    const keyOf = p => ({ ins: Object.keys(p).find(k => /insurer|company/i.test(k)), loc: Object.keys(p).find(isLocCol), rto: Object.keys(p).find(isRtoCol) });
+    const ctx = new Map();                                                       // insurer -> its locations (for "Rest of …")
     for (const x of rows) {
-      const lc = Object.keys(x.params).find(isLocCol);
-      if (lc) x.params[lc] = cleanLoc(x.params[lc]);                            // P-04: one spelling per place
-      x._st = lc ? locStates(x.params[lc]) : new Set();                          // P-07: state(s) of the row's location
-      if (lc && !('State' in x.params)) {                                       // P-04: State filter worked out from Location
-        x._stN = locStateNames(x.params[lc]);
+      const k = keyOf(x.params);
+      if (k.loc) x.params[k.loc] = cleanLoc(x.params[k.loc]);                    // P-04: one spelling per place
+      if (k.rto && !isAll(x.params[k.rto])) x.params[k.rto] = normRto(x.params[k.rto]);   // 'DL-1' -> 'DL-01'
+      if (k.ins && k.loc) { const i = x.params[k.ins]; if (!ctx.has(i)) ctx.set(i, new Set()); ctx.get(i).add(x.params[k.loc]); }
+    }
+    for (const x of rows) {
+      const k = keyOf(x.params), lc = k.loc;
+      x._st = lc ? locStates(x.params[lc]) : new Set();                          // P-07: state(s) of the row's location (fallback)
+      // P-10: RTO codes this row applies to (null = everywhere)
+      x._rtos = undefined;
+      if (MAPS && k.rto) {
+        const v = x.params[k.rto];
+        if (!isAll(v)) x._rtos = new Set([v]);
+        else if (lc && k.ins) { const m = MAPS.map(x.params[k.ins], x.params[lc], [...ctx.get(x.params[k.ins]) || []]); x._rtos = m.codes ? new Set(m.codes) : null; }
+        else x._rtos = null;
+      }
+      if (lc && !('State' in x.params)) {                                       // P-04: State filter worked out from Location / RTOs
+        x._stN = x._rtos ? [...new Set([...x._rtos].map(c => MAPS.stateName(c)))].sort() : (x._rtos === null && MAPS ? [] : locStateNames(x.params[lc]));
         x.params = { ...x.params, State: x._stN.length ? x._stN.join(' / ') : 'All' };
       } else x._stN = null;
       const cc = Object.keys(x.params).find(isCcCol);
@@ -48,6 +67,13 @@ const passes = (row, col, set) => {
   const v = row.params[col];
   if (col === 'State' && row._stN) return !row._stN.length || row._stN.some(n => set.has(n));   // no state = applies everywhere
   if (row._cc && isCcCol(col)) return isAll(v) || set.has(v) || row._cc.some(o => set.has(o));
+  if (row._rtos !== undefined && isRtoCol(col)) {                               // P-10: RTO master
+    if (set.has(v)) return true;
+    if (!isAll(v)) return false;
+    if (set.has('All') || row._rtos === null) return true;
+    for (const c of row._rtos) if (set.has(c)) return true;
+    return false;
+  }
   if (set.has(v)) return true;
   if (!isAll(v)) return false;
   if (!set.rto || set.has('All')) return true;
@@ -88,6 +114,14 @@ export function facetsSnapshot(snap, q, cols) {
   snap.memo = snap.memo || new Map();
   if (snap.memo.has(mk)) return snap.memo.get(mk);                     // same question already answered for this snapshot
   const res = facetsCompute(snap, q, cols);
+  // P-10: State <-> RTO stay consistent: a picked State limits the RTO list, picked RTOs limit the State list
+  const rc = cols.find(isRtoCol), F = q.filters || {};
+  if (MAPS && rc && res[rc]) {
+    const st = (F.State || []).filter(x => x !== 'All');
+    if (st.length && res[rc]) res[rc] = res[rc].filter(c => c === 'All' || st.includes(MAPS.stateName(c)));
+    const rs = (F[rc] || []).filter(x => x !== 'All');
+    if (rs.length && res.State) { const ok = new Set(rs.map(c => MAPS.stateName(c))); res.State = res.State.filter(s => s === 'All' || ok.has(s)); }
+  }
   if (snap.memo.size > 3000) snap.memo.clear();
   snap.memo.set(mk, res); return res;
 }
@@ -111,5 +145,6 @@ const byAllFirst = (a, b) => (b === 'All') - (a === 'All') || ((a in CC_ORDER &&
 function optsOf(r, c) {
   if (c === 'State' && r._stN) return r._stN.length ? r._stN : ['All'];
   if (r._cc && isCcCol(c)) return r._cc;
+  if (r._rtos && isRtoCol(c) && isAll(r.params[c])) return [...r._rtos, 'All'];   // P-10: every RTO the location covers
   const v = r.params[c]; return v ? [isAll(v) ? 'All' : v] : [];
 }

@@ -142,3 +142,23 @@ ALTER TABLE lob_columns ADD COLUMN IF NOT EXISTS is_default boolean NOT NULL DEF
 ALTER TABLE users       ADD COLUMN IF NOT EXISTS all_filters boolean NOT NULL DEFAULT false; -- this user sees every filter
 CREATE TABLE IF NOT EXISTS settings (key text PRIMARY KEY, value jsonb NOT NULL);
 INSERT INTO settings (key, value) VALUES ('all_filters_roles', '["admin","superadmin"]') ON CONFLICT DO NOTHING;
+
+-- ===== P-10: RTO master (all RTO codes) + which RTOs each insurer's Location covers =====
+CREATE TABLE IF NOT EXISTS rto_master (
+  code        text PRIMARY KEY,          -- 'WB-01'
+  state_code  text,                      -- 'WB'
+  state       text,
+  district    text,
+  city        text,                      -- RTO office / town
+  status      text,
+  source      text
+);
+-- manual corrections from the RTO_Master.xlsx upload; locations without a row here are worked out automatically
+CREATE TABLE IF NOT EXISTS loc_rto (
+  insurer     text NOT NULL,
+  location    text NOT NULL,
+  codes       text[] NOT NULL,
+  note        text,
+  updated_at  timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (insurer, location)
+);

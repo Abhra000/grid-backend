@@ -265,14 +265,17 @@ async function start(){
   fetch('/api/visit',{method:'POST',credentials:'same-origin'}).catch(()=>{});   // counts this visit for the admin report
   $('loginView').classList.add('hidden');$('app').classList.remove('hidden');$('logout').classList.remove('hidden');$('mysug').classList.remove('hidden');
   const lobs=await api('/api/lobs');
+  S.lobs=lobs;
   const nice=l=>l.name&&l.name!==l.id?l.name:l.id.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
   $('lobSwitch').innerHTML=lobs.map(l=>`<option value="${esc(l.id)}">${esc(nice(l))}</option>`).join('');
   $('lobSwitch').classList.toggle('hidden',!lobs.length);
   if(!lobs.length){$('count').textContent='No grids published yet';live('Live','ok');return;}
-  await openLob(lobs[0].id);
+  let last='';try{last=localStorage.getItem('gm_lob')||'';}catch(e){}
+  const first=lobs.some(l=>l.id===last)?last:lobs[0].id;$('lobSwitch').value=first;
+  await openLob(first);
 }
 async function openLob(id){
-  S.lob=id;S.sel={};$('q').value='';
+  S.lob=id;S.sel={};$('q').value='';S.rateCol=((S.lobs||[]).find(l=>l.id===id)||{}).rate_col||'Base Commission %';
   const cfg=await api('/api/lobs/'+encodeURIComponent(id)+'/config');
   S.cols=cfg.columns.filter(c=>c.visible);S.dates=cfg.dates||[];S.rtoStates=cfg.rtoStates||{};S.asOf=today();shownBefore=new Set();
   await refresh();setBar(true);
@@ -369,13 +372,16 @@ function prevHtml(r){                       // M-07: earlier rate of the same ro
   return `<span class="dl-prev" title="Previous rate${r.prev_to?' (till '+esc(dtxt(r.prev_to))+')':''}">${arr}was <s>${esc(r.prev_rate)}</s>${r.prev_to?' · till '+esc(dtxt(r.prev_to)):''}</span>`;}
 function render(newRows,reset){
   if(reset){
-    S.shown=S.cols.filter(c=>S.rows.some(r=>{const v=r.params[c.col];return v&&!isAll(v);}));
-    $('thr').innerHTML=S.shown.map(c=>`<th>${esc(c.label)}</th>`).join('')+'<th>Base Commission %</th><th>Effective From</th><th>Notes</th>';
+    const used=S.cols.filter(c=>S.rows.some(r=>{const v=r.params[c.col];return v&&!isAll(v);}));
+    const AFTER=/^reward$|total\s*%|rate depends/i;                 // shown right after the rate (Fire / Engineering)
+    S.shown=used.filter(c=>!AFTER.test(c.col));S.after=used.filter(c=>AFTER.test(c.col));
+    $('thr').innerHTML=S.shown.map(c=>`<th>${esc(c.label)}</th>`).join('')+`<th>${esc(S.rateCol||'Base Commission %')}</th>`+S.after.map(c=>`<th>${esc(c.label)}</th>`).join('')+'<th>Effective From</th><th>Notes</th>';
   }
   const base=S.rows.length-newRows.length;
   $('tb').insertAdjacentHTML('beforeend',newRows.map((r,i)=>'<tr data-i="'+(base+i)+'">'+S.shown.map((c,k)=>{const v=r.params[c.col];
       return `<td class="${k===0?'dl-k0':''}" data-label="${esc(c.label)}">${v&&!isAll(v)?hl(v):'—'}</td>`;}).join('')+
-    `<td class="dl-rate" data-label="Base Commission %"><span class="rv">${hl(r.rate_text)}${prevHtml(r)}</span></td>`+
+    `<td class="dl-rate" data-label="${esc(S.rateCol||'Base Commission %')}"><span class="rv">${hl(r.rate_text)}${prevHtml(r)}</span></td>`+
+    (S.after||[]).map(c=>{const v=r.params[c.col];return `<td data-label="${esc(c.label)}">${v&&!isAll(v)?hl(v):'—'}</td>`;}).join('')+
     `<td data-label="Effective From">${esc(dtxt(r.effective_from))}${r.effective_to?`<div class="dl-still">till ${esc(dtxt(r.effective_to))}</div>`:''}</td>`+
     `<td class="dl-notes" data-label="Notes">${r.notes?hl(r.notes):'—'}</td></tr>`).join(''));
   xlsLabel();
@@ -386,7 +392,7 @@ function render(newRows,reset){
 new IntersectionObserver(es=>{if(es[0].isIntersecting&&!S.loading&&!S.done&&S.lob)loadRows(false);},{root:null,rootMargin:'300px'}).observe($('more'));
 $('scroll').addEventListener('scroll',()=>{const s=$('scroll');if(s.scrollTop+s.clientHeight>s.scrollHeight-300&&!S.loading&&!S.done)loadRows(false);});
 let st;$('q').oninput=()=>{clearTimeout(st);st=setTimeout(refresh,250);};
-$('lobSwitch').onchange=()=>openLob($('lobSwitch').value);
+$('lobSwitch').onchange=()=>{try{localStorage.setItem('gm_lob',$('lobSwitch').value);}catch(e){}openLob($('lobSwitch').value);};
 function setBar(open){const b=$('fbar');$('fbtn').classList.toggle('open',open);b.classList.remove('shown');
   if(open){b.classList.add('open');setTimeout(()=>{if(b.classList.contains('open'))b.classList.add('shown');},360);}else b.classList.remove('open');}
 $('fbtn').onclick=()=>setBar(!$('fbar').classList.contains('open'));

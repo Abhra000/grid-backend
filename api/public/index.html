@@ -367,6 +367,10 @@ function xlsLabel(){                        // Excel = exactly what is on screen
   const f=Object.keys(S.sel).length||$('q').value.trim();
   $('xls').textContent='⬇ Excel'+(S.total?` (${f?'':'all '}${nf(S.total)})`:'');
   $('xls').title=f?'Download the '+nf(S.total)+' rows matching your filters':'Download the full grid ('+nf(S.total)+' rows)';}
+// a row whose value is "All" applies to every value: when the user filtered this column on ONE value, show that value
+function allCell(c){            // row value "All" = the rate does not depend on this column -> "Any <column>" when the user filters on it
+  if(!(S.sel[c.col]||[]).length)return '—';
+  return `<span class="dl-allv" title="This rate is the same for every ${esc(c.label)}">Any ${esc(c.label.toLowerCase().replace(/^rto$/,'RTO').replace(/^cc$/,'CC').replace(/^ncb$/,'NCB'))}</span>`;}
 function prevHtml(r){                       // M-07: earlier rate of the same row, small and faded
   if(!r.prev_rate||r.prev_rate===r.rate_text)return'';
   const a=parseFloat(r.rate_text),b=parseFloat(r.prev_rate);
@@ -382,7 +386,7 @@ function render(newRows,reset){
   }
   const base=S.rows.length-newRows.length;
   $('tb').insertAdjacentHTML('beforeend',newRows.map((r,i)=>'<tr data-i="'+(base+i)+'">'+S.shown.map((c,k)=>{const v=r.params[c.col];
-      return `<td class="${k===0?'dl-k0':''}" data-label="${esc(c.label)}">${v&&!isAll(v)?hl(v):((S.sel[c.col]||[]).length?'<span class="dl-allv" title="Applies to every '+esc(c.label)+'">All</span>':'—')}</td>`;}).join('')+
+      return `<td class="${k===0?'dl-k0':''}" data-label="${esc(c.label)}">${v&&!isAll(v)?hl(v):allCell(c)}</td>`;}).join('')+
     `<td class="dl-rate" data-label="${esc(S.rateCol||'Base Commission %')}"><span class="rv">${hl(r.rate_text)}${prevHtml(r)}</span></td>`+
     (S.after||[]).map(c=>{const v=r.params[c.col];return `<td data-label="${esc(c.label)}">${v&&!isAll(v)?hl(v):'—'}</td>`;}).join('')+
     `<td data-label="Effective From">${esc(dtxt(r.effective_from))}${r.effective_to?`<div class="dl-still">till ${esc(dtxt(r.effective_to))}</div>`:''}</td>`+

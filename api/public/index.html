@@ -69,13 +69,14 @@ header{background:linear-gradient(120deg,var(--navy) 0%,var(--navy2) 60%,#4E7A54
 .fbar{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px;max-height:0;opacity:0;overflow:hidden;transform:translateY(-6px);transition:max-height .35s ease,opacity .25s ease,transform .25s ease;position:relative;z-index:40}
 .fbar.open{max-height:900px;opacity:1;transform:none}
 .fbar.shown{overflow:visible}
-.fsteps{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;padding:16px}
-.fstep{width:215px;flex:0 0 auto}
+.fsteps{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px 14px;align-items:end;padding:16px}
+.fstep{min-width:0}
 .fstep.new{animation:slideIn .4s cubic-bezier(.2,.8,.2,1) both}
 @keyframes slideIn{from{opacity:0;transform:translateX(-22px)}to{opacity:1;transform:none}}
 .fstep .lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:800;margin:0 0 6px 2px;display:flex;gap:6px;align-items:center}
+.dl-dd.na>button{background:#F4F6F4;color:#9AA89C;cursor:not-allowed}
 .fstep .lbl i{font-style:normal;background:#E7EFE7;color:var(--navy);border-radius:20px;padding:0 7px;font-size:10px}
-.fstep.date{width:190px;padding-right:12px;border-right:1px dashed var(--line)}
+.fstep.date{padding-right:12px;border-right:1px dashed var(--line)}
 .fhint{align-self:center;color:var(--muted);font-size:12.5px;padding:0 4px 10px}
 .fhint b{color:var(--accent)}
 .fbar-foot{display:flex;justify-content:flex-end;padding:0 16px 12px}
@@ -118,7 +119,7 @@ header{background:linear-gradient(120deg,var(--navy) 0%,var(--navy2) 60%,#4E7A54
 mark.dl-hl{background:#ffe58a;color:inherit;padding:0 1px;border-radius:3px}
 footer{text-align:center;color:#93A695;font-size:12px;margin-top:26px}
 @media(max-width:880px){.dl-shell{padding:14px 12px}}
-@media(max-width:560px){.fstep,.fstep.date{width:100%;border-right:none;padding-right:0}.fsteps{gap:10px}}
+@media(max-width:560px){.fsteps{grid-template-columns:1fr 1fr;gap:10px;padding:12px}.fstep.date{grid-column:1/3;border-right:none;padding-right:0}.dl-pnl{max-width:80vw}}
 @media(max-width:640px){
   .dl-scroll{max-height:none}
   .dl-tbl thead{display:none}.dl-tbl,.dl-tbl tbody{display:block}
@@ -144,6 +145,7 @@ footer{text-align:center;color:#93A695;font-size:12px;margin-top:26px}
 .sgbtn{background:#fff;border:1px solid var(--accent);color:#8a6412;border-radius:9px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;margin-top:14px}
 .okmsg{background:#e2f7ee;color:#0b7a52;border-radius:8px;padding:10px 12px;font-size:13px;margin-top:10px}
 .spill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#FBF1DC;color:#8a6412}.spill.approved{background:#e2f7ee;color:#0b7a52}.spill.rejected{background:#fdecec;color:var(--red)}
+@media(max-width:760px){#mysug .t{display:none}.hd small{display:none}.hd h1{font-size:15px;white-space:nowrap}.lobsel{max-width:130px}#liveText{display:none}.hd{gap:8px}header{padding:0 12px}}
 </style>
 </head>
 <body>
@@ -153,7 +155,7 @@ footer{text-align:center;color:#93A695;font-size:12px;margin-top:26px}
     <div><h1>Grid Matrix</h1><small>Commission Grid Viewer</small></div>
     <div class="spacer"></div>
     <select class="lobsel hidden" id="lobSwitch"></select>
-    <button class="hbtn hidden" id="mysug" title="Rates you suggested">✎ My suggestions</button>
+    <button class="hbtn hidden" id="mysug" title="Rates you suggested">✎<span class="t"> My suggestions</span></button>
     <button class="hbtn hidden" id="logout">Log out</button>
     <div class="live" id="live"><span class="dot"></span><span id="liveText">Connecting…</span></div>
   </div>
@@ -271,27 +273,11 @@ async function openLob(id){
 const qbody=()=>({filters:S.sel,asOf:S.asOf,search:$('q').value.trim()});
 async function refresh(){live('Loading…');await Promise.all([loadOptions(),loadRows(true)]);chips();live('Live','ok');}
 
-/* ---------- filters: horizontal, step by step (Insurer first, next one slides in beside it) ---------- */
+/* ---------- filters: all shown together, in the admin's order; each list only offers values that fit the other choices ---------- */
 let shownBefore=new Set();
-function orderedFilterCols(){
-  const fc=S.cols.filter(c=>c.is_filter);
-  const ins=fc.filter(c=>/insurer|company/i.test(c.col));
-  return ins.concat(fc.filter(c=>!ins.includes(c)));
-}
-function stepCols(){            // filters to show: every chosen one + the next one to choose
-  const out=[];
-  for(const c of orderedFilterCols()){
-    const has=(S.opts[c.col]||[]).length||(S.sel[c.col]||[]).length;
-    if(!has)continue;                         // nothing to choose for this column with current choices → skip it
-    out.push(c);
-    if(!(S.sel[c.col]||[]).length)break;      // stop at the first one not chosen yet
-  }
-  return out;
-}
-function clearAfter(col){                     // changing an earlier step resets the steps after it
-  const order=orderedFilterCols().map(c=>c.col), k=order.indexOf(col);
-  order.slice(k+1).forEach(c=>delete S.sel[c]);
-}
+function orderedFilterCols(){ return S.cols.filter(c=>c.is_filter); }   // order set by admin (LOB Grids → Filters & columns)
+function stepCols(){ return orderedFilterCols(); }
+function clearAfter(){}                       // filters are independent now — changing one keeps the others
 async function loadOptions(){
   S.opts=await api('/api/lobs/'+encodeURIComponent(S.lob)+'/facets',qbody());
   const cols=stepCols(), t=today(), dates=[...new Set([t,...S.dates])].sort().reverse();
@@ -299,15 +285,15 @@ async function loadOptions(){
     <div class="dl-pnl">${dates.map(d=>`<label><input type="radio" name="asof" value="${d}" ${d===S.asOf?'checked':''}>${d===t?'Today · ':''}${dtxt(d)}</label>`).join('')}</div></div></div>`;
   const steps=cols.map((c,k)=>{
     const vals=S.opts[c.col]||[], sel=new Set(S.sel[c.col]||[]), all=[...new Set([...sel,...vals])];
+    const none=!all.length;
     const sb=all.length>12?`<input class="dl-mss" placeholder="Type to filter…" data-mss>`:'';
-    return `<div class="fstep${shownBefore.has(c.col)?'':' new'}"><div class="lbl"><i>${k+1}</i>${esc(c.label)}</div>
-      <div class="dl-dd${sel.size?' on':''}" data-col="${esc(c.col)}"><button type="button">${sel.size?esc([...sel].join(', ')):'Select '+esc(c.label)}</button>
+    return `<div class="fstep${shownBefore.has(c.col)?'':' new'}" style="${shownBefore.has(c.col)?'':`animation-delay:${Math.min(k,12)*35}ms`}"><div class="lbl">${esc(c.label)}</div>
+      <div class="dl-dd${sel.size?' on':''}${none?' na':''}" data-col="${esc(c.col)}"><button type="button" ${none?'disabled title="No values for the current choices"':''}>${sel.size?esc([...sel].join(', ')):(none?'— not applicable —':'All')}</button>
       <div class="dl-pnl"><div class="dl-cl" data-clear>✕ Clear</div>${sb}${all.map(v=>`<label data-t="${esc(String(v).toLowerCase())}"><input type="checkbox" value="${esc(v)}" ${sel.has(v)?'checked':''}>${esc(v)}</label>`).join('')}</div></div></div>`;}).join('');
-  const last=cols[cols.length-1], allDone=last&&(S.sel[last.col]||[]).length;
-  const hint=!cols.length?'':(!Object.keys(S.sel).length?`<div class="fhint">Start with <b>${esc(cols[0].label)}</b> — the next filter appears after each choice</div>`
-            :(allDone?`<div class="fhint">All filters applied</div>`:''));
-  $('fhost').innerHTML=dateHtml+steps+hint;
-  S.newStep=cols.map(c=>c.col).find(c=>!shownBefore.has(c)&&shownBefore.size)||null;   // the step that just appeared
+  const openCol=document.querySelector('.dl-dd.open[data-col]')?.dataset.col, mss=document.querySelector('.dl-dd.open .dl-mss')?.value||'';
+  $('fhost').innerHTML=dateHtml+steps;
+  if(openCol){const dd=document.querySelector(`.dl-dd[data-col="${CSS.escape(openCol)}"]`);if(dd){dd.classList.add('open');const m=dd.querySelector('.dl-mss');if(m&&mss){m.value=mss;m.dispatchEvent(new Event('input',{bubbles:true}));}}}
+  S.newStep=null;
   shownBefore=new Set(cols.map(c=>c.col));
   const n=Object.values(S.sel).reduce((a,v)=>a+v.length,0);$('fcount').textContent=n?String(n):'';
 }
@@ -326,12 +312,7 @@ document.addEventListener('change',e=>{
   e.target.checked?set.add(e.target.value):set.delete(e.target.value);
   if(set.size)S.sel[col]=[...set];else delete S.sel[col];
   clearAfter(col);
-  refresh().then(()=>{
-    // a new step appeared → open its list right away (its choices already follow the earlier steps); otherwise keep the same list open
-    const target=S.newStep||col;
-    setTimeout(()=>{const dd=document.querySelector(`.dl-dd[data-col="${CSS.escape(target)}"]`);
-      if(dd){document.querySelectorAll('.dl-dd.open').forEach(x=>x.classList.remove('open'));dd.classList.add('open');}},S.newStep?380:0);
-  });
+  refresh();                                   // the same list stays open so more values can be ticked
 });
 document.addEventListener('input',e=>{if(!e.target.hasAttribute('data-mss'))return;const v=e.target.value.toLowerCase();
   e.target.closest('.dl-pnl').querySelectorAll('label').forEach(l=>l.style.display=l.dataset.t.includes(v)?'':'none');});

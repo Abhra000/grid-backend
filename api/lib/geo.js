@@ -9,8 +9,7 @@ const KW = {
   BR: ['bihar', 'bhagalpur', 'gaya', 'muzaffarpur', 'patna', 'purnia'],
   CH: ['chandigarh'],
   CG: ['chhattisgarh', 'durg', 'raipur', 'bilaspur'],
-  DD: ['daman', 'diu', 'vapi'],
-  DN: ['dadra', 'nagar haveli', 'silvassa'],
+  DD: ['daman', 'diu', 'vapi', 'dadra', 'nagar haveli', 'silvassa'],
   DL: ['delhi', 'ncr'],
   GA: ['goa'],
   GJ: ['gujarat', 'ahmedabad', 'baroda', 'vadodara', 'surat', 'rajkot', 'vapi', 'valsad'],
@@ -40,7 +39,7 @@ const KW = {
   UK: ['uttarakhand', 'dehradun'],
   WB: ['west bengal', 'kolkata', 'darjeeling', 'bardhaman', 'medinapur', 'howrah'],
 };
-const ALIAS = { TG: 'TS', OR: 'OD', UA: 'UK', CT: 'CG' };          // old / alternate RTO prefixes
+const ALIAS = { TG: 'TS', OR: 'OD', UA: 'UK', CT: 'CG', DN: 'DD' };          // old / alternate RTO prefixes
 const RX = Object.entries(KW).map(([st, words]) => [st, new RegExp('\\b(' + words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')\\b', 'i')]);
 const memo = new Map();
 
@@ -63,7 +62,7 @@ export const isLocCol = c => /^location$|^state$|^city$|^cluster$|^zone$/i.test(
 /* ---------- P-04: State names, Location spelling clean-up ---------- */
 export const STATE_NAME = {
   AN: 'Andaman & Nicobar', AP: 'Andhra Pradesh', AR: 'Arunachal Pradesh', AS: 'Assam', BR: 'Bihar', CH: 'Chandigarh',
-  CG: 'Chhattisgarh', DD: 'Daman & Diu', DN: 'Dadra & Nagar Haveli', DL: 'Delhi', GA: 'Goa', GJ: 'Gujarat', HR: 'Haryana',
+  CG: 'Chhattisgarh', DD: 'Dadra & Nagar Haveli and Daman & Diu', DL: 'Delhi', GA: 'Goa', GJ: 'Gujarat', HR: 'Haryana',
   HP: 'Himachal Pradesh', JK: 'Jammu & Kashmir', LA: 'Ladakh', JH: 'Jharkhand', KA: 'Karnataka', KL: 'Kerala', LD: 'Lakshadweep',
   MP: 'Madhya Pradesh', MH: 'Maharashtra', MN: 'Manipur', ML: 'Meghalaya', MZ: 'Mizoram', NL: 'Nagaland', TR: 'Tripura',
   SK: 'Sikkim', OD: 'Odisha', PY: 'Puducherry', PB: 'Punjab', RJ: 'Rajasthan', TN: 'Tamil Nadu', TS: 'Telangana',
@@ -100,3 +99,11 @@ export function ccOptions(v) {
   const r = ccRange(v); if (!r) return [String(v)];
   return CC_BUCKETS.filter(([, a, b]) => r[0] <= b && a <= r[1]).map(x => x[0]);
 }
+
+/** 'DL-1' / 'DL 01' / 'dl01' -> 'DL-01' (keeps letter suffixes: 'TN-15M') */
+export function normRto(c) {
+  const s = String(c ?? '').replace(/\s+/g, '').toUpperCase();
+  const m = s.match(/^([A-Z]{2})-?(\d+)([A-Z]*)$/);
+  return m ? `${m[1]}-${String(+m[2]).padStart(2, '0')}${m[3]}` : String(c ?? '').trim();
+}
+export const stateOfCode = code => { const p = rtoState(code); return p ? (ALIAS[p] || p) : null; };

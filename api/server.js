@@ -10,7 +10,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import XLSX from 'xlsx';
 import { publish, diffUpload, toRecords, effectiveDates, exportRows } from './lib/rates.js';
-import { getSnapshot, querySnapshot, facetsSnapshot, clearSnapshots } from './lib/snapshot.js';
+import { getSnapshot, querySnapshot, facetsSnapshot, clearSnapshots, filterSnapshot } from './lib/snapshot.js';
 import { m365Config, startLogin, finishLogin } from './lib/m365.js';
 import { touchVisit, usageReport } from './lib/usage.js';
 import { registerAdmin, masterWarnings } from './lib/admin.js';
@@ -158,7 +158,8 @@ app.post('/api/lobs/:id/facets', { preHandler: viewer }, async req => {
 });
 
 app.post('/api/lobs/:id/export', { preHandler: viewer }, async (req, reply) => {
-  const rows = await exportRows(pool, req.params.id, { ...(req.body || {}), filters: await allowedFilters(req.params.id, req.user, (req.body || {}).filters) });
+  const eq = { ...(req.body || {}), filters: await allowedFilters(req.params.id, req.user, (req.body || {}).filters) };
+  const rows = filterSnapshot(await getSnapshot(pool, req.params.id, eq.asOf), eq);          // same rules as the screen
   const cols = (await lobColumns(req.params.id)).map(c => c.col);
   const aoa = [[...cols, 'Rate %', 'Previous %', 'Previous till', 'Effective From', 'Effective To', 'Notes'],
     ...rows.map(r => [...cols.map(c => r.params[c] ?? ''), r.rate_text, r.prev_rate && r.prev_rate !== r.rate_text ? r.prev_rate : '',

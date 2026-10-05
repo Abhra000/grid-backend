@@ -182,10 +182,10 @@ export async function facets(pool, lobId, q, cols) {
       GROUP BY 1, 2, 3, 4`, args);
   const sets = Object.fromEntries(cols.map(c => [c, new Set()]));
   for (const x of r.rows) {
-    if (isAll(x.value) || !x.value) continue;
-    if (x.nf === 0 || colIdx[x.fc] === x.key) sets[x.key]?.add(x.value);
+    if (!x.value) continue;
+    if (x.nf === 0 || colIdx[x.fc] === x.key) sets[x.key]?.add(isAll(x.value) ? 'All' : x.value);
   }
-  return Object.fromEntries(cols.map(c => [c, [...sets[c]].sort((a, b) => a.localeCompare(b, 'en', { numeric: true }))]));
+  return Object.fromEntries(cols.map(c => [c, [...sets[c]].sort((a, b) => (b === 'All') - (a === 'All') || a.localeCompare(b, 'en', { numeric: true }))]));
 }
 
 /** Dates that have uploads (for the "Rates as on" picker) */

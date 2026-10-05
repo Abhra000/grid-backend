@@ -26,6 +26,9 @@ export async function getSnapshot(pool, lobId, asOf) {
         WHERE r.lob_id = $1 AND r.period @> $2::date
         ORDER BY (r.rate_num = 0), r.insurer, r.product_type, r.id`, [lobId, d]);
     const rows = r.rows;
+    // a column that only some uploads have (e.g. Shriram's "Max OD Discount") counts as "All" for every other row
+    const allKeys = new Set(); for (const x of rows) for (const k in x.params) allKeys.add(k);
+    for (const x of rows) for (const k of allKeys) if (!(k in x.params)) x.params[k] = 'All';
     const keyOf = p => ({ ins: Object.keys(p).find(k => /insurer|company/i.test(k)), loc: Object.keys(p).find(isLocCol), rto: Object.keys(p).find(isRtoCol) });
     const ctx = new Map();                                                       // insurer -> its locations (for "Rest of …")
     for (const x of rows) {
@@ -46,7 +49,7 @@ export async function getSnapshot(pool, lobId, asOf) {
         else x._rtos = null;
       }
       if (lc && !('State' in x.params)) {                                       // P-04: State filter worked out from Location / RTOs
-        x._stN = x._rtos ? [...new Set([...x._rtos].map(c => MAPS.stateName(c)))].sort() : (x._rtos === null && MAPS ? [] : locStateNames(x.params[lc]));
+        x._stN = x._rtos ? [...new Set([...x._rtos].map(c => MAPS.stateName(c)).filter(Boolean))].sort() : (x._rtos === null && MAPS ? [] : locStateNames(x.params[lc]));
         x.params = { ...x.params, State: x._stN.length ? x._stN.join(' / ') : 'All' };
       } else x._stN = null;
       const cc = Object.keys(x.params).find(isCcCol);
@@ -136,7 +139,7 @@ function facetsCompute(snap, q, cols) {
     if (fails === 0) { for (const c of cols) if (sets[c]) for (const o of optsOf(r, c)) sets[c].add(o); }
     else if (sets[failCol]) { for (const o of optsOf(r, failCol)) sets[failCol].add(o); }
   }
-  return Object.fromEntries(cols.map(c => [c, [...sets[c]].sort(byAllFirst)]));
+  return Object.fromEntries(cols.map(c => [c, [...sets[c]].filter(v => v != null && v !== '').map(String).sort(byAllFirst)]));
 }
 // "All" (= blank / applies to every value) is offered as a choice of its own, listed first
 const CC_ORDER = Object.fromEntries(CC_BUCKETS.map((b, i) => [b[0], i]));

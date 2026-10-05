@@ -1,5 +1,6 @@
 // Core rate logic: publish (with automatic period end), query, filter options (facets), export.
 import crypto from 'node:crypto';
+import { insurerName } from './insurers.js';
 
 const isAll = v => String(v ?? '').trim().toLowerCase() === 'all';
 const norm = v => String(v ?? '').trim();
@@ -31,11 +32,11 @@ export function toRecords(columns, rows, rateCol) {
   for (const r of rows) {
     if (!norm(r[ins]) || norm(r[rc]) === '') continue;
     const params = {};
-    columns.forEach((h, i) => { if (i !== rc && i !== noteIdx) params[h] = norm(r[i]) || 'All'; });
+    columns.forEach((h, i) => { if (i !== rc && i !== noteIdx) params[h] = (i === ins ? insurerName(r[i]) : norm(r[i])) || 'All'; });
     const key = rowKey(params, paramCols);
     if (seen.has(key)) continue; seen.add(key);                       // duplicate rows in file: first wins
     const rt = fmtRate(r[rc]);
-    out.push({ insurer: norm(r[ins]), product_type: prod >= 0 ? (norm(r[prod]) || 'All') : 'All',
+    out.push({ insurer: insurerName(r[ins]), product_type: prod >= 0 ? (norm(r[prod]) || 'All') : 'All',
       params, row_key: key, rate_text: rt, rate_num: rateNum(rt), notes: noteIdx >= 0 ? norm(r[noteIdx]) : '' });
   }
   return { records: out, paramCols };

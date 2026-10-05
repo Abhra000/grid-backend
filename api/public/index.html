@@ -274,7 +274,7 @@ async function start(){
 async function openLob(id){
   S.lob=id;S.sel={};$('q').value='';
   const cfg=await api('/api/lobs/'+encodeURIComponent(id)+'/config');
-  S.cols=cfg.columns.filter(c=>c.visible);S.dates=cfg.dates||[];S.asOf=today();shownBefore=new Set();
+  S.cols=cfg.columns.filter(c=>c.visible);S.dates=cfg.dates||[];S.rtoStates=cfg.rtoStates||{};S.asOf=today();shownBefore=new Set();
   await refresh();setBar(true);
 }
 const qbody=()=>({filters:S.sel,asOf:S.asOf,search:$('q').value.trim()});
@@ -320,6 +320,11 @@ document.addEventListener('change',e=>{
   const col=dd.dataset.col, set=new Set(S.sel[col]||[]);
   e.target.checked?set.add(e.target.value):set.delete(e.target.value);
   if(set.size)S.sel[col]=[...set];else delete S.sel[col];
+  // P-10: picking RTOs picks their State too (Location then shows only the locations covering those RTOs)
+  if(/^rto\b/i.test(col)&&S.cols.some(c=>c.col==='State'&&c.is_filter)){
+    const sts=[...new Set([...set].filter(c=>c!=='All').map(c=>S.rtoStates[c]).filter(Boolean))];
+    if(sts.length)S.sel.State=sts;
+  }
   clearAfter(col);
   refresh();                                   // the same list stays open so more values can be ticked
 });

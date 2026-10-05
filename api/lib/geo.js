@@ -59,3 +59,44 @@ export function rtoState(code) {
 }
 export const isRtoCol = c => /^rto\b|rto\s*code/i.test(c);
 export const isLocCol = c => /^location$|^state$|^city$|^cluster$|^zone$/i.test(c);
+
+/* ---------- P-04: State names, Location spelling clean-up ---------- */
+export const STATE_NAME = {
+  AN: 'Andaman & Nicobar', AP: 'Andhra Pradesh', AR: 'Arunachal Pradesh', AS: 'Assam', BR: 'Bihar', CH: 'Chandigarh',
+  CG: 'Chhattisgarh', DD: 'Daman & Diu', DN: 'Dadra & Nagar Haveli', DL: 'Delhi', GA: 'Goa', GJ: 'Gujarat', HR: 'Haryana',
+  HP: 'Himachal Pradesh', JK: 'Jammu & Kashmir', LA: 'Ladakh', JH: 'Jharkhand', KA: 'Karnataka', KL: 'Kerala', LD: 'Lakshadweep',
+  MP: 'Madhya Pradesh', MH: 'Maharashtra', MN: 'Manipur', ML: 'Meghalaya', MZ: 'Mizoram', NL: 'Nagaland', TR: 'Tripura',
+  SK: 'Sikkim', OD: 'Odisha', PY: 'Puducherry', PB: 'Punjab', RJ: 'Rajasthan', TN: 'Tamil Nadu', TS: 'Telangana',
+  UP: 'Uttar Pradesh', UK: 'Uttarakhand', WB: 'West Bengal',
+};
+/** state names of a location (sorted); [] = not tied to a state */
+export const locStateNames = loc => [...locStates(loc)].map(s => STATE_NAME[s] || s).sort();
+
+// same place written differently by different insurers -> one spelling in the filter list
+const LOC_FIX = {
+  'bhubaneshwar': 'Bhubaneswar', 'visakhapatanam': 'Visakhapatnam', 'delhi ncr': 'Delhi / NCR', 'delhi/ncr': 'Delhi / NCR',
+  'ernakulam/kochi': 'Ernakulam / Kochi', 'ernakulam / kochi': 'Ernakulam / Kochi', 'kochi': 'Ernakulam / Kochi', 'ernakulam': 'Ernakulam / Kochi',
+};
+export function cleanLoc(v) {
+  if (v == null) return v;
+  let s = String(v).replace(/\s+/g, ' ').trim();
+  s = s.replace(/\bRest OF\b/g, 'Rest of').replace(/\bREST OF\b/g, 'Rest of');
+  return LOC_FIX[s.toLowerCase()] || s;
+}
+
+/* ---------- P-04: CC as ranges -> 3 clean choices ---------- */
+export const isCcCol = c => /^cc$|cubic/i.test(c);
+export const CC_BUCKETS = [['<1000', 0, 999], ['1000-1500', 1000, 1500], ['>1500', 1501, Infinity]];
+export function ccRange(v) {
+  const s = String(v ?? '').replace(/,/g, '').replace(/cc/ig, '').trim().toLowerCase(); let m;
+  if ((m = s.match(/^(?:<=?|below|upto|up to)\s*(\d+)/))) return [0, s.startsWith('<=') ? +m[1] : +m[1] - 1];
+  if ((m = s.match(/^(?:>=?|above)\s*(\d+)/))) return [s.startsWith('>=') ? +m[1] : +m[1] + 1, Infinity];
+  if ((m = s.match(/^(\d+)\s*(?:-|to)\s*(\d+)/))) return [+m[1], +m[2]];
+  return null;
+}
+/** the clean CC choices a row's CC value belongs to ('>1000' -> ['1000-1500','>1500']) */
+export function ccOptions(v) {
+  if (String(v ?? '').trim().toLowerCase() === 'all') return ['All'];
+  const r = ccRange(v); if (!r) return [String(v)];
+  return CC_BUCKETS.filter(([, a, b]) => r[0] <= b && a <= r[1]).map(x => x[0]);
+}

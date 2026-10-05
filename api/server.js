@@ -11,6 +11,7 @@ import jwt from 'jsonwebtoken';
 import XLSX from 'xlsx';
 import { publish, diffUpload, toRecords, effectiveDates, exportRows } from './lib/rates.js';
 import { getSnapshot, querySnapshot, facetsSnapshot, clearSnapshots, filterSnapshot, setRtoMaps, rtoMaps } from './lib/snapshot.js';
+import { renameInsurers } from './lib/insurers.js';
 import { seedRtoMaster, loadMaps, buildWorkbook, saveUpload } from './lib/rtoadmin.js';
 import { m365Config, startLogin, finishLogin } from './lib/m365.js';
 import { touchVisit, usageReport } from './lib/usage.js';
@@ -312,6 +313,7 @@ try {                                                        // keep the databas
   if (sf) await pool.query(fsImport.readFileSync(sf, 'utf8'));
 } catch (e) { console.warn('schema:', e.message); }
 await ensureStateColumn().catch(e => console.warn('State column:', e.message));
+try { const r = await renameInsurers(pool); if (r) console.log('Insurer names cleaned:', JSON.stringify(r)); } catch (e) { console.warn('Insurer rename:', e.message); }
 try { await seedRtoMaster(pool); setRtoMaps(await loadMaps(pool)); } catch (e) { console.warn('RTO master:', e.message); }
 if (process.env.NODE_ENV !== 'test') app.listen({ port: +PORT, host: process.env.HOST || '127.0.0.1' }).then(() => console.log('API on :' + PORT));
 export default app;

@@ -270,6 +270,14 @@ body.locked #sidebar,body.locked main,body.locked #burger,body.locked #userChip,
 <section id="pg-masters" class="page hidden">
   <div class="pagehd"><h2>Masters</h2><div style="flex:1"></div><select id="mLob" style="min-width:220px"></select></div>
   <div class="desc" style="margin-bottom:14px">The allowed values of each column. When a column has a master list, "Check changes" warns about any other value in an upload (spelling mistakes, new insurers…). Empty list = no check.</div>
+  <div class="scard">
+    <div class="row"><h3 style="margin:0">RTO master</h3><div style="flex:1"></div>
+      <button class="btn btn-ghost" id="rtoDl">⬇ Download RTO master (Excel)</button><button class="btn btn-accent" id="rtoUp">⬆ Upload edited file</button></div>
+    <div class="desc" style="margin-top:8px">Links RTO ↔ State ↔ Location for every insurer, so the filters work together (pick WB-01 → State West Bengal is picked and Location shows only the locations covering WB-01).
+      Download, check the rows marked <b>Needs review</b> in sheet “Location Map”, type corrections in <b>Override RTO codes</b>, then upload.</div>
+    <div class="desc" id="rtoStats" style="margin-top:8px"></div>
+    <input type="file" id="rtoFile" accept=".xlsx,.xls" hidden>
+  </div>
   <div class="mgrid"><div class="mcol" id="mCols"></div>
     <div class="scard" style="margin:0" id="mEdit"></div></div>
 </section>
@@ -567,7 +575,21 @@ $('apList').onclick=async e=>{const ok=e.target.dataset.ok,no=e.target.dataset.n
 /* ---------- masters ---------- */
 let MS=[],MSC='';
 $('mLob').onchange=()=>{LOB=$('mLob').value;$('lobPick').value=LOB;PV.key='';loadMasters();};
+async function rtoStats(){try{const d=await api('/api/admin/rto-master/stats');
+  $('rtoStats').innerHTML=`<span class="pill">${nf(d.codes)} RTO codes</span> <span class="pill">${nf(d.locations)} insurer locations mapped</span> <span class="pill ${d.review?'gold':''}">${nf(d.review)} need review</span> <span class="pill">${nf(d.overrides)} manual corrections</span>`;}catch(e){}}
+$('rtoDl').onclick=()=>download('/api/admin/rto-master/export').catch(x=>toast(x.message,1));
+$('rtoUp').onclick=()=>$('rtoFile').click();
+$('rtoFile').onchange=async()=>{const f=$('rtoFile').files[0];if(!f)return;
+  try{const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});
+    const sh=n=>wb.Sheets[wb.SheetNames.find(x=>x.toLowerCase()===n)];
+    const m=sh('rto master'),l=sh('location map');if(!m&&!l)throw new Error('Sheets “RTO Master” / “Location Map” not found — use the downloaded file');
+    const master=m?XLSX.utils.sheet_to_json(m,{header:1,defval:'',raw:false}).slice(1).filter(r=>r[0]):null;
+    const map=l?XLSX.utils.sheet_to_json(l,{defval:'',raw:false}).map(r=>({insurer:r['Insurer'],location:r['Location'],override:r['Override RTO codes'],note:r['Note']})):null;
+    if(!confirm(`Upload RTO master?\n${master?nf(master.length)+' RTO codes':'RTO codes unchanged'} · ${map?nf(map.filter(x=>String(x.override).trim()).length)+' manual corrections':'locations unchanged'}`))return;
+    const d=await api('/api/admin/rto-master',{method:'POST',body:{master,map}});toast(`RTO master saved: ${nf(d.masterRows)} codes, ${nf(d.overrides)} corrections`);rtoStats();}
+  catch(e){toast(e.message,1);}finally{$('rtoFile').value='';}};
 async function loadMasters(){
+  rtoStats();
   if(!LOB){$('mEdit').innerHTML='<div class="empty">Add a grid first.</div>';return;}
   $('mEdit').innerHTML='<div class="more"><div class="spin"></div>Loading…</div>';
   MS=await api('/api/lobs/'+encodeURIComponent(LOB)+'/masters');if(!MS.some(c=>c.col===MSC))MSC=(MS.find(c=>/insurer/i.test(c.col))||MS[0]||{}).col;drawMasters();}

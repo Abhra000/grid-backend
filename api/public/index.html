@@ -370,7 +370,7 @@ function xlsLabel(){                        // Excel = exactly what is on screen
 // a row whose value is "All" applies to every value: when the user filtered this column on ONE value, show that value
 function allCell(c){            // row value "All" = the rate does not depend on this column -> "Any <column>" when the user filters on it
   if(!(S.sel[c.col]||[]).length)return '—';
-  return `<span class="dl-allv" title="This rate is the same for every ${esc(c.label)}">Any ${esc(c.label.toLowerCase().replace(/^rto$/,'RTO').replace(/^cc$/,'CC').replace(/^ncb$/,'NCB'))}</span>`;}
+  return `<span class="dl-allv" title="This rate is the same for every ${esc(c.label)}">Any ${esc(/[A-Z]{2}/.test(c.label)?c.label:c.label.toLowerCase())}</span>`;}
 function prevHtml(r){                       // M-07: earlier rate of the same row, small and faded
   if(!r.prev_rate||r.prev_rate===r.rate_text)return'';
   const a=parseFloat(r.rate_text),b=parseFloat(r.prev_rate);

@@ -64,8 +64,10 @@ function facetsCompute(snap, q, cols) {
     let fails = 0, failCol = null;
     for (const [c, s] of f) { if (!passes(r, c, s)) { fails++; failCol = c; if (fails > 1) break; } }
     if (fails > 1) continue;
-    if (fails === 0) { for (const c of cols) { const v = r.params[c]; if (v && !isAll(v)) sets[c].add(v); } }
-    else if (sets[failCol]) { const v = r.params[failCol]; if (v && !isAll(v)) sets[failCol].add(v); }
+    if (fails === 0) { for (const c of cols) { const v = r.params[c]; if (v) sets[c].add(isAll(v) ? 'All' : v); } }
+    else if (sets[failCol]) { const v = r.params[failCol]; if (v) sets[failCol].add(isAll(v) ? 'All' : v); }
   }
-  return Object.fromEntries(cols.map(c => [c, [...sets[c]].sort((a, b) => a.localeCompare(b, 'en', { numeric: true }))]));
+  return Object.fromEntries(cols.map(c => [c, [...sets[c]].sort(byAllFirst)]));
 }
+// "All" (= blank / applies to every value) is offered as a choice of its own, listed first
+const byAllFirst = (a, b) => (b === 'All') - (a === 'All') || a.localeCompare(b, 'en', { numeric: true });

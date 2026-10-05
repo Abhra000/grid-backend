@@ -160,8 +160,9 @@ app.post('/api/lobs/:id/facets', { preHandler: viewer }, async req => {
 app.post('/api/lobs/:id/export', { preHandler: viewer }, async (req, reply) => {
   const rows = await exportRows(pool, req.params.id, { ...(req.body || {}), filters: await allowedFilters(req.params.id, req.user, (req.body || {}).filters) });
   const cols = (await lobColumns(req.params.id)).map(c => c.col);
-  const aoa = [[...cols, 'Rate %', 'Effective From', 'Effective To', 'Notes'],
-    ...rows.map(r => [...cols.map(c => r.params[c] ?? ''), r.rate_text, r.effective_from, r.effective_to || '', r.notes || ''])];
+  const aoa = [[...cols, 'Rate %', 'Previous %', 'Previous till', 'Effective From', 'Effective To', 'Notes'],
+    ...rows.map(r => [...cols.map(c => r.params[c] ?? ''), r.rate_text, r.prev_rate && r.prev_rate !== r.rate_text ? r.prev_rate : '',
+                      r.prev_rate && r.prev_rate !== r.rate_text ? (r.prev_to || '') : '', r.effective_from, r.effective_to || '', r.notes || ''])];
   const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Rates');
   audit(req.user.id, 'export', { lob: req.params.id, rows: rows.length });
   reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')

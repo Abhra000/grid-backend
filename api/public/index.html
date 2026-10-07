@@ -582,11 +582,22 @@ function mPanel(){
 function mRows(newRows,reset){
   const cols=S.cols, ins1=(S.sel[(cols.find(c=>isIns(c.col))||{}).col]||[]).length===1;
   const pc=cols.find(c=>isProd(c.col)), prod1=pc&&(S.sel[pc.col]||[]).length===1;
-  const nice=(c,v)=>/^cc$|cubic/i.test(c)&&/\d/.test(v)?String(v).replace(/^<=?\s*/,'up to ').replace(/^>=?\s*/,'above ')+' cc':v;
+  const lab=c=>(cols.find(x=>x.col===c)||{}).label||c;
+  const nice=(c,v)=>{v=String(v);                                      // values that mean nothing alone get their column name
+    if(/^cc$|cubic/i.test(c)&&/\d/.test(v))return v.replace(/^<=?\s*/,'up to ').replace(/^>=?\s*/,'above ')+' cc';
+    if(/^ncb$/i.test(c)&&/^(yes|no)$/i.test(v))return /^y/i.test(v)?'With NCB':'Without NCB';
+    if(/^(yes|no)$/i.test(v))return lab(c)+': '+v;
+    if(/age/i.test(c)&&/year/i.test(v)&&!/old/i.test(v))return v+' old';
+    if(/business/i.test(c)&&/^new$/i.test(v))return 'New car';
+    if(/business/i.test(c)&&/^(renewal|rollover)$/i.test(v))return v;
+    if(/vehicle/i.test(c)&&/^hev$/i.test(v))return 'Hybrid (HEV)';
+    if(/discount|premium|term/i.test(c)&&!new RegExp(lab(c).split(' ')[0],'i').test(v))return lab(c)+' '+v;
+    return v;};
   const icx=cols.find(c=>isIns(c.col));
   if(S.insFirst&&((icx&&!(S.sel[icx.col]||[]).length)||(pc&&!(S.sel[pc.col]||[]).length))){$('mList').innerHTML='';$('mMore').textContent='';return;}   // rates appear once insurer + product are chosen
   const html=newRows.map((r,i)=>{const P=r.params,k=S.rows.length-newRows.length+i;
-    const t=cols.filter(c=>!SUBC(c.col)&&P[c.col]&&!isAll(P[c.col])).map(c=>esc(nice(c.col,P[c.col]))).join(' · ')||'All vehicles';
+    const newBiz=cols.some(c=>/business/i.test(c.col)&&/^new$/i.test(P[c.col]||''));
+    const t=cols.filter(c=>!SUBC(c.col)&&P[c.col]&&!isAll(P[c.col])&&!(newBiz&&/age/i.test(c.col)&&/brand\s*new/i.test(P[c.col]))).map(c=>esc(nice(c.col,P[c.col]))).join(' · ')||'All vehicles';
     const z=parseFloat(r.rate_text)===0;
     const sub=[!ins1&&P[(cols.find(c=>isIns(c.col))||{}).col],!prod1&&pc&&!isAll(P[pc.col])&&P[pc.col],
       ...cols.filter(c=>isGeo(c.col)&&c.col!=='State').map(c=>P[c.col]).filter(v=>v&&!isAll(v)),

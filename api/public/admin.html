@@ -253,6 +253,7 @@ body.locked #sidebar,body.locked main,body.locked #burger,body.locked #userChip,
         <div class="full"><label class="fl">Columns of the template (one per line, in file order)</label><textarea id="stCols" rows="9" style="font-family:Consolas,monospace"></textarea>
           <div class="desc" style="margin-top:4px">Must include an <b>Insurer</b> column and the rate column. A column named Notes / Remarks is shown as notes.</div></div>
         <div class="full"><label class="fl">Description (optional)</label><input id="stDesc"></div>
+        <div class="full"><label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;cursor:pointer"><input type="checkbox" id="stIns" style="margin-top:3px"><span><b>Insurer first</b> — users see only the Insurer filter until they pick an insurer; then only the filters that insurer's rates use (its "parameters to check").</span></label></div>
       </div>
       <div class="row" style="margin-top:14px"><button class="btn btn-accent" id="stSave">Save settings</button><button class="btn btn-ghost" id="stTpl">⬇ Download template</button><button class="btn btn-red hidden" id="stDel">Delete grid</button></div>
     </div>
@@ -539,9 +540,9 @@ async function loadHistory(){
 $('histBody').onclick=e=>{const id=e.target.dataset.dl;if(id)download('/api/lobs/'+encodeURIComponent(LOB)+'/uploads/'+id+'/download').catch(x=>toast(x.message,1));};
 
 /* settings + add LOB */
-function loadSettings(){const l=curLob();$('stName').value=l.name;$('stRate').value=l.rate_col;$('stCols').value=(l.columns||[]).join('\n');$('stDesc').value=l.description||'';
+function loadSettings(){const l=curLob();$('stName').value=l.name;$('stRate').value=l.rate_col;$('stCols').value=(l.columns||[]).join('\n');$('stDesc').value=l.description||'';$('stIns').checked=!!l.insurer_first;
   $('stDel').classList.toggle('hidden',!(ME.role==='superadmin'&&!l.all_rows));}
-$('stSave').onclick=async()=>{try{await api('/api/lobs/'+encodeURIComponent(LOB),{method:'PATCH',body:{name:$('stName').value,rateCol:$('stRate').value,columns:$('stCols').value.split('\n'),description:$('stDesc').value}});toast('Grid settings saved');PV.key='';await loadLobs();showLobs();}catch(e){toast(e.message,1);}};
+$('stSave').onclick=async()=>{try{await api('/api/lobs/'+encodeURIComponent(LOB),{method:'PATCH',body:{name:$('stName').value,rateCol:$('stRate').value,columns:$('stCols').value.split('\n'),description:$('stDesc').value,insurerFirst:$('stIns').checked}});toast('Grid settings saved');PV.key='';await loadLobs();showLobs();}catch(e){toast(e.message,1);}};
 $('stTpl').onclick=()=>download('/api/lobs/'+encodeURIComponent(LOB)+'/template').catch(x=>toast(x.message,1));
 $('stDel').onclick=async()=>{if(!confirm('Delete the empty grid “'+curLob().name+'”?'))return;try{await api('/api/lobs/'+encodeURIComponent(LOB),{method:'DELETE'});LOB='';await loadLobs();showLobs();toast('Grid deleted');}catch(e){toast(e.message,1);}};
 $('addLobBtn').onclick=()=>{

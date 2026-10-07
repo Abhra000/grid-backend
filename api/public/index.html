@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Grid Matrix — Commission Viewer</title>
+<script>
+(function(){var d=document.documentElement;
+  function phone(){var mm=window.matchMedia,coarse=mm&&mm('(hover:none) and (pointer:coarse)').matches,small=Math.min(screen.width,screen.height)<=500;
+    return (mm&&mm('(max-width:700px)').matches)||(coarse&&small);}
+  function set(){var m=phone();d.classList.toggle('m',m);
+    // Chrome "Desktop site" on a phone lays the page out ~980px wide and shrinks it: zoom back to phone size
+    d.style.zoom=(m&&window.innerWidth>700&&screen.width<=500)?String(window.innerWidth/screen.width):'';}
+  set();addEventListener('resize',set);window.__isPhone=phone;})();
+</script>
 <style>
 /* ===== Same look as the current Vercel viewer ===== */
 :root{
@@ -156,57 +165,61 @@ footer{text-align:center;color:#93A695;font-size:12px;margin-top:26px}
 .devby{font-size:10px;color:#93A695;opacity:.3;letter-spacing:.3px;text-align:center;margin-top:6px}
 .dl-allv{color:var(--muted);font-style:italic}
 
-/* ===== Mobile view (phones, <=700px): saffron "Find a rate" screen — filters + rates on one page ===== */
+/* ===== Mobile view (phones): saffron "Find a rate" screen — filters + rates on one page.
+   html.m is set by the script in <head>: narrow screen, or a phone even with Chrome "Desktop site" ticked ===== */
 .m-only{display:none}
-@media(max-width:700px){
-  body.in-app{background:#fff}
-  body.in-app header{display:none}
-  body.in-app .dl-shell{padding:0 0 76px}
-  body.in-app .dl-tools,body.in-app .fbar,body.in-app .dl-chips,body.in-app .dl-wrap{display:none!important}
-  body.in-app .m-only{display:block}
-  .m-top{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px;gap:10px}
-  .m-logo{width:34px;height:34px;border-radius:11px;background:#F39C12;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none}
-  .m-logo img{width:30px;height:30px;object-fit:contain;background:#fff;border-radius:8px}
-  .m-ttl{font-size:15px;font-weight:700;color:#2B1A00}
-  .m-date{font-size:11.5px;color:#8A7A66;border:none;background:none;padding:0;font-family:inherit;-webkit-appearance:none;appearance:none}
-  .m-lob{background:#FFF1DC;color:#7A4100;border:none;border-radius:16px;padding:6px 10px;font-size:12px;font-weight:600;max-width:140px;font-family:inherit}
-  .m-srch{margin:0 16px;border-radius:14px;background:#F6F4F1;display:flex;align-items:center;gap:8px;padding:0 12px}
-  .m-srch input{flex:1;border:none;background:none;outline:none;padding:11px 0;font-size:14px;font-family:inherit}
-  .m-pnl{margin:12px 16px;border:1px solid #EEE7DC;border-radius:16px;padding:12px}
-  .m-ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-  .m-ph b{font-size:14px;color:#2B1A00}
-  .m-ib{width:32px;height:32px;border-radius:10px;border:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:none;background:#FFF1DC;color:#7A4100}
-  .m-ib.on{background:#F39C12;color:#2B1A00}
-  .m-ib svg{width:17px;height:17px}
-  .m-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .m-f label{display:block;font-size:10.5px;color:#8A7A66;margin:0 0 3px 2px}
-  .m-f select{width:100%;height:34px;border:1px solid #E2DACE;border-radius:10px;background:#fff;font-size:12.5px;padding:0 8px;color:#2B1A00;font-family:inherit;outline:none}
-  .m-f select.on{border-color:#E08A00;background:#FFF7EC;color:#7A4100;font-weight:600}
-  .m-hint{font-size:12px;color:#8A7A66;margin-top:8px}
-  .m-chips{display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .m-ch{display:inline-flex;gap:5px;align-items:center;background:#FFF1DC;color:#7A4100;border-radius:14px;padding:5px 10px;margin:0 4px 4px 0;font-size:12px;cursor:pointer}
-  .m-cnt{font-size:12px;color:#8A7A66;padding:0 16px 6px}
-  .m-rw{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid #F1ECE4;cursor:pointer}
-  .m-rw:active{background:#FFF7EC}
-  .m-t{font-size:14px;font-weight:600;color:#2B1A00}
-  .m-s{font-size:12px;color:#8A7A66;margin-top:2px}
-  .m-r{text-align:right;flex:none}
-  .m-rate{font-size:19px;font-weight:700;color:#9A5300}
-  .m-rate.z{color:#9A928A}
-  .m-b{display:inline-block;border-radius:8px;padding:1px 7px;font-size:11px;margin-top:2px;white-space:nowrap}
-  .m-b.dn{background:#FCEBEB;color:#A32D2D}.m-b.up{background:#EAF3DE;color:#3B6D11}.m-b.eq{color:#9A928A;padding:0}
-  .m-empty{padding:30px 16px;text-align:center;color:#8A7A66;font-size:13px}
-  .m-nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #EEE7DC;display:flex;justify-content:space-around;padding:9px 0 calc(10px + env(safe-area-inset-bottom));z-index:70}
-  .m-nav button{background:none;border:none;font-size:11.5px;color:#8A7A66;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-family:inherit}
-  .m-nav button.a{color:#C06C00;font-weight:600}
-  .m-nav svg{width:20px;height:20px}
-  footer{margin-bottom:10px}
-  .overlay{align-items:flex-end;padding:0}
-  .overlay .modal{max-width:100%;border-radius:18px 18px 0 0;max-height:90vh}
-  .overlay .modal .mh{background:#FFF1DC;color:#2B1A00;border-radius:18px 18px 0 0}
-  .overlay .modal .mh p{color:#8A7A66}.overlay .xbtn{background:#fff;color:#7A4100}
-  .sgbtn{width:100%;border-color:#F39C12;color:#7A4100}
-}
+html.m body.in-app{background:#fff}
+html.m body.in-app header{display:none}
+html.m body.in-app .dl-shell{padding:0 0 64px;max-width:none}
+html.m body.in-app .dl-tools,html.m body.in-app .fbar,html.m body.in-app .dl-chips,html.m body.in-app .dl-wrap{display:none!important}
+html.m body.in-app .m-only{display:block}
+html.m body.in-app .m-nav.m-only{display:flex}
+.m-top{display:flex;justify-content:space-between;align-items:center;padding:12px 14px 8px;gap:10px}
+.m-logo{height:32px;border-radius:10px;border:1.5px solid #F39C12;background:#fff;display:flex;align-items:center;justify-content:center;padding:2px 5px;flex:none}
+.m-logo img{height:100%;width:auto;display:block}
+.m-ttl{font-size:15px;font-weight:600;color:#2B1A00;white-space:nowrap}
+.m-lob{background:#FFF1DC;color:#7A4100;border:none;border-radius:14px;padding:5px 10px;font-size:11.5px;font-weight:500;max-width:150px;font-family:inherit;outline:none}
+.m-dt{position:relative;display:flex;align-items:center;justify-content:space-between;margin:0 14px 10px;border:1px solid #F0C27A;background:#FFF7EC;border-radius:12px;padding:7px 10px;font-size:12px;color:#7A4100}
+.m-dt b{font-weight:600}
+.m-dt svg{width:13px;height:13px;vertical-align:-2px}
+.m-dt select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.m-srch{margin:0 14px;border-radius:12px;background:#F6F4F1;display:flex;align-items:center;gap:6px;padding:0 11px}
+.m-srch input{flex:1;border:none;background:none;outline:none;padding:9px 0;font-size:12.5px;font-family:inherit;color:#2B1A00}
+.m-srch input::placeholder{color:#9A928A}
+.m-pnl{margin:10px 14px;border:1px solid #EEE7DC;border-radius:14px;padding:10px}
+.m-ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.m-ph b{font-size:13px;font-weight:600;color:#2B1A00}
+.m-ib{width:28px;height:28px;border-radius:9px;border:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:none;background:#FFF1DC;color:#7A4100;padding:0}
+.m-ib.on{background:#F39C12;color:#2B1A00}
+.m-ib svg{width:15px;height:15px}
+.m-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px 8px}
+.m-f label{display:block;font-size:10px;color:#8A7A66;margin:0 0 3px 2px}
+.m-f select{width:100%;height:30px;border:1px solid #E2DACE;border-radius:9px;background:#fff;font-size:11.5px;padding:0 6px;color:#9A928A;font-family:inherit;outline:none}
+.m-f select.on{border-color:#E08A00;background:#FFF7EC;color:#7A4100;font-weight:600}
+.m-hint{font-size:11px;color:#8A7A66;margin-top:8px}
+.m-chips{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.m-ch{display:inline-flex;gap:4px;align-items:center;background:#FFF1DC;color:#7A4100;border-radius:14px;padding:4px 9px;margin:0 4px 4px 0;font-size:11px;cursor:pointer}
+.m-cnt{font-size:11px;color:#8A7A66;padding:0 14px 5px}
+.m-rw{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid #F1ECE4;cursor:pointer}
+.m-rw:active{background:#FFF7EC}
+.m-t{font-size:13px;font-weight:600;color:#2B1A00}
+.m-s{font-size:11px;color:#8A7A66;margin-top:1px}
+.m-r{text-align:right;flex:none}
+.m-rate{font-size:17px;font-weight:600;color:#9A5300}
+.m-rate.z{color:#9A928A}
+.m-b{display:inline-block;border-radius:7px;padding:1px 6px;font-size:10.5px;white-space:nowrap}
+.m-b.dn{background:#FCEBEB;color:#A32D2D}.m-b.up{background:#EAF3DE;color:#3B6D11}.m-b.eq{color:#9A928A;padding:0}
+.m-empty{padding:24px 14px;text-align:center;color:#8A7A66;font-size:12px}
+.m-nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #EEE7DC;justify-content:space-around;padding:8px 0 calc(12px + env(safe-area-inset-bottom));z-index:70}
+.m-nav button{background:none;border:none;font-size:10.5px;color:#8A7A66;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;font-family:inherit;padding:0 12px}
+.m-nav button.a{color:#C06C00}
+.m-nav svg{width:18px;height:18px}
+html.m footer{margin-bottom:10px}
+html.m .overlay{align-items:flex-end;padding:0}
+html.m .overlay .modal{max-width:100%;border-radius:18px 18px 0 0;max-height:90vh}
+html.m .overlay .modal .mh{background:#FFF1DC;color:#2B1A00;border-radius:18px 18px 0 0}
+html.m .overlay .modal .mh p{color:#8A7A66}html.m .overlay .xbtn{background:#fff;color:#7A4100}
+html.m .sgbtn{width:100%;border-color:#F39C12;color:#7A4100}
 </style>
 </head>
 <body>
@@ -257,7 +270,8 @@ footer{text-align:center;color:#93A695;font-size:12px;margin-top:26px}
   <main class="dl-main">
     <!-- mobile view (phones) -->
     <div class="m-only" id="mView">
-      <div class="m-top"><div style="display:flex;gap:10px;align-items:center;min-width:0"><div class="m-logo"><img id="mLogo" alt=""></div><div style="min-width:0"><div class="m-ttl">Grid Matrix</div><select class="m-date" id="mDate" aria-label="Rates as on"></select></div></div><select class="m-lob" id="mLob" aria-label="Grid"></select></div>
+      <div class="m-top"><div style="display:flex;gap:9px;align-items:center;min-width:0"><div class="m-logo"><img id="mLogo" alt="Ideal Insurance"></div><div class="m-ttl">Grid Matrix</div></div><select class="m-lob" id="mLob" aria-label="Grid"></select></div>
+      <div class="m-dt"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M16 3v4M8 3v4M4 11h16"/></svg> Rates as on</span><b id="mDateTxt"></b><select id="mDate" aria-label="Rates as on"></select></div>
       <div class="m-srch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A7A66" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="mq" placeholder="Search city, RTO, insurer" autocomplete="off"></div>
       <div class="m-pnl" id="mPnl"></div>
       <div id="mList"></div><div class="m-empty" id="mMore"></div>
@@ -533,7 +547,7 @@ $('mysug').onclick=async()=>{
 };
 
 /* ===================== Mobile view (phones) ===================== */
-const M=()=>!!(window.matchMedia&&matchMedia('(max-width:700px)').matches);
+const M=()=>document.documentElement.classList.contains('m');
 const F_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h8M16 6h4M4 12h2M10 12h10M4 18h11M19 18h1"/><circle cx="14" cy="6" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg>';
 S.mOpen=true;
 const isIns=c=>/insurer|company/i.test(c), isProd=c=>/product\s*type|^product$/i.test(c);
@@ -543,7 +557,8 @@ function mTop(){
   $('mLogo').src=document.querySelector('.logo img').src;
   $('mLob').innerHTML=$('lobSwitch').innerHTML;$('mLob').value=S.lob;$('mLob').classList.toggle('hidden',(S.lobs||[]).length<2);
   const t=today(),ds=S.fdates||[t];
-  $('mDate').innerHTML=ds.map(d=>`<option value="${d}"${d===S.asOf?' selected':''}>Rates as on ${d===t?'today, ':''}${dtxt(d).slice(0,6)}</option>`).join('');
+  $('mDate').innerHTML=ds.map(d=>`<option value="${d}"${d===S.asOf?' selected':''}>${d===t?'Today · ':''}${dtxt(d)}</option>`).join('');
+  $('mDateTxt').textContent=(S.asOf===t?'Today · ':'')+dtxt(S.asOf)+' ▾';
 }
 function mPanel(){
   mTop();
@@ -603,7 +618,7 @@ $('mnAcc').onclick=async()=>{const me=await api('/api/me').catch(()=>({user:{}})
   modal(`<div class="modal"><div class="mh"><div><h3>Account</h3><p>${esc(me.user.email||'')}</p></div><button class="xbtn">✕</button></div><div class="mb"><button class="gold" id="mOut">Log out</button></div></div>`);
   $('mOut').onclick=()=>{closeModal();$('logout').onclick();};};
 new IntersectionObserver(es=>{if(M()&&es[0].isIntersecting&&!S.loading&&!S.done&&S.lob)loadRows(false);},{rootMargin:'300px'}).observe($('mMore'));
-if(window.matchMedia)matchMedia('(max-width:700px)').addEventListener?.('change',()=>{if(S.lob)refresh();});
+let mWas=M();addEventListener('resize',()=>{if(M()!==mWas){mWas=M();if(S.lob)refresh();}});
 </script>
 </body>
 </html>

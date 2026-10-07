@@ -132,15 +132,19 @@ export function facetsSnapshot(snap, q, cols) {
 /**
  * M-18: the filters the chosen insurer(s) actually use ("parameter to check"): a column is used when that insurer's
  * rates have more than one value in it (Product Type: any value). Location / RTO / State count as one group.
- * No insurer chosen -> [] (only the Insurer filter is shown).
+ * Steps: no insurer -> Insurer only; insurer but no product type -> Insurer + Product Type;
+ * both -> the filters that insurer's rates for those product types use (SAOD -> Location + NCB …).
  */
 const GEO = c => c === 'State' || isLocCol(c) || isRtoCol(c);
 function usedCols(snap, q, cols) {
   const ic = cols.find(c => /insurer|company/i.test(c)); if (!ic) return cols;
   const pick = new Set((q.filters || {})[ic] || []); if (!pick.size) return [ic];
+  const pc = cols.find(c => /product\s*type|^product$/i.test(c)), pt = new Set(((q.filters || {})[pc] || []).map(String));
+  if (pc && !pt.size) return [ic, pc];                                    // M-18: insurer, then product type, then the rest
   const vals = Object.fromEntries(cols.map(c => [c, new Set()]));
   for (const r of snap.rows) {
     if (!pick.has(String(r.params[ic]))) continue;
+    if (pt.size && !pt.has(isAll(r.params[pc]) ? 'All' : String(r.params[pc])) && !isAll(r.params[pc])) continue;   // M-18: follow the product type too
     for (const c of cols) if (c !== 'State') vals[c].add(isAll(r.params[c]) ? 'All' : String(r.params[c] ?? 'All'));
   }
   const uses = c => vals[c].size > 1 || (/product/i.test(c) && [...vals[c]].some(v => v !== 'All'));

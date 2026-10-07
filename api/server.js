@@ -36,6 +36,8 @@ function auth(roles) {
     try { req.user = jwt.verify(tok, JWT_SECRET); } catch { return reply.code(401).send({ error: 'Please log in' }); }
     if (req.user.mc && !/^\/api\/(me|auth\/)/.test(req.url)) return reply.code(403).send({ error: 'Please set your own password first', mustChange: true });
     if (roles && !roles.includes(req.user.role)) return reply.code(403).send({ error: 'Not allowed for your role' });
+    const m = req.url.match(/^\/api\/lobs\/([^/?]+)\/(config|query|facets|export|suggestions|rates)/);      // M-20: hidden grid -> admins only
+    if (m && !isAdminUser(req.user) && (await hiddenLobs()).has(decodeURIComponent(m[1]))) return reply.code(404).send({ error: 'Grid not found' });
   };
 }
 const viewer = auth(['viewer', 'admin', 'superadmin']);
@@ -113,12 +115,20 @@ app.get('/api/admin/usage', { preHandler: auth(['admin', 'superadmin']) }, async
 const IFIRST = new Map();                                   // M-18: lob -> insurer_first
 const OVR = new Map();                                      // M-19: lob -> {ver, map insurer+product -> [cols]}
 let OVR_VER = 1;
-const clearCache = () => { clearSnapshots(); COLS_CACHE.clear(); IFIRST.clear(); OVR.clear(); OVR_VER++; ACCESS.clear(); ensureStateColumn().catch(() => {}); };   // publish / grid change
+const clearCache = () => { clearSnapshots(); COLS_CACHE.clear(); IFIRST.clear(); OVR.clear(); OVR_VER++; HIDDEN.t = 0; ACCESS.clear(); ensureStateColumn().catch(() => {}); };   // publish / grid change
 
 /* ---------------- read (viewer) ---------------- */
-app.get('/api/lobs', { preHandler: viewer }, async () =>
-  (await pool.query(`SELECT l.id, l.name, l.rate_col, max(r.effective_from)::text AS latest
-                       FROM lobs l LEFT JOIN rates r ON r.lob_id=l.id GROUP BY l.id ORDER BY l.created_at, l.name`)).rows);   // first grid created (Motor) opens first
+const isAdminUser = u => u && (u.role === 'admin' || u.role === 'superadmin');
+app.get('/api/lobs', { preHandler: viewer }, async req =>
+  (await pool.query(`SELECT l.id, CASE WHEN l.hidden THEN l.name || ' (hidden from users)' ELSE l.name END AS name, l.rate_col, l.hidden, max(r.effective_from)::text AS latest
+                       FROM lobs l LEFT JOIN rates r ON r.lob_id=l.id WHERE NOT l.hidden OR $1
+                      GROUP BY l.id ORDER BY l.created_at, l.name`, [isAdminUser(req.user)])).rows);   // first grid created (Motor) opens first
+// M-20: a hidden grid answers only admins
+const HIDDEN = { t: 0, set: new Set() };
+async function hiddenLobs() {
+  if (Date.now() - HIDDEN.t > 15_000) { HIDDEN.set = new Set((await pool.query('SELECT id FROM lobs WHERE hidden')).rows.map(r => r.id)); HIDDEN.t = Date.now(); }
+  return HIDDEN.set;
+}
 
 const COLS_CACHE = new Map();
 async function lobColumns(lobId) {

@@ -176,3 +176,6 @@ CREATE TABLE IF NOT EXISTS insurer_filters (
   updated_at  timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (lob_id, insurer, product)
 );
+
+-- ===== M-20: hide a grid from users (data kept; admins still see it) =====
+ALTER TABLE lobs ADD COLUMN IF NOT EXISTS hidden boolean NOT NULL DEFAULT false;

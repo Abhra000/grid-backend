@@ -200,6 +200,7 @@ body.locked #sidebar,body.locked main,body.locked #burger,body.locked #userChip,
       <button class="subtab on" data-t="upload">⬆ Upload grid</button>
       <button class="subtab" data-t="preview">▤ Preview &amp; edit rates</button>
       <button class="subtab" data-t="filters">⇅ Filters &amp; columns</button>
+      <button class="subtab" data-t="insf">⚑ Filters per insurer</button>
       <button class="subtab" data-t="history">🕘 Upload history</button>
       <button class="subtab" data-t="settings">⚙ Grid settings</button>
     </div>
@@ -238,6 +239,14 @@ body.locked #sidebar,body.locked main,body.locked #burger,body.locked #userChip,
         <b>Everyone</b> ticked = default filter for all users. Unticked = only for users allowed to <b>see all filters</b> (set in <a href="#users">Users &amp; usage</a> — per user or per role).</div>
       <ul class="forder" id="forder"></ul>
       <div class="row" style="margin-top:12px"><button class="btn btn-accent" id="saveOrder">Save order</button><span class="desc" id="orderPreview"></span></div>
+    </div>
+
+    <!-- M-19: filters per insurer + product type -->
+    <div id="t-insf" class="hidden">
+      <div class="desc" style="margin-bottom:12px">Choose which filters users see after picking an <b>insurer + product type</b>. <span class="pill">Automatic</span> = worked out from the uploaded rates (a filter shows when the rates differ by it). <span class="pill" style="background:#FFF1DC;color:#7A4100">Set by admin</span> = your own list. The order follows <i>Filters &amp; columns</i>.</div>
+      <div id="insfWarn" class="desc hidden" style="margin-bottom:10px;color:#A32D2D">“Insurer first” is off for this grid — these lists are used only when it is on (Grid settings).</div>
+      <div class="row" style="margin-bottom:10px"><div style="flex:1;min-width:200px"><input id="insfQ" placeholder="Search insurer or product…" style="width:100%"></div><span class="pill" id="insfCount">—</span></div>
+      <div class="twrap"><div class="tscroll"><table class="utbl click"><thead><tr><th>Insurer</th><th>Product type</th><th>Rates</th><th>Filters users see</th><th></th></tr></thead><tbody id="insfBody"></tbody></table></div></div>
     </div>
 
     <!-- history -->
@@ -391,9 +400,9 @@ function showLobs(){
   const l=curLob();
   $('lobMeta').innerHTML=l?`<b>${nf(l.live_rows)}</b> rates live today · ${nf(l.all_rows)} incl. history · ${l.uploads} uploads · latest Effective From <b>${esc(dtxt(l.latest))}</b> · rate column “${esc(l.rate_col)}”`:'Add your first grid with ＋ Add LOB.';
   document.querySelectorAll('#lobTabs .subtab').forEach(b=>b.classList.toggle('on',b.dataset.t===LTAB));
-  ['upload','preview','filters','history','settings'].forEach(t=>$('t-'+t).classList.toggle('hidden',t!==LTAB||!l));
+  ['upload','preview','filters','insf','history','settings'].forEach(t=>$('t-'+t).classList.toggle('hidden',t!==LTAB||!l));
   if(!l)return;
-  ({upload:()=>{},preview:initPreview,filters:loadOrder,history:loadHistory,settings:loadSettings})[LTAB]();
+  ({upload:()=>{},preview:initPreview,filters:loadOrder,insf:loadInsf,history:loadHistory,settings:loadSettings})[LTAB]();
 }
 $('lobTabs').onclick=e=>{const b=e.target.closest('.subtab');if(!b)return;LTAB=b.dataset.t;showLobs();};
 $('lobPick').onchange=()=>{LOB=$('lobPick').value;$('mLob').value=LOB;PV.key='';resetUpload();showLobs();};
@@ -508,6 +517,31 @@ async function openRate(r,after){
 
 /* filters order (M-06) */
 let ORD=[];
+/* ---------- M-19: filters per insurer + product type ---------- */
+let INSF=null;
+async function loadInsf(){INSF=await api('/api/admin/lobs/'+encodeURIComponent(LOB)+'/insurer-filters');$('insfWarn').classList.toggle('hidden',!!INSF.insurerFirst);drawInsf();}
+const insfLabel=c=>(INSF.columns.find(x=>x.col===c)||{}).label||c;
+function drawInsf(){
+  const q=$('insfQ').value.trim().toLowerCase();
+  const rows=INSF.rows.filter(r=>!q||(r.insurer+' '+r.product).toLowerCase().includes(q));
+  $('insfCount').textContent=rows.length+' insurer + product';
+  $('insfBody').innerHTML=rows.map((r,i)=>{const cols=r.set||r.auto;const k=INSF.rows.indexOf(r);
+    return `<tr data-k="${k}"><td><b>${esc(r.insurer)}</b></td><td>${esc(r.product)}</td><td>${nf(r.rows)}</td>
+    <td>${cols.length?cols.map(c=>`<span class="pill" style="margin:0 4px 4px 0;${r.set?'background:#FFF1DC;color:#7A4100':''}">${esc(insfLabel(c))}</span>`).join(''):'<span class="desc">No other filters</span>'}</td>
+    <td style="white-space:nowrap">${r.set?'<span class="pill" style="background:#FFF1DC;color:#7A4100">Set by admin</span>':'<span class="pill">Automatic</span>'} <button class="btn btn-ghost" style="padding:4px 10px;margin-left:6px">Edit</button></td></tr>`;}).join('')||'<tr><td colspan="5" class="desc">No rates live today in this grid.</td></tr>';
+}
+$('insfQ').oninput=()=>INSF&&drawInsf();
+$('insfBody').onclick=e=>{const tr=e.target.closest('tr[data-k]');if(!tr)return;const r=INSF.rows[+tr.dataset.k];
+  const cur=new Set(r.set||r.auto), auto=new Set(r.auto);
+  const opts=INSF.columns.filter(c=>!/insurer|company/i.test(c.col)&&!/product\s*type|^product$/i.test(c.col));
+  modal(`<div class="modal" style="max-width:560px"><div class="mh"><div><h3>${esc(r.insurer)} · ${esc(r.product)}</h3><p>${nf(r.rows)} rates live today</p></div><b class="close" style="cursor:pointer">✕</b></div><div class="mb">
+    <div class="desc" style="margin:0 0 12px">Tick the filters users should see after choosing this insurer and product. <b>Auto</b> marks the ones the rates actually differ by.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 14px" id="insfChk">${opts.map(c=>`<label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" value="${esc(c.col)}" ${cur.has(c.col)?'checked':''}>${esc(c.label)}${auto.has(c.col)?' <span class="pill" style="font-size:10px">Auto</span>':''}</label>`).join('')}</div>
+    <div class="row" style="margin-top:16px"><button class="btn btn-accent" id="insfSave">Save</button>${r.set?'<button class="btn btn-ghost" id="insfAuto">Back to automatic</button>':''}<button class="btn btn-ghost close">Cancel</button></div></div></div>`);
+  const put=async cols=>{try{await api('/api/admin/lobs/'+encodeURIComponent(LOB)+'/insurer-filters',{method:'PUT',body:{insurer:r.insurer,product:r.product,cols}});closeModal();toast(cols?'Filters saved for '+r.insurer+' · '+r.product:'Back to automatic');await loadInsf();}catch(err){toast(err.message,1);}};
+  $('insfSave').onclick=()=>put([...document.querySelectorAll('#insfChk input:checked')].map(x=>x.value));
+  if($('insfAuto'))$('insfAuto').onclick=()=>put(null);
+};
 async function loadOrder(){ORD=await api('/api/lobs/'+encodeURIComponent(LOB)+'/columns');drawOrder();}
 function drawOrder(){
   let n=0;$('forder').innerHTML=ORD.map((c,i)=>{const num=c.is_filter?++n:'–';return`<li draggable="true" data-i="${i}" class="${c.is_filter?(c.is_default!==false?'':'adv'):'nf'}"><span class="h" title="Drag">⠿</span><span class="n">${num}</span>

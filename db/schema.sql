@@ -162,3 +162,7 @@ CREATE TABLE IF NOT EXISTS loc_rto (
   updated_at  timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (insurer, location)
 );
+
+-- ===== M-18: "insurer first" — other filters appear only after an insurer is picked, and only the ones that insurer's rates use =====
+ALTER TABLE lobs ADD COLUMN IF NOT EXISTS insurer_first boolean;
+UPDATE lobs SET insurer_first = (id LIKE 'motor%') WHERE insurer_first IS NULL;

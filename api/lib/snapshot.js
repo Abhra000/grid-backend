@@ -112,7 +112,7 @@ export function querySnapshot(snap, q) {
 
 // options for each filter = values of rows that pass every OTHER filter (one pass, like the current portal)
 export function facetsSnapshot(snap, q, cols) {
-  const mk = JSON.stringify([cols, !!q.insurerFirst, String(q.search || '').toLowerCase().trim(),
+  const mk = JSON.stringify([cols, !!q.insurerFirst, q.ovVer || 0, String(q.search || '').toLowerCase().trim(),
     Object.keys(q.filters || {}).sort().map(k => [k, [...(q.filters[k] || [])].map(String).sort()])]);
   snap.memo = snap.memo || new Map();
   if (snap.memo.has(mk)) return snap.memo.get(mk);                     // same question already answered for this snapshot
@@ -136,20 +136,54 @@ export function facetsSnapshot(snap, q, cols) {
  * both -> the filters that insurer's rates for those product types use (SAOD -> Location + NCB …).
  */
 const GEO = c => c === 'State' || isLocCol(c) || isRtoCol(c);
-function usedCols(snap, q, cols) {
-  const ic = cols.find(c => /insurer|company/i.test(c)); if (!ic) return cols;
-  const pick = new Set((q.filters || {})[ic] || []); if (!pick.size) return [ic];
-  const pc = cols.find(c => /product\s*type|^product$/i.test(c)), pt = new Set(((q.filters || {})[pc] || []).map(String));
-  if (pc && !pt.size) return [ic, pc];                                    // M-18: insurer, then product type, then the rest
+const insCol = cols => cols.find(c => /insurer|company/i.test(c));
+const prodCol = cols => cols.find(c => /product\s*type|^product$/i.test(c));
+const pv = (r, c) => isAll(r.params[c]) ? 'All' : String(r.params[c] ?? 'All');
+/** automatic filter list for one group of rates: a column is used when it has more than one value */
+function autoCols(rows, cols, ic, pc) {
   const vals = Object.fromEntries(cols.map(c => [c, new Set()]));
-  for (const r of snap.rows) {
-    if (!pick.has(String(r.params[ic]))) continue;
-    if (pt.size && !pt.has(isAll(r.params[pc]) ? 'All' : String(r.params[pc])) && !isAll(r.params[pc])) continue;   // M-18: follow the product type too
-    for (const c of cols) if (c !== 'State') vals[c].add(isAll(r.params[c]) ? 'All' : String(r.params[c] ?? 'All'));
-  }
-  const uses = c => vals[c].size > 1 || (/product/i.test(c) && [...vals[c]].some(v => v !== 'All'));
+  for (const r of rows) for (const c of cols) if (c !== 'State') vals[c].add(pv(r, c));
+  const uses = c => vals[c].size > 1;
   const geo = cols.some(c => GEO(c) && c !== 'State' && uses(c));
-  return cols.filter(c => c === ic || (GEO(c) ? geo : uses(c)));
+  return cols.filter(c => c !== ic && c !== pc && (GEO(c) ? geo : uses(c)));
+}
+/** rates grouped by insurer + product type ("All" product rows belong to every product of that insurer) */
+function combos(rows, ic, pc, insurers, products) {
+  const g = new Map(), allRows = new Map();
+  for (const r of rows) {
+    const i = String(r.params[ic]); if (insurers && !insurers.has(i)) continue;
+    const p = pc ? pv(r, pc) : 'All';
+    if (p === 'All') { if (!allRows.has(i)) allRows.set(i, []); allRows.get(i).push(r); continue; }
+    if (products && !products.has(p)) continue;
+    const k = i + '\u0001' + p; if (!g.has(k)) g.set(k, { insurer: i, product: p, rows: [] }); g.get(k).rows.push(r);
+  }
+  for (const v of g.values()) v.rows.push(...(allRows.get(v.insurer) || []));
+  for (const [i, rs] of allRows) if (![...g.values()].some(v => v.insurer === i) && (!products || products.has('All')))
+    g.set(i + '\u0001All', { insurer: i, product: 'All', rows: rs });
+  return [...g.values()];
+}
+/**
+ * M-18 / M-19: steps — no insurer -> Insurer only; insurer, no product -> Insurer + Product;
+ * both -> for every chosen insurer + product: the admin's own filter list if set (q.overrides), else automatic.
+ */
+function usedCols(snap, q, cols) {
+  const ic = insCol(cols); if (!ic) return cols;
+  const pick = new Set((q.filters || {})[ic] || []); if (!pick.size) return [ic];
+  const pc = prodCol(cols), pt = new Set(((q.filters || {})[pc] || []).map(String));
+  if (pc && !pt.size) return [ic, pc];
+  const out = new Set([ic, pc]);
+  for (const g of combos(snap.rows, ic, pc, pick, pt.size ? pt : null)) {
+    const ov = q.overrides && q.overrides.get(g.insurer + '\u0001' + g.product);
+    (ov || autoCols(g.rows, cols, ic, pc)).forEach(c => out.add(c));
+  }
+  return cols.filter(c => out.has(c));
+}
+/** admin: every insurer + product type in the grid with its automatic and admin-set filters */
+export function insurerFilterTable(snap, cols, overrides) {
+  const ic = insCol(cols), pc = prodCol(cols); if (!ic) return [];
+  return combos(snap.rows, ic, pc, null, null).map(g => ({ insurer: g.insurer, product: g.product, rows: g.rows.length,
+    auto: autoCols(g.rows, cols, ic, pc), set: (overrides && overrides.get(g.insurer + '\u0001' + g.product)) || null }))
+    .sort((a, b) => a.insurer.localeCompare(b.insurer) || a.product.localeCompare(b.product));
 }
 function facetsCompute(snap, q, cols) {
   const { f, terms } = prep(q);

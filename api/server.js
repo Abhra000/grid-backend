@@ -109,7 +109,8 @@ app.get('/api/admin/usage', { preHandler: auth(['admin', 'superadmin']) }, async
 
 /* Reads are served from in-memory snapshots (lib/snapshot.js): rates valid on a date are loaded once from
    Postgres and shared by all users; any publish or filter change drops them so nobody sees stale rates. */
-const clearCache = () => { clearSnapshots(); COLS_CACHE.clear(); ACCESS.clear(); ensureStateColumn().catch(() => {}); };   // publish / grid change
+const IFIRST = new Map();                                   // M-18: lob -> insurer_first
+const clearCache = () => { clearSnapshots(); COLS_CACHE.clear(); IFIRST.clear(); ACCESS.clear(); ensureStateColumn().catch(() => {}); };   // publish / grid change
 
 /* ---------------- read (viewer) ---------------- */
 app.get('/api/lobs', { preHandler: viewer }, async () =>
@@ -142,7 +143,11 @@ async function allowedFilters(lobId, user, filters) {
   const ok = new Set((await userColumns(lobId, user)).filter(c => c.is_filter).map(c => c.col));
   return Object.fromEntries(Object.entries(filters || {}).filter(([k]) => ok.has(k)));
 }
-app.get('/api/lobs/:id/config', { preHandler: viewer }, async req => ({
+async function insurerFirst(lobId) {
+  if (!IFIRST.has(lobId)) IFIRST.set(lobId, !!(await pool.query('SELECT insurer_first FROM lobs WHERE id=$1', [lobId])).rows[0]?.insurer_first);
+  return IFIRST.get(lobId);
+}
+app.get('/api/lobs/:id/config', { preHandler: viewer }, async req => ({ insurerFirst: await insurerFirst(req.params.id),
   columns: await userColumns(req.params.id, req.user), dates: await effectiveDates(pool, req.params.id), allFilters: await seesAll(req.user),
   rtoStates: RTO_STATES() }));
 // P-10: RTO code -> State name (viewer picks State automatically when an RTO is chosen)
@@ -161,6 +166,7 @@ app.post('/api/lobs/:id/facets', { preHandler: viewer }, async req => {
   const b = { ...(req.body || {}) };
   b.filters = await allowedFilters(req.params.id, req.user, b.filters);
   const cols = (await userColumns(req.params.id, req.user)).filter(c => c.is_filter).map(c => c.col);
+  b.insurerFirst = await insurerFirst(req.params.id);
   return facetsSnapshot(await getSnapshot(pool, req.params.id, b.asOf), b, cols);
 });
 

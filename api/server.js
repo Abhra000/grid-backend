@@ -10,6 +10,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import XLSX from 'xlsx';
 import { publish, diffUpload, toRecords, effectiveDates, exportRows } from './lib/rates.js';
+import { insurerFilterTable } from './lib/snapshot.js';
 import { getSnapshot, querySnapshot, facetsSnapshot, clearSnapshots, filterSnapshot, setRtoMaps, rtoMaps } from './lib/snapshot.js';
 import { renameInsurers } from './lib/insurers.js';
 import { seedRtoMaster, loadMaps, buildWorkbook, saveUpload } from './lib/rtoadmin.js';
@@ -110,7 +111,9 @@ app.get('/api/admin/usage', { preHandler: auth(['admin', 'superadmin']) }, async
 /* Reads are served from in-memory snapshots (lib/snapshot.js): rates valid on a date are loaded once from
    Postgres and shared by all users; any publish or filter change drops them so nobody sees stale rates. */
 const IFIRST = new Map();                                   // M-18: lob -> insurer_first
-const clearCache = () => { clearSnapshots(); COLS_CACHE.clear(); IFIRST.clear(); ACCESS.clear(); ensureStateColumn().catch(() => {}); };   // publish / grid change
+const OVR = new Map();                                      // M-19: lob -> {ver, map insurer+product -> [cols]}
+let OVR_VER = 1;
+const clearCache = () => { clearSnapshots(); COLS_CACHE.clear(); IFIRST.clear(); OVR.clear(); OVR_VER++; ACCESS.clear(); ensureStateColumn().catch(() => {}); };   // publish / grid change
 
 /* ---------------- read (viewer) ---------------- */
 app.get('/api/lobs', { preHandler: viewer }, async () =>
@@ -147,6 +150,34 @@ async function insurerFirst(lobId) {
   if (!IFIRST.has(lobId)) IFIRST.set(lobId, !!(await pool.query('SELECT insurer_first FROM lobs WHERE id=$1', [lobId])).rows[0]?.insurer_first);
   return IFIRST.get(lobId);
 }
+async function overrides(lobId) {
+  if (!OVR.has(lobId)) {
+    const rows = (await pool.query('SELECT insurer, product, cols FROM insurer_filters WHERE lob_id=$1', [lobId])).rows;
+    OVR.set(lobId, { ver: OVR_VER, map: new Map(rows.map(r => [r.insurer + '\u0001' + r.product, r.cols])) });
+  }
+  return OVR.get(lobId);
+}
+/* M-19: admin — filters per insurer + product type (automatic unless the admin sets them) */
+app.get('/api/admin/lobs/:id/insurer-filters', { preHandler: admin }, async req => {
+  const all = (await lobColumns(req.params.id)).filter(c => c.is_filter);
+  const cols = all.map(c => c.col);
+  const rows = insurerFilterTable(await getSnapshot(pool, req.params.id), cols, (await overrides(req.params.id)).map);
+  return { columns: all.map(c => ({ col: c.col, label: c.label })), rows, insurerFirst: await insurerFirst(req.params.id) };
+});
+app.put('/api/admin/lobs/:id/insurer-filters', { preHandler: admin }, async (req, reply) => {
+  const b = req.body || {}, insurer = String(b.insurer || ''), product = String(b.product || '');
+  if (!insurer || !product) return reply.code(400).send({ error: 'Insurer and product type are needed' });
+  if (b.cols == null) await pool.query('DELETE FROM insurer_filters WHERE lob_id=$1 AND insurer=$2 AND product=$3', [req.params.id, insurer, product]);
+  else {
+    const ok = new Set((await lobColumns(req.params.id)).filter(c => c.is_filter).map(c => c.col));
+    const cols = [...new Set((b.cols || []).map(String))].filter(c => ok.has(c) && !/insurer|company/i.test(c) && !/product\s*type|^product$/i.test(c));
+    await pool.query(`INSERT INTO insurer_filters (lob_id, insurer, product, cols) VALUES ($1,$2,$3,$4)
+                      ON CONFLICT (lob_id, insurer, product) DO UPDATE SET cols=EXCLUDED.cols, updated_at=now()`, [req.params.id, insurer, product, JSON.stringify(cols)]);
+  }
+  OVR.delete(req.params.id); OVR_VER++;
+  audit(req.user.id, 'insurer_filters', { lob: req.params.id, insurer, product, cols: b.cols ?? 'automatic' });
+  return { ok: true };
+});
 app.get('/api/lobs/:id/config', { preHandler: viewer }, async req => ({ insurerFirst: await insurerFirst(req.params.id),
   columns: await userColumns(req.params.id, req.user), dates: await effectiveDates(pool, req.params.id), allFilters: await seesAll(req.user),
   rtoStates: RTO_STATES() }));
@@ -167,6 +198,7 @@ app.post('/api/lobs/:id/facets', { preHandler: viewer }, async req => {
   b.filters = await allowedFilters(req.params.id, req.user, b.filters);
   const cols = (await userColumns(req.params.id, req.user)).filter(c => c.is_filter).map(c => c.col);
   b.insurerFirst = await insurerFirst(req.params.id);
+  if (b.insurerFirst) { const o = await overrides(req.params.id); b.overrides = o.map; b.ovVer = o.ver; }
   return facetsSnapshot(await getSnapshot(pool, req.params.id, b.asOf), b, cols);
 });
 

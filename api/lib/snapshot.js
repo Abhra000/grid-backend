@@ -112,7 +112,7 @@ export function querySnapshot(snap, q) {
 
 // options for each filter = values of rows that pass every OTHER filter (one pass, like the current portal)
 export function facetsSnapshot(snap, q, cols) {
-  const mk = JSON.stringify([cols, String(q.search || '').toLowerCase().trim(),
+  const mk = JSON.stringify([cols, !!q.insurerFirst, String(q.search || '').toLowerCase().trim(),
     Object.keys(q.filters || {}).sort().map(k => [k, [...(q.filters[k] || [])].map(String).sort()])]);
   snap.memo = snap.memo || new Map();
   if (snap.memo.has(mk)) return snap.memo.get(mk);                     // same question already answered for this snapshot
@@ -125,8 +125,27 @@ export function facetsSnapshot(snap, q, cols) {
     const rs = (F[rc] || []).filter(x => x !== 'All');
     if (rs.length && res.State) { const ok = new Set(rs.map(c => MAPS.stateName(c))); res.State = res.State.filter(s => s === 'All' || ok.has(s)); }
   }
+  if (q.insurerFirst) res.__used = usedCols(snap, q, cols);
   if (snap.memo.size > 3000) snap.memo.clear();
   snap.memo.set(mk, res); return res;
+}
+/**
+ * M-18: the filters the chosen insurer(s) actually use ("parameter to check"): a column is used when that insurer's
+ * rates have more than one value in it (Product Type: any value). Location / RTO / State count as one group.
+ * No insurer chosen -> [] (only the Insurer filter is shown).
+ */
+const GEO = c => c === 'State' || isLocCol(c) || isRtoCol(c);
+function usedCols(snap, q, cols) {
+  const ic = cols.find(c => /insurer|company/i.test(c)); if (!ic) return cols;
+  const pick = new Set((q.filters || {})[ic] || []); if (!pick.size) return [ic];
+  const vals = Object.fromEntries(cols.map(c => [c, new Set()]));
+  for (const r of snap.rows) {
+    if (!pick.has(String(r.params[ic]))) continue;
+    for (const c of cols) if (c !== 'State') vals[c].add(isAll(r.params[c]) ? 'All' : String(r.params[c] ?? 'All'));
+  }
+  const uses = c => vals[c].size > 1 || (/product/i.test(c) && [...vals[c]].some(v => v !== 'All'));
+  const geo = cols.some(c => GEO(c) && c !== 'State' && uses(c));
+  return cols.filter(c => c === ic || (GEO(c) ? geo : uses(c)));
 }
 function facetsCompute(snap, q, cols) {
   const { f, terms } = prep(q);

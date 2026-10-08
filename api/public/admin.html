@@ -320,7 +320,7 @@ body.locked #sidebar,body.locked main,body.locked #burger,body.locked #userChip,
       <div><label class="fl">Name</label><input id="nuName" placeholder="Full name"></div>
       <div><label class="fl">Email</label><input id="nuEmail" placeholder="name@company.com"></div>
       <div><label class="fl">Role</label><select id="nuRole"><option value="viewer">viewer</option></select></div>
-      <div><label class="fl">Temporary password</label><input id="nuPw" placeholder="min 8 characters"></div>
+      <div><label class="fl">Password</label><input id="nuPw" placeholder="min 8 characters"></div>
       <div class="row"><button class="mini" id="genPw" type="button">Generate</button><button class="btn btn-navy" id="saveUser" type="button">Create user</button></div>
     </div>
     <div class="okmsg hidden" id="okmsg"></div>
@@ -695,7 +695,7 @@ $('ub').addEventListener('click',async e=>{
   const rid=e.target.dataset.reset;
   if(rid){if(!confirm('Give '+e.target.dataset.email+' a new temporary password?'))return;const pw=genPw();
     try{await api('/api/users/'+rid+'/reset-password',{method:'POST',body:{password:pw}});
-      $('okmsg').innerHTML=`✓ New temporary password for <b>${esc(e.target.dataset.email)}</b>: <b>${esc(pw)}</b> — share it privately; they must set their own password at next sign-in.`;$('okmsg').classList.remove('hidden');loadUsers();}catch(x){toast(x.message,1);}}});
+      $('okmsg').innerHTML=`✓ New password for <b>${esc(e.target.dataset.email)}</b>: <b>${esc(pw)}</b> — share it privately.`;$('okmsg').classList.remove('hidden');loadUsers();}catch(x){toast(x.message,1);}}});
 /* ---------- bulk add users from Excel ---------- */
 let USERS=[],BULK=null;
 const BH=['Email','Name','Role','Password','See all filters'];
@@ -704,14 +704,14 @@ function bulkTemplate(){
   const ws=XLSX.utils.aoa_to_sheet([BH,['rahul.sharma@idealinsurance.in','Rahul Sharma','viewer','','No'],['priya.n@partnerfirm.com','Priya N','viewer','Welcome2026','No']]);
   ws['!cols']=[{wch:34},{wch:22},{wch:12},{wch:16},{wch:15}];XLSX.utils.book_append_sheet(wb,ws,'Users');
   const how=XLSX.utils.aoa_to_sheet([['How to fill the Users sheet'],[''],['Email','Required. Their sign-in email.'],['Name','Optional.'],['Role','viewer (sales / channel partner), admin or superadmin. Blank = viewer. Only the super admin can add admins.'],
-    ['Password','Optional. Blank = the portal makes a temporary password for new users (download them after saving). At least 8 characters. Everyone must set their own password at first sign-in.'],
+    ['Password','Optional. Blank = the portal makes a temporary password for new users (download them after saving). At least 8 characters.'],
     ['See all filters','Yes / No. Yes = this user sees every filter, not only the default set.'],[''],['Existing email','Name, role and "See all filters" are updated. The password changes only if you fill it.'],['','Delete the two example rows before uploading.']]);
   how['!cols']=[{wch:16},{wch:110}];XLSX.utils.book_append_sheet(wb,how,'How to');
   XLSX.writeFile(wb,'Grid_Portal_Users_template.xlsx');}
 function bulkModal(){
   modal(`<div class="modal" style="max-width:820px"><div class="mh"><div><h3>Bulk add users</h3><p>Upload an Excel with Email, Name, Role, Password, See all filters</p></div><b class="close" style="cursor:pointer">✕</b></div><div class="mb" id="bkBody">
     <div class="row" style="gap:10px;flex-wrap:wrap"><button class="btn btn-ghost" id="bkTpl">⬇ Download template</button><button class="btn btn-accent" id="bkPick">Choose Excel file</button><input type="file" id="bkFile" accept=".xlsx,.xls,.csv" hidden></div>
-    <div class="desc" style="margin-top:10px">Blank password = a temporary one is made for new users. Everyone sets their own password at first sign-in. Nothing is saved until you confirm.</div>
+    <div class="desc" style="margin-top:10px">Blank password = the portal makes one for new users. Users sign in with it straight away. Nothing is saved until you confirm.</div>
     <div id="bkRes"></div></div></div>`);
   $('bkTpl').onclick=bulkTemplate;$('bkPick').onclick=()=>$('bkFile').click();
   $('bkFile').onchange=async()=>{const f=$('bkFile').files[0];if(!f)return;
@@ -732,11 +732,11 @@ function drawBulk(){
     ${d.rows.map((r,i)=>`<tr><td>${r.row}</td><td>${esc(r.email)}</td><td>${esc(r.name)}</td><td>${esc(r.role)}</td><td>${r.allFilters?'Yes':'No'}</td><td>${BULK.users[i].made?'temporary (made)':r.newPassword?'from file':'unchanged'}</td><td>${tag(r.action)}${r.error?` <span style="color:#A32D2D">${esc(r.error)}</span>`:''}</td></tr>`).join('')}
     </tbody></table></div></div>
     <div class="row" style="margin-top:14px;gap:10px">${saved?`<span class="okmsg" style="margin:0">✓ Saved: ${nf(d.add)} added, ${nf(d.update)} updated.</span><button class="btn btn-accent" id="bkPw">⬇ Download passwords</button>`:(!d.error?`<button class="btn btn-accent" id="bkSave">Add ${nf(d.add)} and update ${nf(d.update)} users</button>`:'')}<button class="btn btn-ghost close">${saved?'Close':'Cancel'}</button></div>
-    ${saved?'<div class="desc" style="margin-top:8px">The file lists each person\'s temporary password. Share each one privately, then delete the file.</div>':''}`;
+    ${saved?'<div class="desc" style="margin-top:8px">The file lists each person\'s password. Share each one privately, then delete the file.</div>':''}`;
   if($('bkSave'))$('bkSave').onclick=async()=>{$('bkSave').disabled=true;$('bkSave').textContent='Saving…';
     try{BULK.check=await api('/api/users/bulk',{method:'POST',body:{users:BULK.users}});drawBulk();toast('Users saved');loadUsers();}catch(e){toast(e.message,1);$('bkSave').disabled=false;}};
   if($('bkPw'))$('bkPw').onclick=()=>{const rows=BULK.check.rows.map((r,i)=>[r.email,r.name,r.role,BULK.users[i].password||'(unchanged)']).filter(r=>r[3]!=='(unchanged)');
-    const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet([['Email','Name','Role','Temporary password'],...rows]);ws['!cols']=[{wch:34},{wch:22},{wch:12},{wch:20}];
+    const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet([['Email','Name','Role','Password'],...rows]);ws['!cols']=[{wch:34},{wch:22},{wch:12},{wch:20}];
     XLSX.utils.book_append_sheet(wb,ws,'Passwords');XLSX.writeFile(wb,'Grid_Portal_new_user_passwords.xlsx');};
 }
 const genPw=()=>{const c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789',a=new Uint32Array(10);crypto.getRandomValues(a);return [...a].map(x=>c[x%c.length]).join('')+'7';};
@@ -745,7 +745,7 @@ $('addBtn').onclick=()=>{$('addForm').classList.toggle('hidden');$('okmsg').clas
 $('genPw').onclick=()=>{$('nuPw').value=genPw();};
 $('saveUser').onclick=async()=>{
   try{const pw=$('nuPw').value;const u=await api('/api/users',{method:'POST',body:{name:$('nuName').value.trim(),email:$('nuEmail').value.trim(),role:$('nuRole').value,password:pw}});
-    $('okmsg').innerHTML=`✓ <b>${esc(u.email)}</b> created as ${esc(u.role)}. Temporary password: <b>${esc(pw)}</b> — share it privately; they must set their own password at first sign-in.`;
+    $('okmsg').innerHTML=`✓ <b>${esc(u.email)}</b> created as ${esc(u.role)}. Password: <b>${esc(pw)}</b> — share it privately.`;
     $('okmsg').classList.remove('hidden');$('addForm').classList.add('hidden');['nuName','nuEmail','nuPw'].forEach(i=>$(i).value='');loadUsers();}
   catch(e){toast(e.message,1);}};
 

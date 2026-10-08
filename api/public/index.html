@@ -220,6 +220,22 @@ html.m .overlay .modal{max-width:100%;border-radius:18px 18px 0 0;max-height:90v
 html.m .overlay .modal .mh{background:#FFF1DC;color:#2B1A00;border-radius:18px 18px 0 0}
 html.m .overlay .modal .mh p{color:#8A7A66}html.m .overlay .xbtn{background:#fff;color:#7A4100}
 html.m .sgbtn{width:100%;border-color:#F39C12;color:#7A4100}
+/* ---------- M-22 Best rate ---------- */
+.br-box{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:6px 18px 10px;margin-bottom:12px;max-width:720px}
+.br-hd{padding:12px 4px 10px;font-size:14px;color:#2B1A00;border-bottom:1px solid #F1ECE4}.br-hd b{color:#9A5300}.br-hd span{display:block;font-size:11.5px;color:#8A7A66;margin-top:2px}
+html.m .br-hd{padding:8px 14px}html.m .br-row{padding:10px 14px;border-radius:0}html.m .br-np{padding:8px 14px}
+.dl-best{display:inline-flex;align-items:center;gap:6px;border-radius:9px;padding:8px 13px;font-size:12.5px;font-weight:700;cursor:pointer;border:1px dashed #CFCFC8;background:#F1F1EE;color:#A9A9A3;white-space:nowrap;font-family:inherit}
+.dl-best.on{background:#F39C12;border:1px solid #E08A00;color:#2B1A00}
+.dl-best.on:hover{filter:brightness(1.05)}
+.br-h{background:#FFF1DC!important;color:#2B1A00!important}.br-h p{color:#8A7A66!important}.br-h .xbtn{background:#fff!important;color:#7A4100!important}
+.br-row{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:11px 4px;border-bottom:1px solid #F1ECE4;cursor:pointer;border-radius:8px}
+.br-row:hover{background:#FFF7EC}
+.br-no{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12.5px;background:#F1F1EE;color:#5F5E5A}
+.br-no.g1{background:#F39C12;color:#2B1A00}.br-no.g2{background:#D3D1C7;color:#2C2C2A}.br-no.g3{background:#F0C27A;color:#5A3300}
+.br-ins{font-weight:700;font-size:14px;color:#2B1A00}.br-rt{font-size:19px;font-weight:700;color:#9A5300}
+.br-np{color:#9A928A;font-size:12.5px;padding:10px 4px}
+.m-bst{border:none;border-radius:9px;padding:0 10px;height:28px;font-size:11.5px;font-weight:600;cursor:pointer;background:#F1F1EE;color:#A9A9A3;font-family:inherit;margin-right:6px}
+.m-bst.on{background:#F39C12;color:#2B1A00}
 </style>
 </head>
 <body>
@@ -287,7 +303,8 @@ html.m .sgbtn{width:100%;border-color:#F39C12;color:#7A4100}
       <div class="fbar-foot"><button class="dl-clearall2" id="resetAll">Reset all</button></div>
     </div>
     <div class="dl-chips" id="chips"></div>
-    <div class="dl-wrap">
+    <div class="br-box hidden" id="bestBox"></div>
+    <div class="dl-wrap" id="dlWrap">
       <div class="dl-scroll" id="scroll">
         <table class="dl-tbl"><thead><tr id="thr"></tr></thead><tbody id="tb"></tbody></table>
         <div class="dl-more" id="more"></div>
@@ -361,7 +378,7 @@ async function openLob(id){
   await refresh();setBar(true);
 }
 const qbody=()=>({filters:S.sel,asOf:S.asOf,search:$('q').value.trim()});
-async function refresh(){live('Loading…');await Promise.all([loadOptions(),loadRows(true)]);chips();live('Live','ok');}
+async function refresh(){live('Loading…');await Promise.all([loadOptions(),loadRows(true)]);chips();bestAuto();live('Live','ok');}
 
 /* ---------- filters: all shown together, in the admin's order; each list only offers values that fit the other choices ---------- */
 let shownBefore=new Set();
@@ -380,7 +397,7 @@ async function loadOptions(){
     cols=cols.filter(c=>used.has(c.col));
     const ic=cols.find(c=>/insurer|company/i.test(c.col)), pc=cols.find(c=>/product\s*type|^product$/i.test(c.col));
     const hint=t=>`<div class="fstep ins-hint"><div class="lbl">&nbsp;</div><div style="font-size:13px;color:var(--muted);padding:9px 2px">← ${t}</div></div>`;
-    if(ic&&!(S.sel[ic.col]||[]).length)insHint=hint('Pick an insurer to see its filters');
+    if(ic&&!(S.sel[ic.col]||[]).length)insHint=hint('Pick an insurer — or a product type and a location to compare all insurers');
     else if(pc&&!(S.sel[pc.col]||[]).length)insHint=hint('Pick a product type to see its filters');
   }
   const dateHtml=`<div class="fstep date"><div class="lbl">Rates as on</div><div class="dl-dd" id="ddDate"><button type="button">${S.asOf===t?'Today · ':''}${esc(dtxt(S.asOf))}</button>
@@ -570,7 +587,7 @@ function mPanel(){
       const first=(isIns(c.col)||isProd(c.col))&&S.insFirst?'Choose':'Any';
       return `<div class="m-f"><label>${esc(c.label)}</label><select class="${v?'on':''}" data-mcol="${esc(c.col)}"><option value="">${first}</option>${vals.map(x=>`<option value="${esc(x)}"${x===v?' selected':''}>${x==='All'?'All (same for every value)':esc(x)}</option>`).join('')}</select></div>`;};
     let h=`<div class="m-ph"><b>Find a rate</b>${ready&&Object.keys(S.sel).length?icon:''}</div><div class="m-grid">${cols.map(sel).join('')}</div>`;
-    if(S.insFirst&&ic&&!(S.sel[ic.col]||[]).length)h+='<div class="m-hint">Choose an insurer to start</div>';
+    if(S.insFirst&&ic&&!(S.sel[ic.col]||[]).length)h+='<div class="m-hint">Choose an insurer — or a product type and a location to compare all insurers</div>';
     else if(S.insFirst&&pc&&!(S.sel[pc.col]||[]).length)h+='<div class="m-hint">Now choose a product</div>';
     $('mPnl').innerHTML=h;
   } else {
@@ -594,7 +611,7 @@ function mRows(newRows,reset){
     if(/discount|premium|term/i.test(c)&&!new RegExp(lab(c).split(' ')[0],'i').test(v))return lab(c)+' '+v;
     return v;};
   const icx=cols.find(c=>isIns(c.col));
-  if(S.insFirst&&((icx&&!(S.sel[icx.col]||[]).length)||(pc&&!(S.sel[pc.col]||[]).length))){$('mList').innerHTML='';$('mMore').textContent='';return;}   // rates appear once insurer + product are chosen
+  if(S.insFirst&&((icx&&!(S.sel[icx.col]||[]).length)||(pc&&!(S.sel[pc.col]||[]).length))){if(!bestMode()){$('mList').innerHTML='';$('mMore').textContent='';}return;}   // rates appear once insurer + product are chosen (or the ranking)
   const html=newRows.map((r,i)=>{const P=r.params,k=S.rows.length-newRows.length+i;
     const newBiz=cols.some(c=>/business/i.test(c.col)&&/^new$/i.test(P[c.col]||''));
     const t=cols.filter(c=>!SUBC(c.col)&&P[c.col]&&!isAll(P[c.col])&&!(newBiz&&/age/i.test(c.col)&&/brand\s*new/i.test(P[c.col]))).map(c=>esc(nice(c.col,P[c.col]))).join(' · ')||'All vehicles';
@@ -630,6 +647,27 @@ $('mnAcc').onclick=async()=>{const me=await api('/api/me').catch(()=>({user:{}})
   $('mOut').onclick=()=>{closeModal();$('logout').onclick();};};
 new IntersectionObserver(es=>{if(M()&&es[0].isIntersecting&&!S.loading&&!S.done&&S.lob)loadRows(false);},{rootMargin:'300px'}).observe($('mMore'));
 let mWas=M();addEventListener('resize',()=>{if(M()!==mWas){mWas=M();if(S.lob)refresh();}});
+
+/* ===================== M-22 Best rate: product type + location, no insurer -> insurers ranked automatically ===================== */
+const bestCols=()=>({ic:(S.cols.find(c=>/insurer|company/i.test(c.col))||{}).col,pc:(S.cols.find(c=>/product\s*type|^product$/i.test(c.col))||{}).col,lc:(S.cols.find(c=>/^location$/i.test(c.col))||{}).col});
+function bestMode(){const {ic,pc,lc}=bestCols();return !!(S.insFirst&&ic&&pc&&lc&&!(S.sel[ic]||[]).length&&(S.sel[pc]||[]).length&&(S.sel[lc]||[]).length);}
+let bestSeq=0;
+async function bestAuto(){
+  const box=$('bestBox'),on=bestMode();box.classList.toggle('hidden',!on||M());$('dlWrap').classList.toggle('hidden',on&&!M());
+  if(!on)return;
+  const {ic,pc,lc}=bestCols(),my=++bestSeq;
+  const head=`<div class="br-hd"><b>★ Best rate</b> · ${esc(S.sel[pc].join(', '))} · ${esc(S.sel[lc].join(', '))}<span>Insurers ranked by rate · as on ${esc(dtxt(S.asOf))}</span></div>`;
+  const tgt=M()?$('mList'):box; tgt.innerHTML=head+'<div class="spin" style="margin:18px auto"></div>';if(M())$('mMore').textContent='';
+  try{const d=await api('/api/lobs/'+encodeURIComponent(S.lob)+'/best',{filters:S.sel,asOf:S.asOf,search:$('q').value.trim()});if(my!==bestSeq)return;
+    const g=i=>i<3?' g'+(i+1):'';
+    const LOCS=new Map(d.ranked.map(r=>[r.insurer,r.locations||[]]));
+    tgt.innerHTML=head+(d.ranked.length?d.ranked.map((r,i)=>`<div class="br-row" data-ins="${esc(r.insurer)}"><span class="br-no${g(i)}">${i+1}</span><span class="br-ins">${esc(r.insurer)}</span><span class="br-rt">${esc(r.rate)}</span></div>`).join(''):'<div class="br-np">No insurer has a rate for this product type and location.</div>')+
+      (d.notPayable.length?`<div class="br-np">Not payable here: ${esc(d.notPayable.join(', '))}</div>`:'')+'<div class="br-np" style="font-size:11.5px">Tap an insurer to see its rates.</div>';
+    tgt.onclick=e=>{const r=e.target.closest('[data-ins]');if(!r)return;S.sel[ic]=[r.dataset.ins];
+      const L=LOCS.get(r.dataset.ins)||[];if(L.length)S.sel[lc]=L;else delete S.sel[lc];   // that insurer's own name(s) for this place ("Maharashtra" for Mumbai …)
+      if(M())S.mOpen=false;refresh();};}
+  catch(e){if(my===bestSeq)tgt.innerHTML=head+`<div class="br-np">${esc(e.message)}</div>`;}
+}
 </script>
 </body>
 </html>

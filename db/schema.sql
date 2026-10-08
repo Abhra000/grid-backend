@@ -179,3 +179,6 @@ CREATE TABLE IF NOT EXISTS insurer_filters (
 
 -- ===== M-20: hide a grid from users (data kept; admins still see it) =====
 ALTER TABLE lobs ADD COLUMN IF NOT EXISTS hidden boolean NOT NULL DEFAULT false;
+
+-- ===== M-21: no forced password change — passwords set by the admin work straight away =====
+UPDATE users SET must_change=false WHERE must_change;

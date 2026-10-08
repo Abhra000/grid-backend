@@ -286,6 +286,48 @@ app.post('/api/users', { preHandler: admin }, async (req, reply) => {
                               RETURNING id, email, role`, [em, name || null, await bcrypt.hash(String(password), 11), role]);
   audit(req.user.id, 'user_save', { email: em, role }); return r.rows[0];
 });
+// Bulk add / update users from an Excel sheet (admin: viewers only; super admin: any role). dryRun = check only.
+// body: { users:[{email, name, role, password, allFilters}], dryRun }
+app.post('/api/users/bulk', { preHandler: admin }, async (req, reply) => {
+  const b = req.body || {}, list = Array.isArray(b.users) ? b.users : [];
+  if (!list.length) return reply.code(400).send({ error: 'No users in the file' });
+  if (list.length > 2000) return reply.code(400).send({ error: 'At most 2,000 users per file' });
+  const sup = req.user.role === 'superadmin', seen = new Set();
+  const existing = new Map((await pool.query('SELECT id, lower(email) AS email, role FROM users')).rows.map(u => [u.email, u]));
+  const yes = v => /^(y|yes|true|1)$/i.test(String(v ?? '').trim());
+  const rows = list.map((u, i) => {
+    const email = String(u.email || '').trim().toLowerCase(), role = String(u.role || 'viewer').trim().toLowerCase().replace(/[\s_-]+/g, '');
+    const out = { row: i + 2, email, name: String(u.name || '').trim(), role: role === 'superadmin' ? 'superadmin' : role, password: String(u.password ?? '').trim(), allFilters: yes(u.allFilters) };
+    const ex = existing.get(email);
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) out.error = 'Email is not valid';
+    else if (seen.has(email)) out.error = 'Same email twice in the file';
+    else if (!['viewer', 'admin', 'superadmin'].includes(out.role)) out.error = 'Role must be viewer, admin or superadmin';
+    else if (out.role !== 'viewer' && !sup) out.error = 'Only the super admin can add admins';
+    else if (ex && ex.role !== 'viewer' && !sup) out.error = 'Only the super admin can change an admin';
+    else if (ex && ex.id === req.user.id) out.error = 'This is your own account — change it from Users';
+    else if (out.password && out.password.length < 8) out.error = 'Password: at least 8 characters';
+    else if (!ex && !out.password) out.error = 'New user needs a password';
+    seen.add(email); out.action = out.error ? 'error' : ex ? 'update' : 'add';
+    return out;
+  });
+  const sum = { add: rows.filter(r => r.action === 'add').length, update: rows.filter(r => r.action === 'update').length, error: rows.filter(r => r.action === 'error').length };
+  const strip = r => ({ row: r.row, email: r.email, name: r.name, role: r.role, allFilters: r.allFilters, action: r.action, error: r.error, newPassword: !!r.password });
+  if (b.dryRun || sum.error) return { ...sum, saved: false, rows: rows.map(strip) };
+  const db = await pool.connect();
+  try {
+    await db.query('BEGIN');
+    for (const r of rows) {
+      const hash = r.password ? await bcrypt.hash(r.password, 10) : null;
+      await db.query(`INSERT INTO users (email, name, pass_hash, role, must_change, auth_provider, all_filters) VALUES ($1,$2,$3,$4,true,'password',$5)
+                      ON CONFLICT (email) DO UPDATE SET name=coalesce(nullif(EXCLUDED.name,''),users.name), role=EXCLUDED.role, active=true, all_filters=EXCLUDED.all_filters,
+                        pass_hash=coalesce($3,users.pass_hash), must_change=CASE WHEN $3 IS NULL THEN users.must_change ELSE true END`,
+                     [r.email, r.name || null, hash, r.role, r.allFilters]);
+    }
+    await db.query('COMMIT');
+  } catch (e) { await db.query('ROLLBACK'); return reply.code(400).send({ error: e.message }); } finally { db.release(); }
+  ACCESS.clear(); audit(req.user.id, 'users_bulk', sum);
+  return { ...sum, saved: true, rows: rows.map(strip) };
+});
 app.post('/api/users/:uid/reset-password', { preHandler: admin }, async (req, reply) => {
   const t = (await pool.query('SELECT id, role FROM users WHERE id=$1', [req.params.uid])).rows[0];
   if (!t) return reply.code(404).send({ error: 'User not found' });

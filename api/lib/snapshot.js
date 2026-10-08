@@ -133,7 +133,7 @@ export function facetsSnapshot(snap, q, cols) {
  * M-18: the filters the chosen insurer(s) actually use ("parameter to check"): a column is used when that insurer's
  * rates have more than one value in it (Product Type: any value). Location / RTO / State count as one group.
  * Steps: no insurer -> Insurer only; insurer but no product type -> Insurer + Product Type;
- * both -> the filters that insurer's rates for those product types use (SAOD -> Location + NCB …).
+ * both -> the filters that insurer's rates for those product types use (Stand alone OD -> Location + NCB …).
  */
 const GEO = c => c === 'State' || isLocCol(c) || isRtoCol(c);
 const insCol = cols => cols.find(c => /insurer|company/i.test(c));

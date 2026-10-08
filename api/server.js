@@ -10,11 +10,11 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import XLSX from 'xlsx';
 import { publish, diffUpload, toRecords, effectiveDates, exportRows } from './lib/rates.js';
-import { insurerFilterTable } from './lib/snapshot.js';
+import { insurerFilterTable, bestRates } from './lib/snapshot.js';
 import { getSnapshot, querySnapshot, facetsSnapshot, clearSnapshots, filterSnapshot, setRtoMaps, rtoMaps } from './lib/snapshot.js';
 import { renameInsurers } from './lib/insurers.js';
 import { renameProducts } from './lib/products.js';
-import { seedRtoMaster, loadMaps, buildWorkbook, saveUpload } from './lib/rtoadmin.js';
+import { seedRtoMaster, seedLocOverrides, loadMaps, buildWorkbook, saveUpload } from './lib/rtoadmin.js';
 import { m365Config, startLogin, finishLogin } from './lib/m365.js';
 import { touchVisit, usageReport } from './lib/usage.js';
 import { registerAdmin, masterWarnings } from './lib/admin.js';
@@ -37,7 +37,7 @@ function auth(roles) {
     try { req.user = jwt.verify(tok, JWT_SECRET); } catch { return reply.code(401).send({ error: 'Please log in' }); }
     if (req.user.mc && !/^\/api\/(me|auth\/)/.test(req.url)) return reply.code(403).send({ error: 'Please set your own password first', mustChange: true });
     if (roles && !roles.includes(req.user.role)) return reply.code(403).send({ error: 'Not allowed for your role' });
-    const m = req.url.match(/^\/api\/lobs\/([^/?]+)\/(config|query|facets|export|suggestions|rates)/);      // M-20: hidden grid -> admins only
+    const m = req.url.match(/^\/api\/lobs\/([^/?]+)\/(config|query|facets|export|suggestions|rates|best)/);      // M-20: hidden grid -> admins only
     if (m && !isAdminUser(req.user) && (await hiddenLobs()).has(decodeURIComponent(m[1]))) return reply.code(404).send({ error: 'Grid not found' });
   };
 }
@@ -213,6 +213,13 @@ app.post('/api/lobs/:id/facets', { preHandler: viewer }, async req => {
   return facetsSnapshot(await getSnapshot(pool, req.params.id, b.asOf), b, cols);
 });
 
+// M-22: Best rate — insurers ranked by their highest rate for the chosen product type + location
+app.post('/api/lobs/:id/best', { preHandler: viewer }, async req => {
+  const b = { ...(req.body || {}) };
+  b.filters = await allowedFilters(req.params.id, req.user, b.filters);
+  const cols = (await lobColumns(req.params.id)).map(c => c.col);
+  return bestRates(await getSnapshot(pool, req.params.id, b.asOf), b, cols);
+});
 app.post('/api/lobs/:id/export', { preHandler: viewer }, async (req, reply) => {
   const eq = { ...(req.body || {}), filters: await allowedFilters(req.params.id, req.user, (req.body || {}).filters) };
   const rows = filterSnapshot(await getSnapshot(pool, req.params.id, eq.asOf), eq);          // same rules as the screen
@@ -406,6 +413,6 @@ try {                                                        // keep the databas
 await ensureStateColumn().catch(e => console.warn('State column:', e.message));
 try { const r = await renameProducts(pool); if (r) console.log('Product types renamed:', JSON.stringify(r)); } catch (e) { console.warn('Product rename:', e.message); }
 try { const r = await renameInsurers(pool); if (r) console.log('Insurer names cleaned:', JSON.stringify(r)); } catch (e) { console.warn('Insurer rename:', e.message); }
-try { await seedRtoMaster(pool); setRtoMaps(await loadMaps(pool)); } catch (e) { console.warn('RTO master:', e.message); }
+try { await seedRtoMaster(pool); const n = await seedLocOverrides(pool); if (n) console.log('RTO lists added for', n, 'insurer locations'); setRtoMaps(await loadMaps(pool)); } catch (e) { console.warn('RTO master:', e.message); }
 if (process.env.NODE_ENV !== 'test') app.listen({ port: +PORT, host: process.env.HOST || '127.0.0.1' }).then(() => console.log('API on :' + PORT));
 export default app;

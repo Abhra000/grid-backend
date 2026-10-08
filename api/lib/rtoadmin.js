@@ -14,6 +14,22 @@ export async function seedRtoMaster(pool) {
   await saveMaster(pool, rows);
   return rows.length;
 }
+/** M-22: insurer RTO lists from the commission matrix (db/loc_rto_seed.csv) — added once; an admin's own correction is never overwritten */
+export async function seedLocOverrides(pool) {
+  const f = new URL('../../db/loc_rto_seed.csv', import.meta.url);
+  if (!fs.existsSync(f)) return 0;
+  const lines = fs.readFileSync(f, 'utf8').trim().split(/\r?\n/).slice(1);
+  const parse = line => { const out = []; let cur = '', q = false; for (const ch of line) { if (ch === '"') q = !q; else if (ch === ',' && !q) { out.push(cur); cur = ''; } else cur += ch; } out.push(cur); return out; };
+  let n = 0;
+  for (const l of lines) {
+    const [insurer, location, raw, note] = parse(l);
+    const codes = String(raw || '').split(/[,;\s]+/).map(normRto).filter(c => /^[A-Z]{2}-\d/.test(c));
+    if (!insurer || !location || !codes.length) continue;
+    n += (await pool.query('INSERT INTO loc_rto (insurer, location, codes, note) VALUES ($1,$2,$3,$4) ON CONFLICT (insurer, location) DO NOTHING',
+                           [insurer.trim(), cleanLoc(location.trim()), codes, note || null])).rowCount;
+  }
+  return n;
+}
 async function saveMaster(pool, rows) {
   const db = await pool.connect();
   try {

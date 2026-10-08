@@ -132,7 +132,7 @@ export function facetsSnapshot(snap, q, cols) {
 /**
  * M-18: the filters the chosen insurer(s) actually use ("parameter to check"): a column is used when that insurer's
  * rates have more than one value in it (Product Type: any value). Location / RTO / State count as one group.
- * Steps: no insurer -> Insurer only; insurer but no product type -> Insurer + Product Type;
+ * Steps: no insurer / no product type -> Insurer + Product Type + Location (product + location alone = insurers ranked);
  * both -> the filters that insurer's rates for those product types use (Stand alone OD -> Location + NCB …).
  */
 const GEO = c => c === 'State' || isLocCol(c) || isRtoCol(c);
@@ -168,9 +168,11 @@ function combos(rows, ic, pc, insurers, products) {
  */
 function usedCols(snap, q, cols) {
   const ic = insCol(cols); if (!ic) return cols;
-  const pick = new Set((q.filters || {})[ic] || []); if (!pick.size) return [ic];
-  const pc = prodCol(cols), pt = new Set(((q.filters || {})[pc] || []).map(String));
-  if (pc && !pt.size) return [ic, pc];
+  const pc = prodCol(cols), lc = cols.find(c => /^location$/i.test(c));
+  const start = [ic, pc, lc].filter(Boolean);                                   // M-22: Product type + Location also open at the start (best-rate compare)
+  const pick = new Set((q.filters || {})[ic] || []); if (!pick.size) return start;
+  const pt = new Set(((q.filters || {})[pc] || []).map(String));
+  if (pc && !pt.size) return start;
   const out = new Set([ic, pc]);
   for (const g of combos(snap.rows, ic, pc, pick, pt.size ? pt : null)) {
     const ov = q.overrides && q.overrides.get(g.insurer + '\u0001' + g.product);
@@ -207,4 +209,37 @@ function optsOf(r, c) {
   if (r._cc && isCcCol(c)) return r._cc;
   if (r._rtos && isRtoCol(c) && isAll(r.params[c])) return [...r._rtos, 'All'];   // P-10: every RTO the location covers
   const v = r.params[c]; return v ? [isAll(v) ? 'All' : v] : [];
+}
+
+/**
+ * M-22 Best rate: for a product type + location, every insurer's highest rate there, best first.
+ * Location is matched by RTO coverage (Mumbai = every insurer location covering the Mumbai RTOs: "Maharashtra",
+ * "Rest of Maharashtra" …), with State as fallback. Other picked filters (fuel, CC …) apply; Insurer / RTO / State do not.
+ */
+export function bestRates(snap, q, cols) {
+  const F = q.filters || {}, ic = cols.find(c => /insurer|company/i.test(c)), pc = cols.find(c => /product\s*type|^product$/i.test(c)), lc = cols.find(c => /^location$/i.test(c)) || cols.find(c => isLocCol(c) && c !== 'State');
+  const prods = new Set(F[pc] || []), locs = new Set(F[lc] || []);
+  if (!ic || !pc || !lc || !prods.size || !locs.size) return { ranked: [], notPayable: [] };
+  const tR = new Set(), tS = new Set();
+  for (const r of snap.rows) if (locs.has(r.params[lc])) { if (r._rtos) r._rtos.forEach(c => tR.add(c)); (r._stN || []).forEach(s => tS.add(s)); r._st.forEach(s => tS.add(STATE_NAME[s] || s)); }
+  const covers = r => {
+    if (locs.has(r.params[lc]) || isAll(r.params[lc])) return true;
+    if (r._rtos === null) return true;                                         // pan-India location
+    if (r._rtos && tR.size) { for (const c of r._rtos) if (tR.has(c)) return true; return false; }
+    const st = r._stN || [...r._st].map(s => STATE_NAME[s] || s);
+    return st.some(s => tS.has(s));
+  };
+  const skip = new Set([ic, pc, lc, 'State', ...cols.filter(isRtoCol)]);
+  const other = Object.entries(F).filter(([c, v]) => !skip.has(c) && v && v.length).map(([c, v]) => [c, new Set(v)]);
+  const best = new Map(), seen = new Set(), locOf = new Map();               // locOf: the insurer's own location names for this place
+  for (const r of snap.rows) {
+    const p = r.params[pc]; if (!(prods.has(p) || isAll(p))) continue;
+    if (!covers(r) || !other.every(([c, s]) => passes(r, c, s))) continue;
+    const ins = String(r.params[ic]); seen.add(ins);
+    if (!isAll(r.params[lc]) && r._rtos !== null) { if (!locOf.has(ins)) locOf.set(ins, new Set()); locOf.get(ins).add(r.params[lc]); }
+    const n = parseFloat(r.rate_text); if (!(n > 0)) continue;
+    if (!best.has(ins) || n > best.get(ins).n) best.set(ins, { insurer: ins, rate: r.rate_text, n });
+  }
+  const ranked = [...best.values()].sort((a, b) => b.n - a.n || a.insurer.localeCompare(b.insurer)).map(({ insurer, rate }) => ({ insurer, rate, locations: [...(locOf.get(insurer) || [])].sort() }));
+  return { ranked, notPayable: [...seen].filter(i => !best.has(i)).sort() };
 }

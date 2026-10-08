@@ -57,7 +57,7 @@ app.post('/api/auth/login', { config: { rateLimit: { max: 10, timeWindow: '1 min
 });
 app.post('/api/auth/logout', async (req, reply) => { reply.clearCookie(COOKIE, { path: '/' }); return { ok: true }; });
 app.get('/api/me', { preHandler: viewer }, async req => ({ user: { ...req.user, mustChange: !!req.user.mc } }));
-// user sets their own password (required after the admin creates / resets the account)
+// user changes their own password (optional — the admin's password works straight away)
 app.post('/api/auth/change-password', { preHandler: viewer, config: { rateLimit: { max: 10, timeWindow: '1 minute' } } }, async (req, reply) => {
   const { current, password } = req.body || {};
   const u = (await pool.query('SELECT * FROM users WHERE id=$1 AND active', [req.user.id])).rows[0];
@@ -281,8 +281,8 @@ app.post('/api/users', { preHandler: admin }, async (req, reply) => {
   if (role !== 'viewer' && req.user.role !== 'superadmin') return reply.code(403).send({ error: 'Only the super admin can create admins' });
   const ex = (await pool.query('SELECT id, role FROM users WHERE lower(email)=$1', [em])).rows[0];
   if (ex && ex.role !== 'viewer' && req.user.role !== 'superadmin') return reply.code(403).send({ error: 'Only the super admin can change an admin' });
-  const r = await pool.query(`INSERT INTO users (email, name, pass_hash, role, must_change, auth_provider) VALUES ($1,$2,$3,$4,true,'password')
-                              ON CONFLICT (email) DO UPDATE SET name=coalesce(EXCLUDED.name,users.name), pass_hash=EXCLUDED.pass_hash, role=EXCLUDED.role, active=true, must_change=true
+  const r = await pool.query(`INSERT INTO users (email, name, pass_hash, role, must_change, auth_provider) VALUES ($1,$2,$3,$4,false,'password')
+                              ON CONFLICT (email) DO UPDATE SET name=coalesce(EXCLUDED.name,users.name), pass_hash=EXCLUDED.pass_hash, role=EXCLUDED.role, active=true, must_change=false
                               RETURNING id, email, role`, [em, name || null, await bcrypt.hash(String(password), 11), role]);
   audit(req.user.id, 'user_save', { email: em, role }); return r.rows[0];
 });
@@ -318,9 +318,9 @@ app.post('/api/users/bulk', { preHandler: admin }, async (req, reply) => {
     await db.query('BEGIN');
     for (const r of rows) {
       const hash = r.password ? await bcrypt.hash(r.password, 10) : null;
-      await db.query(`INSERT INTO users (email, name, pass_hash, role, must_change, auth_provider, all_filters) VALUES ($1,$2,$3,$4,true,'password',$5)
+      await db.query(`INSERT INTO users (email, name, pass_hash, role, must_change, auth_provider, all_filters) VALUES ($1,$2,$3,$4,false,'password',$5)
                       ON CONFLICT (email) DO UPDATE SET name=coalesce(nullif(EXCLUDED.name,''),users.name), role=EXCLUDED.role, active=true, all_filters=EXCLUDED.all_filters,
-                        pass_hash=coalesce($3,users.pass_hash), must_change=CASE WHEN $3 IS NULL THEN users.must_change ELSE true END`,
+                        pass_hash=coalesce($3,users.pass_hash), must_change=false`,
                      [r.email, r.name || null, hash, r.role, r.allFilters]);
     }
     await db.query('COMMIT');
@@ -334,7 +334,7 @@ app.post('/api/users/:uid/reset-password', { preHandler: admin }, async (req, re
   if (t.role !== 'viewer' && req.user.role !== 'superadmin') return reply.code(403).send({ error: 'Only the super admin can reset an admin' });
   const pw = String((req.body || {}).password || '');
   if (pw.length < 8) return reply.code(400).send({ error: 'Temporary password: at least 8 characters' });
-  await pool.query("UPDATE users SET pass_hash=$2, must_change=true, auth_provider=CASE WHEN auth_provider='m365' THEN 'm365' ELSE 'password' END WHERE id=$1", [t.id, await bcrypt.hash(pw, 11)]);
+  await pool.query("UPDATE users SET pass_hash=$2, must_change=false, auth_provider=CASE WHEN auth_provider='m365' THEN 'm365' ELSE 'password' END WHERE id=$1", [t.id, await bcrypt.hash(pw, 11)]);
   audit(req.user.id, 'password_reset', { id: t.id }); return { ok: true };
 });
 app.patch('/api/users/:uid', { preHandler: admin }, async (req, reply) => {

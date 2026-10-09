@@ -182,3 +182,17 @@ ALTER TABLE lobs ADD COLUMN IF NOT EXISTS hidden boolean NOT NULL DEFAULT false;
 
 -- ===== M-21: no forced password change — passwords set by the admin work straight away =====
 UPDATE users SET must_change=false WHERE must_change;
+
+-- ===== M-23: line-of-business groups (Motor = Private car | PCV | GCV | 2 Wheeler | 3 Wheeler) =====
+ALTER TABLE lobs ADD COLUMN IF NOT EXISTS lob_group text;      -- e.g. 'Motor'
+ALTER TABLE lobs ADD COLUMN IF NOT EXISTS group_label text;    -- tab name inside the group, e.g. 'Private car', 'PCV'
+ALTER TABLE lobs ADD COLUMN IF NOT EXISTS group_order int NOT NULL DEFAULT 0;
+UPDATE lobs SET lob_group='Motor', group_label='Private car', group_order=1 WHERE id='motor-pvt-car' AND lob_group IS NULL;
+-- Motor PCV grid (created once; switched off until its rates are uploaded — Admin > Grid settings > Hide from users)
+INSERT INTO lobs (id, name, rate_col, columns, lob_group, group_label, group_order, insurer_first, hidden)
+VALUES ('motor-pcv', 'Motor PCV', 'Base Commission %', '["Insurer", "Product Type", "Vehicle Category", "Age of Vehicle", "Seating", "Location", "RTO", "Vehicle Name", "Fuel Type", "CC", "Business Type", "NCB", "Category", "Depreciation", "Add-on", "Max OD Discount", "Premium", "Policy Term", "Condition", "Age detail", "Seating detail", "PO calculated on", "Base Commission %", "Notes"]', 'Motor', 'PCV', 2, true, true)
+ON CONFLICT (id) DO NOTHING;
+INSERT INTO lob_columns (lob_id, col, position, is_filter)
+SELECT 'motor-pcv', c, ord, c NOT IN ('Age detail','Seating detail','Condition','PO calculated on')
+  FROM unnest(ARRAY['Insurer','Product Type','Vehicle Category','Age of Vehicle','Seating','Location','RTO','Vehicle Name','Fuel Type','CC','Business Type','NCB','Category','Depreciation','Add-on','Max OD Discount','Premium','Policy Term','Condition','Age detail','Seating detail','PO calculated on']::text[]) WITH ORDINALITY AS t(c, ord)
+ON CONFLICT DO NOTHING;

@@ -221,7 +221,31 @@ html.m .overlay .modal .mh{background:#FFF1DC;color:#2B1A00;border-radius:18px 1
 html.m .overlay .modal .mh p{color:#8A7A66}html.m .overlay .xbtn{background:#fff;color:#7A4100}
 html.m .sgbtn{width:100%;border-color:#F39C12;color:#7A4100}
 /* ---------- M-22 Best rate ---------- */
-.br-box{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:6px 18px 10px;margin-bottom:12px;max-width:720px}
+/* M-22 desktop ranking: podium + bars (green/gold) */
+.br-box{max-width:none;width:100%;padding:8px 22px 14px}
+.br-box .br-hd{font-size:15px;padding:14px 4px 12px}.br-box .br-row{grid-template-columns:40px 1fr auto;padding:13px 8px}.br-box .br-ins{font-size:14.5px}.br-box .br-rt{font-size:20px}
+.bd-hd{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:14px}
+.bd-hd h3{margin:0;font-size:16px;font-weight:700;color:var(--navy)}.bd-hd p{margin:2px 0 0;font-size:12px;color:var(--muted)}.bd-hd small{font-size:12px;color:var(--muted)}
+.bd-pod{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:12px}
+.bd-pc{border:1px solid var(--line);border-radius:12px;padding:14px 16px;position:relative;background:#fff;cursor:pointer;transition:.15s}
+.bd-pc:hover{box-shadow:0 6px 18px rgba(31,45,34,.12);transform:translateY(-1px)}
+.bd-pc.p1{border:2px solid var(--accent);background:#FFFBF2}
+.bd-md{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
+.bd-m1{background:var(--accent)}.bd-m2{background:#A9ADA4}.bd-m3{background:#C7865A}
+.bd-pn{font-size:14.5px;font-weight:700;margin:10px 0 2px;color:var(--ink)}
+.bd-pr{font-size:30px;font-weight:800;color:var(--navy);line-height:1.1}
+.bd-pv{font-size:12px;color:var(--accent);font-weight:700;margin-top:8px}
+.bd-tag{position:absolute;top:12px;right:12px;font-size:10.5px;font-weight:700;background:var(--accent);color:#fff;border-radius:10px;padding:2px 9px}
+.bd-row{display:grid;grid-template-columns:30px minmax(140px,220px) 1fr 70px 70px;gap:14px;align-items:center;padding:10px 6px;border-top:1px solid #EEF3EE;font-size:13.5px;cursor:pointer;border-radius:8px}
+.bd-row:hover{background:#F5F1E3}
+.bd-n{color:var(--muted);font-size:12.5px;text-align:center;font-weight:700}
+.bd-bar{height:8px;background:#EEF3EE;border-radius:6px;overflow:hidden}.bd-bar i{display:block;height:100%;background:var(--navy2);border-radius:6px}
+.bd-rt{font-weight:800;color:var(--navy);text-align:right}.bd-lk{font-size:12px;color:var(--accent);font-weight:700;text-align:right}
+.bd-np{font-size:12px;color:#93A695;padding:10px 6px 0;border-top:1px solid #EEF3EE}
+.bd-mode{font-size:12px;font-weight:700;background:#E7EFE7;color:var(--navy);border-radius:20px;padding:6px 13px;white-space:nowrap}
+@media(max-width:900px){.bd-pod{grid-template-columns:1fr}.bd-row{grid-template-columns:26px 1fr 60px}.bd-bar,.bd-lk{display:none}}
+
+.br-box{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px}
 .br-hd{padding:12px 4px 10px;font-size:14px;color:#2B1A00;border-bottom:1px solid #F1ECE4}.br-hd b{color:#9A5300}.br-hd span{display:block;font-size:11.5px;color:#8A7A66;margin-top:2px}
 html.m .br-hd{padding:8px 14px}html.m .br-row{padding:10px 14px;border-radius:0}html.m .br-np{padding:8px 14px}
 .dl-best{display:inline-flex;align-items:center;gap:6px;border-radius:9px;padding:8px 13px;font-size:12.5px;font-weight:700;cursor:pointer;border:1px dashed #CFCFC8;background:#F1F1EE;color:#A9A9A3;white-space:nowrap;font-family:inherit}
@@ -295,6 +319,7 @@ html.m .br-hd{padding:8px 14px}html.m .br-row{padding:10px 14px;border-radius:0}
     <div class="dl-tools">
       <button class="fbtn" id="fbtn"><span>⚙ Filters</span><span class="fcount" id="fcount"></span><span class="chev">▾</span></button>
       <div class="dl-search"><span>🔎</span><input id="q" placeholder="Search any column…"></div>
+      <span class="bd-mode hidden" id="bdMode"></span>
       <span class="dl-count" id="count">—</span>
       <button class="dl-xls" id="xls">⬇ Excel</button>
     </div>
@@ -397,7 +422,7 @@ async function loadOptions(){
     cols=cols.filter(c=>used.has(c.col));
     const ic=cols.find(c=>/insurer|company/i.test(c.col)), pc=cols.find(c=>/product\s*type|^product$/i.test(c.col));
     const hint=t=>`<div class="fstep ins-hint"><div class="lbl">&nbsp;</div><div style="font-size:13px;color:var(--muted);padding:9px 2px">← ${t}</div></div>`;
-    if(ic&&!(S.sel[ic.col]||[]).length)insHint=hint('Pick an insurer — or a product type and a location to compare all insurers');
+    if(ic&&!(S.sel[ic.col]||[]).length)insHint=hint('Pick an insurer, or a product type + location to compare');
     else if(pc&&!(S.sel[pc.col]||[]).length)insHint=hint('Pick a product type to see its filters');
   }
   const dateHtml=`<div class="fstep date"><div class="lbl">Rates as on</div><div class="dl-dd" id="ddDate"><button type="button">${S.asOf===t?'Today · ':''}${esc(dtxt(S.asOf))}</button>
@@ -653,20 +678,32 @@ const bestCols=()=>({ic:(S.cols.find(c=>/insurer|company/i.test(c.col))||{}).col
 function bestMode(){const {ic,pc,lc}=bestCols();return !!(S.insFirst&&ic&&pc&&lc&&!(S.sel[ic]||[]).length&&(S.sel[pc]||[]).length&&(S.sel[lc]||[]).length);}
 let bestSeq=0;
 async function bestAuto(){
-  const box=$('bestBox'),on=bestMode();box.classList.toggle('hidden',!on||M());$('dlWrap').classList.toggle('hidden',on&&!M());
+  const box=$('bestBox'),on=bestMode(),desk=on&&!M();box.classList.toggle('hidden',!desk);$('dlWrap').classList.toggle('hidden',desk);
+  ['count','xls'].forEach(i=>$(i).classList.toggle('hidden',desk));$('bdMode').classList.toggle('hidden',!desk);
   if(!on)return;
-  const {ic,pc,lc}=bestCols(),my=++bestSeq;
-  const head=`<div class="br-hd"><b>★ Best rate</b> · ${esc(S.sel[pc].join(', '))} · ${esc(S.sel[lc].join(', '))}<span>Insurers ranked by rate · as on ${esc(dtxt(S.asOf))}</span></div>`;
-  const tgt=M()?$('mList'):box; tgt.innerHTML=head+'<div class="spin" style="margin:18px auto"></div>';if(M())$('mMore').textContent='';
+  const {ic,pc,lc}=bestCols(),my=++bestSeq,title=`${esc(S.sel[pc].join(', '))} · ${esc(S.sel[lc].join(', '))}`;
+  const tgt=M()?$('mList'):box;
+  const mHead=`<div class="br-hd"><b>★ Best rate</b> · ${title}<span>Insurers ranked by rate · as on ${esc(dtxt(S.asOf))}</span></div>`;
+  const dHead=`<div class="bd-hd"><div><h3>Best rate · ${title}</h3><p>Highest rate each insurer pays here · as on ${esc(dtxt(S.asOf))}</p></div><small>Click an insurer to see its rates</small></div>`;
+  tgt.innerHTML=mHead+'<div class="spin" style="margin:18px auto"></div>';if(M())$('mMore').textContent='';
   try{const d=await api('/api/lobs/'+encodeURIComponent(S.lob)+'/best',{filters:S.sel,asOf:S.asOf,search:$('q').value.trim()});if(my!==bestSeq)return;
-    const g=i=>i<3?' g'+(i+1):'';
     const LOCS=new Map(d.ranked.map(r=>[r.insurer,r.locations||[]]));
-    tgt.innerHTML=head+(d.ranked.length?d.ranked.map((r,i)=>`<div class="br-row" data-ins="${esc(r.insurer)}"><span class="br-no${g(i)}">${i+1}</span><span class="br-ins">${esc(r.insurer)}</span><span class="br-rt">${esc(r.rate)}</span></div>`).join(''):'<div class="br-np">No insurer has a rate for this product type and location.</div>')+
-      (d.notPayable.length?`<div class="br-np">Not payable here: ${esc(d.notPayable.join(', '))}</div>`:'')+'<div class="br-np" style="font-size:11.5px">Tap an insurer to see its rates.</div>';
+    $('bdMode').textContent='Comparing '+d.ranked.length+' insurer'+(d.ranked.length===1?'':'s');
+    const np=d.notPayable.length?`Not payable here: ${esc(d.notPayable.join(', '))}`:'';
+    if(true){const g=i=>i<3?' g'+(i+1):'';
+      tgt.innerHTML=mHead+(d.ranked.length?d.ranked.map((r,i)=>`<div class="br-row" data-ins="${esc(r.insurer)}"><span class="br-no${g(i)}">${i+1}</span><span class="br-ins">${esc(r.insurer)}</span><span class="br-rt">${esc(r.rate)}</span></div>`).join(''):'<div class="br-np">No insurer has a rate for this product type and location.</div>')+
+        (np?`<div class="br-np">${np}</div>`:'')+'<div class="br-np" style="font-size:11.5px">Tap an insurer to see its rates.</div>';
+    } else {
+      const top=d.ranked.slice(0,3),rest=d.ranked.slice(3),mx=Math.max(...d.ranked.map(r=>parseFloat(r.rate)||0),1);
+      tgt.innerHTML=dHead+(d.ranked.length?
+        `<div class="bd-pod">${top.map((r,i)=>`<div class="bd-pc${i?'':' p1'}" data-ins="${esc(r.insurer)}">${i?'':'<span class="bd-tag">Best</span>'}<div class="bd-md bd-m${i+1}">${i+1}</div><div class="bd-pn">${esc(r.insurer)}</div><div class="bd-pr">${esc(r.rate)}</div><div class="bd-pv">View rates →</div></div>`).join('')}</div>`+
+        rest.map((r,i)=>`<div class="bd-row" data-ins="${esc(r.insurer)}"><span class="bd-n">${i+4}</span><b>${esc(r.insurer)}</b><div class="bd-bar"><i style="width:${Math.round((parseFloat(r.rate)||0)/mx*100)}%"></i></div><span class="bd-rt">${esc(r.rate)}</span><span class="bd-lk">View →</span></div>`).join('')
+        :'<div class="bd-np">No insurer has a rate for this product type and location.</div>')+(np?`<div class="bd-np">${np}</div>`:'');
+    }
     tgt.onclick=e=>{const r=e.target.closest('[data-ins]');if(!r)return;S.sel[ic]=[r.dataset.ins];
       const L=LOCS.get(r.dataset.ins)||[];if(L.length)S.sel[lc]=L;else delete S.sel[lc];   // that insurer's own name(s) for this place ("Maharashtra" for Mumbai …)
       if(M())S.mOpen=false;refresh();};}
-  catch(e){if(my===bestSeq)tgt.innerHTML=head+`<div class="br-np">${esc(e.message)}</div>`;}
+  catch(e){if(my===bestSeq)tgt.innerHTML=mHead+`<div class="br-np">${esc(e.message)}</div>`;}
 }
 </script>
 </body>

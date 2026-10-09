@@ -220,6 +220,15 @@ html.m .overlay .modal{max-width:100%;border-radius:18px 18px 0 0;max-height:90v
 html.m .overlay .modal .mh{background:#FFF1DC;color:#2B1A00;border-radius:18px 18px 0 0}
 html.m .overlay .modal .mh p{color:#8A7A66}html.m .overlay .xbtn{background:#fff;color:#7A4100}
 html.m .sgbtn{width:100%;border-color:#F39C12;color:#7A4100}
+/* M-23: Motor tabs (Private car | PCV) */
+.grp-tabs{display:flex;gap:4px;margin:0 0 12px;border-bottom:2px solid var(--line)}
+.grp-tabs button{background:none;border:none;padding:10px 20px;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;font-family:inherit}
+.grp-tabs button.on{color:var(--navy);border-bottom-color:var(--accent)}
+.grp-tabs button:hover{color:var(--navy)}
+.m-tabs{display:flex;margin:0 14px 10px;background:#F6F4F1;border-radius:12px;padding:3px}
+.m-tabs button{flex:1;border:none;background:none;padding:7px;border-radius:9px;font-size:12.5px;color:#8A7A66;font-family:inherit;cursor:pointer}
+.m-tabs button.on{background:#F39C12;color:#2B1A00;font-weight:600}
+html.m body.in-app .grp-tabs{display:none!important}
 /* ---------- M-22 Best rate ---------- */
 /* M-22 desktop ranking: podium + bars (green/gold) */
 .br-box{max-width:none;width:100%;padding:8px 22px 14px}
@@ -312,10 +321,12 @@ html.m .br-hd{padding:8px 14px}html.m .br-row{padding:10px 14px;border-radius:0}
     <div class="m-only" id="mView">
       <div class="m-top"><div style="display:flex;gap:9px;align-items:center;min-width:0"><div class="m-logo"><img id="mLogo" alt="Ideal Insurance"></div><div class="m-ttl">Grid Matrix</div></div><select class="m-lob" id="mLob" aria-label="Grid"></select></div>
       <div class="m-dt"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M16 3v4M8 3v4M4 11h16"/></svg> Rates as on</span><b id="mDateTxt"></b><select id="mDate" aria-label="Rates as on"></select></div>
+      <div class="m-tabs hidden" id="mTabs"></div>
       <div class="m-srch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A7A66" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="mq" placeholder="Search city, RTO, insurer" autocomplete="off"></div>
       <div class="m-pnl" id="mPnl"></div>
       <div id="mList"></div><div class="m-empty" id="mMore"></div>
     </div>
+    <div class="grp-tabs hidden" id="grpTabs"></div>
     <div class="dl-tools">
       <button class="fbtn" id="fbtn"><span>⚙ Filters</span><span class="fcount" id="fcount"></span><span class="chev">▾</span></button>
       <div class="dl-search"><span>🔎</span><input id="q" placeholder="Search any column…"></div>
@@ -389,15 +400,32 @@ async function start(){
   const lobs=await api('/api/lobs');
   S.lobs=lobs;
   const nice=l=>l.name&&l.name!==l.id?l.name:l.id.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
-  $('lobSwitch').innerHTML=lobs.map(l=>`<option value="${esc(l.id)}">${esc(nice(l))}</option>`).join('');
+  // M-23: grids in a group (Motor = Private car | PCV …) show once in the switcher, with tabs inside
+  const seen=new Set(),opts=[];
+  for(const l of lobs){if(l.lob_group){if(seen.has(l.lob_group))continue;seen.add(l.lob_group);opts.push(`<option value="g:${esc(l.lob_group)}">${esc(l.lob_group)}</option>`);}
+    else opts.push(`<option value="${esc(l.id)}">${esc(nice(l))}</option>`);}
+  $('lobSwitch').innerHTML=opts.join('');
   $('lobSwitch').classList.toggle('hidden',!lobs.length);
   if(!lobs.length){$('count').textContent='No grids published yet';live('Live','ok');return;}
   let last='';try{last=localStorage.getItem('gm_lob')||'';}catch(e){}
-  const first=lobs.some(l=>l.id===last)?last:lobs[0].id;$('lobSwitch').value=first;
+  const first=lobs.some(l=>l.id===last)?last:(lobs[0].lob_group?members(lobs[0].lob_group)[0].id:lobs[0].id);   // a group opens on its first tab (Private car)
   await openLob(first);
 }
+const lobOf=id=>(S.lobs||[]).find(l=>l.id===id)||{};
+const members=g=>(S.lobs||[]).filter(l=>l.lob_group===g).sort((a,b)=>(a.group_order||0)-(b.group_order||0)||String(a.group_label).localeCompare(String(b.group_label)));
+const optVal=id=>{const l=lobOf(id);return l.lob_group?'g:'+l.lob_group:id;};
+function drawTabs(){
+  const l=lobOf(S.lob),M_=l.lob_group?members(l.lob_group):[];
+  const show=M_.length>1;
+  $('grpTabs').classList.toggle('hidden',!show);$('mTabs').classList.toggle('hidden',!show);
+  if(!show)return;
+  const h=M_.map(m=>`<button class="${m.id===S.lob?'on':''}" data-lob="${esc(m.id)}">${esc(m.group_label||m.name)}</button>`).join('');
+  $('grpTabs').innerHTML=h;$('mTabs').innerHTML=h;
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-lob]');if(!b||!b.closest('#grpTabs,#mTabs'))return;
+  const id=b.dataset.lob;if(id===S.lob)return;try{localStorage.setItem('gm_lob',id);localStorage.setItem('gm_lob_g:'+lobOf(id).lob_group,id);}catch(_){}openLob(id);});
 async function openLob(id){
-  S.lob=id;S.sel={};$('q').value='';S.rateCol=((S.lobs||[]).find(l=>l.id===id)||{}).rate_col||'Base Commission %';
+  S.lob=id;S.sel={};$('q').value='';$('lobSwitch').value=optVal(id);drawTabs();S.rateCol=((S.lobs||[]).find(l=>l.id===id)||{}).rate_col||'Base Commission %';
   const cfg=await api('/api/lobs/'+encodeURIComponent(id)+'/config');
   S.cols=cfg.columns.filter(c=>c.visible);S.insFirst=!!cfg.insurerFirst;S.dates=cfg.dates||[];S.rtoStates=cfg.rtoStates||{};S.asOf=today();shownBefore=new Set();
   await refresh();setBar(true);
@@ -533,7 +561,9 @@ function render(newRows,reset){
 new IntersectionObserver(es=>{if(es[0].isIntersecting&&!S.loading&&!S.done&&S.lob)loadRows(false);},{root:null,rootMargin:'300px'}).observe($('more'));
 $('scroll').addEventListener('scroll',()=>{const s=$('scroll');if(s.scrollTop+s.clientHeight>s.scrollHeight-300&&!S.loading&&!S.done)loadRows(false);});
 let st;$('q').oninput=()=>{clearTimeout(st);st=setTimeout(refresh,250);};
-$('lobSwitch').onchange=()=>{try{localStorage.setItem('gm_lob',$('lobSwitch').value);}catch(e){}openLob($('lobSwitch').value);};
+$('lobSwitch').onchange=()=>{let v=$('lobSwitch').value;
+  if(v.startsWith('g:')){const M_=members(v.slice(2));let last='';try{last=localStorage.getItem('gm_lob_'+v)||'';}catch(e){}v=(M_.find(m=>m.id===last)||M_[0]).id;}
+  try{localStorage.setItem('gm_lob',v);}catch(e){}openLob(v);};
 function setBar(open){const b=$('fbar');$('fbtn').classList.toggle('open',open);b.classList.remove('shown');
   if(open){b.classList.add('open');setTimeout(()=>{if(b.classList.contains('open'))b.classList.add('shown');},360);}else b.classList.remove('open');}
 $('fbtn').onclick=()=>setBar(!$('fbar').classList.contains('open'));
@@ -597,7 +627,7 @@ const isGeo=c=>/^location$|^state$|^city$|^cluster$|^zone$|^rto\b|rto\s*code/i.t
 const SUBC=c=>isIns(c)||isProd(c)||isGeo(c)||/po calculated|^notes?$|remark/i.test(c);
 function mTop(){
   $('mLogo').src=document.querySelector('.logo img').src;
-  $('mLob').innerHTML=$('lobSwitch').innerHTML;$('mLob').value=S.lob;$('mLob').classList.toggle('hidden',(S.lobs||[]).length<2);
+  $('mLob').innerHTML=$('lobSwitch').innerHTML;$('mLob').value=optVal(S.lob);$('mLob').classList.toggle('hidden',$('lobSwitch').options.length<2);
   const t=today(),ds=S.fdates||[t];
   $('mDate').innerHTML=ds.map(d=>`<option value="${d}"${d===S.asOf?' selected':''}>${d===t?'Today · ':''}${dtxt(d)}</option>`).join('');
   $('mDateTxt').textContent=(S.asOf===t?'Today · ':'')+dtxt(S.asOf)+' ▾';

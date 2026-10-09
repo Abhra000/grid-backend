@@ -270,6 +270,8 @@ body.locked #sidebar,body.locked main,body.locked #burger,body.locked #userChip,
         <div class="full"><label class="fl">Columns of the template (one per line, in file order)</label><textarea id="stCols" rows="9" style="font-family:Consolas,monospace"></textarea>
           <div class="desc" style="margin-top:4px">Must include an <b>Insurer</b> column and the rate column. A column named Notes / Remarks is shown as notes.</div></div>
         <div class="full"><label class="fl">Description (optional)</label><input id="stDesc"></div>
+        <div><label class="fl">Group (e.g. Motor)</label><input id="stGrp" placeholder="leave blank for a stand-alone grid"></div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px"><div><label class="fl">Tab name in the group</label><input id="stGrpLbl" placeholder="e.g. Private car, PCV"></div><div><label class="fl">Tab order</label><input id="stGrpOrd" type="number" min="0" style="width:100%"></div></div>
         <div class="full"><label class="fl">Viewer options</label><div class="opts">
           <label class="opt"><div><div class="ot">Hide from users</div><div class="od">Nobody sees this grid in the viewer. Rates stay saved, and admins can still check them under Preview &amp; edit rates.</div></div><input type="checkbox" id="stHide"><span class="sw"></span></label>
           <label class="opt"><div><div class="ot">Insurer first</div><div class="od">Users pick an insurer, then a product type, and only then see that product's filters.</div></div><input type="checkbox" id="stIns"><span class="sw"></span></label>
@@ -585,9 +587,9 @@ async function loadHistory(){
 $('histBody').onclick=e=>{const id=e.target.dataset.dl;if(id)download('/api/lobs/'+encodeURIComponent(LOB)+'/uploads/'+id+'/download').catch(x=>toast(x.message,1));};
 
 /* settings + add LOB */
-function loadSettings(){const l=curLob();$('stName').value=l.name;$('stRate').value=l.rate_col;$('stCols').value=(l.columns||[]).join('\n');$('stDesc').value=l.description||'';$('stIns').checked=!!l.insurer_first;$('stHide').checked=!!l.hidden;
+function loadSettings(){const l=curLob();$('stName').value=l.name;$('stRate').value=l.rate_col;$('stCols').value=(l.columns||[]).join('\n');$('stDesc').value=l.description||'';$('stIns').checked=!!l.insurer_first;$('stHide').checked=!!l.hidden;$('stGrp').value=l.lob_group||'';$('stGrpLbl').value=l.group_label||'';$('stGrpOrd').value=l.group_order||0;
   $('stDel').classList.toggle('hidden',!(ME.role==='superadmin'&&!l.all_rows));}
-$('stSave').onclick=async()=>{try{await api('/api/lobs/'+encodeURIComponent(LOB),{method:'PATCH',body:{name:$('stName').value,rateCol:$('stRate').value,columns:$('stCols').value.split('\n'),description:$('stDesc').value,insurerFirst:$('stIns').checked,hidden:$('stHide').checked}});toast('Grid settings saved');PV.key='';await loadLobs();showLobs();}catch(e){toast(e.message,1);}};
+$('stSave').onclick=async()=>{try{await api('/api/lobs/'+encodeURIComponent(LOB),{method:'PATCH',body:{name:$('stName').value,rateCol:$('stRate').value,columns:$('stCols').value.split('\n'),description:$('stDesc').value,insurerFirst:$('stIns').checked,hidden:$('stHide').checked,lobGroup:$('stGrp').value,groupLabel:$('stGrpLbl').value,groupOrder:$('stGrpOrd').value}});toast('Grid settings saved');PV.key='';await loadLobs();showLobs();}catch(e){toast(e.message,1);}};
 $('stTpl').onclick=()=>download('/api/lobs/'+encodeURIComponent(LOB)+'/template').catch(x=>toast(x.message,1));
 $('stDel').onclick=async()=>{if(!confirm('Delete the empty grid “'+curLob().name+'”?'))return;try{await api('/api/lobs/'+encodeURIComponent(LOB),{method:'DELETE'});LOB='';await loadLobs();showLobs();toast('Grid deleted');}catch(e){toast(e.message,1);}};
 $('addLobBtn').onclick=()=>{

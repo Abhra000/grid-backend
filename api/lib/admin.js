@@ -72,7 +72,7 @@ export function registerAdmin(app, { pool, viewer, admin, superadmin, audit, cle
 
   /* ---------- LOB templates ---------- */
   app.get('/api/admin/lobs', { preHandler: admin }, async () =>
-    (await pool.query(`SELECT l.id, l.name, l.rate_col, l.columns, l.description, l.insurer_first, l.hidden, l.created_at,
+    (await pool.query(`SELECT l.id, l.name, l.rate_col, l.columns, l.description, l.insurer_first, l.hidden, l.lob_group, l.group_label, l.group_order, l.created_at,
                               (SELECT count(*) FROM rates r WHERE r.lob_id=l.id AND r.period @> current_date)::int AS live_rows,
                               (SELECT count(*) FROM rates r WHERE r.lob_id=l.id)::int AS all_rows,
                               (SELECT max(effective_from)::text FROM rates r WHERE r.lob_id=l.id) AS latest,
@@ -114,6 +114,8 @@ export function registerAdmin(app, { pool, viewer, admin, superadmin, audit, cle
       splitColumns(columns, rateCol);
       await pool.query('UPDATE lobs SET name=$2, rate_col=$3, columns=$4, description=$5 WHERE id=$1',
                        [cur.id, String(b.name || cur.name).trim(), rateCol, JSON.stringify(columns), b.description ?? cur.description]);
+      if (b.lobGroup !== undefined) await pool.query('UPDATE lobs SET lob_group=$2, group_label=$3, group_order=$4 WHERE id=$1',
+        [cur.id, String(b.lobGroup || '').trim() || null, String(b.groupLabel || '').trim() || null, +b.groupOrder || 0]);
       if (typeof b.hidden === 'boolean') await pool.query('UPDATE lobs SET hidden=$2 WHERE id=$1', [cur.id, b.hidden]);
       if (typeof b.insurerFirst === 'boolean') await pool.query('UPDATE lobs SET insurer_first=$2 WHERE id=$1', [cur.id, b.insurerFirst]);
       if (b.columns) await saveColumns(pool, cur.id, columns, rateCol);

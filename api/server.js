@@ -121,7 +121,7 @@ const clearCache = () => { clearSnapshots(); COLS_CACHE.clear(); IFIRST.clear();
 /* ---------------- read (viewer) ---------------- */
 const isAdminUser = u => u && (u.role === 'admin' || u.role === 'superadmin');
 app.get('/api/lobs', { preHandler: viewer }, async () =>          // hidden grids are left out of the viewer for everyone (admins check them in Admin → Preview)
-  (await pool.query(`SELECT l.id, l.name, l.rate_col, max(r.effective_from)::text AS latest
+  (await pool.query(`SELECT l.id, l.name, l.rate_col, l.lob_group, l.group_label, l.group_order, max(r.effective_from)::text AS latest
                        FROM lobs l LEFT JOIN rates r ON r.lob_id=l.id WHERE NOT l.hidden
                       GROUP BY l.id ORDER BY l.created_at, l.name`)).rows);   // first grid created (Motor) opens first
 // M-20: a hidden grid answers only admins

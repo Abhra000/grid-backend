@@ -12,7 +12,9 @@ const NOTE_RE = /note|remark|condition|caps/i;
 export function splitColumns(columns, rateCol) {
   const rc = columns.indexOf(rateCol);
   if (rc < 0) throw new Error(`Rate column "${rateCol}" not found in file`);
-  const noteIdx = columns.findIndex((h, i) => i !== rc && NOTE_RE.test(h));
+  // the notes column: an exact "Notes" / "Remarks" header wins, so a column like "Condition" can stay a filter
+  let noteIdx = columns.findIndex((h, i) => i !== rc && /^\s*(notes?|remarks?|comments?(\s*and\s*remarks)?)\s*$/i.test(h));
+  if (noteIdx < 0) noteIdx = columns.findIndex((h, i) => i !== rc && NOTE_RE.test(h));
   const ins = columns.findIndex(h => INS_RE.test(h));
   if (ins < 0) throw new Error('Insurer column not found in file');
   const prod = columns.findIndex(h => PROD_RE.test(h));

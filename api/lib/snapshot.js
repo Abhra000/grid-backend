@@ -169,11 +169,12 @@ function combos(rows, ic, pc, insurers, products) {
 function usedCols(snap, q, cols) {
   const ic = insCol(cols); if (!ic) return cols;
   const pc = prodCol(cols), lc = cols.find(c => /^location$/i.test(c));
-  const start = [ic, pc, lc].filter(Boolean);                                   // M-22: Product type + Location also open at the start (best-rate compare)
+  const vc = cols.find(c => /vehicle\s*category/i.test(c));                     // PCV: vehicle category is also asked first
+  const start = [ic, pc, vc, lc].filter(Boolean);                                   // M-22: Product type + Location also open at the start (best-rate compare)
   const pick = new Set((q.filters || {})[ic] || []); if (!pick.size) return start;
   const pt = new Set(((q.filters || {})[pc] || []).map(String));
   if (pc && !pt.size) return start;
-  const out = new Set([ic, pc]);
+  const out = new Set([ic, pc, vc].filter(Boolean));
   for (const g of combos(snap.rows, ic, pc, pick, pt.size ? pt : null)) {
     const ov = q.overrides && q.overrides.get(g.insurer + '\u0001' + g.product);
     (ov || autoCols(g.rows, cols, ic, pc)).forEach(c => out.add(c));

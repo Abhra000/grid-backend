@@ -196,3 +196,6 @@ INSERT INTO lob_columns (lob_id, col, position, is_filter)
 SELECT 'motor-pcv', c, ord, c NOT IN ('Age detail','Seating detail','Condition','PO calculated on')
   FROM unnest(ARRAY['Insurer','Product Type','Vehicle Category','Age of Vehicle','Seating','Location','RTO','Vehicle Name','Fuel Type','CC','Business Type','NCB','Category','Depreciation','Add-on','Max OD Discount','Premium','Policy Term','Condition','Age detail','Seating detail','PO calculated on']::text[]) WITH ORDINALITY AS t(c, ord)
 ON CONFLICT DO NOTHING;
+
+-- ===== M-24: admin can hide the Notes column from users (per grid) =====
+ALTER TABLE lobs ADD COLUMN IF NOT EXISTS show_notes boolean NOT NULL DEFAULT true;

@@ -427,7 +427,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-lob]');if(
 async function openLob(id){
   S.lob=id;S.sel={};$('q').value='';$('lobSwitch').value=optVal(id);drawTabs();S.rateCol=((S.lobs||[]).find(l=>l.id===id)||{}).rate_col||'Base Commission %';
   const cfg=await api('/api/lobs/'+encodeURIComponent(id)+'/config');
-  S.cols=cfg.columns.filter(c=>c.visible);S.insFirst=!!cfg.insurerFirst;S.dates=cfg.dates||[];S.rtoStates=cfg.rtoStates||{};S.asOf=today();shownBefore=new Set();
+  S.cols=cfg.columns.filter(c=>c.visible);S.insFirst=!!cfg.insurerFirst;S.showNotes=cfg.showNotes!==false;S.dates=cfg.dates||[];S.rtoStates=cfg.rtoStates||{};S.asOf=today();shownBefore=new Set();
   await refresh();setBar(true);
 }
 const qbody=()=>({filters:S.sel,asOf:S.asOf,search:$('q').value.trim()});
@@ -461,7 +461,7 @@ async function loadOptions(){
     const sb=all.length>12?`<input class="dl-mss" placeholder="Type to filter…" data-mss>`:'';
     return `<div class="fstep${shownBefore.has(c.col)?'':' new'}" style="${shownBefore.has(c.col)?'':`animation-delay:${Math.min(k,12)*35}ms`}"><div class="lbl">${esc(c.label)}</div>
       <div class="dl-dd${sel.size?' on':''}${none?' na':''}" data-col="${esc(c.col)}"><button type="button" ${none?'disabled title="No values for the current choices"':''}>${sel.size?esc([...sel].join(', ')):(none?'— not applicable —':'Any')}</button>
-      <div class="dl-pnl">${sb}<label class="dl-allopt" data-t="any"><input type="checkbox" data-all ${sel.size?'':'checked'}><b>Any</b>&nbsp;<span style="color:var(--muted);font-weight:500">(no filter)</span></label>${all.map(v=>`<label data-t="${esc(String(v).toLowerCase())}"><input type="checkbox" value="${esc(v)}" ${sel.has(v)?'checked':''}>${v==='All'?'<b>All</b>':esc(v)}</label>`).join('')}</div></div></div>`;}).join('');
+      <div class="dl-pnl">${sb}<label class="dl-allopt" data-t="any"><input type="checkbox" data-all ${sel.size?'':'checked'}><b>Any</b>&nbsp;<span style="color:var(--muted);font-weight:500">(no filter)</span></label>${all.map(v=>`<label data-t="${esc(String(v).toLowerCase())}"><input type="checkbox" value="${esc(v)}" ${sel.has(v)?'checked':''}>${v==='All'?'<b>'+(allLbl(c.col)||'All')+'</b>':esc(v)}</label>`).join('')}</div></div></div>`;}).join('');
   const openCol=document.querySelector('.dl-dd.open[data-col]')?.dataset.col, mss=document.querySelector('.dl-dd.open .dl-mss')?.value||'';
   $('fhost').innerHTML=dateHtml+steps+insHint;
   S.fcols=cols;S.fdates=dates;if(M())mPanel();
@@ -529,7 +529,11 @@ function xlsLabel(){                        // Excel = exactly what is on screen
   $('xls').textContent='⬇ Excel'+(S.total?` (${f?'':'all '}${nf(S.total)})`:'');
   $('xls').title=f?'Download the '+nf(S.total)+' rows matching your filters':'Download the full grid ('+nf(S.total)+' rows)';}
 // a row whose value is "All" applies to every value: when the user filtered this column on ONE value, show that value
+// M-24: what "All" (blank) means for some columns, in plain words
+const ALL_LBL={State:'Pan India',Seating:'Not applicable'};
+const allLbl=col=>ALL_LBL[col]||'';
 function allCell(c){            // row value "All" = the rate does not depend on this column -> "Any <column>" when the user filters on it
+  if(allLbl(c.col))return `<span class="dl-allv">${esc(allLbl(c.col))}</span>`;
   if(!(S.sel[c.col]||[]).length)return '—';
   return `<span class="dl-allv" title="This rate is the same for every ${esc(c.label)}">Any ${esc(/[A-Z]{2}/.test(c.label)?c.label:c.label.toLowerCase())}</span>`;}
 function prevHtml(r){                       // M-07: earlier rate of the same row, small and faded
@@ -543,7 +547,7 @@ function render(newRows,reset){
     const used=S.cols.filter(c=>(S.sel[c.col]||[]).length||S.rows.some(r=>{const v=r.params[c.col];return v&&!isAll(v);}));
     const AFTER=/^reward$|total\s*%|rate depends/i;                 // shown right after the rate (Fire / Engineering)
     S.shown=used.filter(c=>!AFTER.test(c.col));S.after=used.filter(c=>AFTER.test(c.col));
-    $('thr').innerHTML=S.shown.map(c=>`<th>${esc(c.label)}</th>`).join('')+`<th>${esc(S.rateCol||'Base Commission %')}</th>`+S.after.map(c=>`<th>${esc(c.label)}</th>`).join('')+'<th>Effective From</th><th>Notes</th>';
+    $('thr').innerHTML=S.shown.map(c=>`<th>${esc(c.label)}</th>`).join('')+`<th>${esc(S.rateCol||'Base Commission %')}</th>`+S.after.map(c=>`<th>${esc(c.label)}</th>`).join('')+'<th>Effective From</th>'+(S.showNotes?'<th>Notes</th>':'');
   }
   if(M())mRows(newRows,reset);
   const base=S.rows.length-newRows.length;
@@ -552,7 +556,7 @@ function render(newRows,reset){
     `<td class="dl-rate" data-label="${esc(S.rateCol||'Base Commission %')}"><span class="rv">${hl(r.rate_text)}${prevHtml(r)}</span></td>`+
     (S.after||[]).map(c=>{const v=r.params[c.col];return `<td data-label="${esc(c.label)}">${v&&!isAll(v)?hl(v):'—'}</td>`;}).join('')+
     `<td data-label="Effective From">${esc(dtxt(r.effective_from))}${r.effective_to?`<div class="dl-still">till ${esc(dtxt(r.effective_to))}</div>`:''}</td>`+
-    `<td class="dl-notes" data-label="Notes">${r.notes?hl(r.notes):'—'}</td></tr>`).join(''));
+    (S.showNotes?`<td class="dl-notes" data-label="Notes">${r.notes?hl(r.notes):'—'}</td>`:'')+'</tr>').join(''));
   xlsLabel();
   $('count').textContent=S.total?`${nf(S.rows.length)} of ${nf(S.total)} rows`:'0 rows';
   $('empty').classList.toggle('hidden',S.total>0);
@@ -590,7 +594,7 @@ function openDetail(r){
     ${f.map(([k,v])=>`<div class="frow"><div class="k">${esc(lab(k))}</div><div class="v">${esc(v)}</div></div>`).join('')}
     <div class="frow"><div class="k">Base Commission %</div><div class="v" style="font-weight:800;color:var(--navy);font-size:16px">${esc(r.rate_text)}</div></div>
     <div class="frow"><div class="k">Effective</div><div class="v">${esc(dtxt(r.effective_from))} → ${r.effective_to?esc(dtxt(r.effective_to)):'still valid'}</div></div>
-    ${r.notes?`<div class="frow"><div class="k">Notes</div><div class="v">${esc(r.notes)}</div></div>`:''}
+    ${r.notes&&S.showNotes?`<div class="frow"><div class="k">Notes</div><div class="v">${esc(r.notes)}</div></div>`:''}
     <div class="fl" style="margin-top:14px">Rate history</div><div class="rhist" id="rh"><div style="color:var(--muted);font-size:12px">Loading…</div></div>
     <div id="sgBox"><button class="sgbtn" id="sgOpen">✎ Rate looks wrong? Suggest a correction</button></div>
   </div></div>`);
@@ -640,7 +644,7 @@ function mPanel(){
   if(S.mOpen||!ready){
     const sel=c=>{const v=(S.sel[c.col]||[])[0]||'',vals=[...new Set([...(S.sel[c.col]||[]),...(S.opts[c.col]||[])])];
       const first=(isIns(c.col)||isProd(c.col))&&S.insFirst?'Choose':'Any';
-      return `<div class="m-f"><label>${esc(c.label)}</label><select class="${v?'on':''}" data-mcol="${esc(c.col)}"><option value="">${first}</option>${vals.map(x=>`<option value="${esc(x)}"${x===v?' selected':''}>${x==='All'?'All (same for every value)':esc(x)}</option>`).join('')}</select></div>`;};
+      return `<div class="m-f"><label>${esc(c.label)}</label><select class="${v?'on':''}" data-mcol="${esc(c.col)}"><option value="">${first}</option>${vals.map(x=>`<option value="${esc(x)}"${x===v?' selected':''}>${x==='All'?(allLbl(c.col)||'All (same for every value)'):esc(x)}</option>`).join('')}</select></div>`;};
     let h=`<div class="m-ph"><b>Find a rate</b>${ready&&Object.keys(S.sel).length?icon:''}</div><div class="m-grid">${cols.map(sel).join('')}</div>`;
     if(S.insFirst&&ic&&!(S.sel[ic.col]||[]).length)h+='<div class="m-hint">Choose an insurer — or a product type and a location to compare all insurers</div>';
     else if(S.insFirst&&pc&&!(S.sel[pc.col]||[]).length)h+='<div class="m-hint">Now choose a product</div>';

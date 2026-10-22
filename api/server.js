@@ -114,9 +114,10 @@ app.get('/api/admin/usage', { preHandler: auth(['admin', 'superadmin']) }, async
 /* Reads are served from in-memory snapshots (lib/snapshot.js): rates valid on a date are loaded once from
    Postgres and shared by all users; any publish or filter change drops them so nobody sees stale rates. */
 const IFIRST = new Map();                                   // M-18: lob -> insurer_first
+const NOTES = new Map();                                    // M-24: lob -> show notes to users
 const OVR = new Map();                                      // M-19: lob -> {ver, map insurer+product -> [cols]}
 let OVR_VER = 1;
-const clearCache = () => { clearSnapshots(); COLS_CACHE.clear(); IFIRST.clear(); OVR.clear(); OVR_VER++; HIDDEN.t = 0; ACCESS.clear(); ensureStateColumn().catch(() => {}); };   // publish / grid change
+const clearCache = () => { clearSnapshots(); COLS_CACHE.clear(); IFIRST.clear(); NOTES.clear(); OVR.clear(); OVR_VER++; HIDDEN.t = 0; ACCESS.clear(); ensureStateColumn().catch(() => {}); };   // publish / grid change
 
 /* ---------------- read (viewer) ---------------- */
 const isAdminUser = u => u && (u.role === 'admin' || u.role === 'superadmin');
@@ -189,7 +190,12 @@ app.put('/api/admin/lobs/:id/insurer-filters', { preHandler: admin }, async (req
   audit(req.user.id, 'insurer_filters', { lob: req.params.id, insurer, product, cols: b.cols ?? 'automatic' });
   return { ok: true };
 });
-app.get('/api/lobs/:id/config', { preHandler: viewer }, async req => ({ insurerFirst: await insurerFirst(req.params.id),
+async function showNotes(lobId, user) {
+  if (isAdminUser(user)) return true;
+  if (!NOTES.has(lobId)) NOTES.set(lobId, (await pool.query('SELECT show_notes FROM lobs WHERE id=$1', [lobId])).rows[0]?.show_notes !== false);
+  return NOTES.get(lobId);
+}
+app.get('/api/lobs/:id/config', { preHandler: viewer }, async req => ({ insurerFirst: await insurerFirst(req.params.id), showNotes: await showNotes(req.params.id, req.user),
   columns: await userColumns(req.params.id, req.user), dates: await effectiveDates(pool, req.params.id), allFilters: await seesAll(req.user),
   rtoStates: RTO_STATES() }));
 // P-10: RTO code -> State name (viewer picks State automatically when an RTO is chosen)
@@ -224,9 +230,10 @@ app.post('/api/lobs/:id/export', { preHandler: viewer }, async (req, reply) => {
   const eq = { ...(req.body || {}), filters: await allowedFilters(req.params.id, req.user, (req.body || {}).filters) };
   const rows = filterSnapshot(await getSnapshot(pool, req.params.id, eq.asOf), eq);          // same rules as the screen
   const cols = (await lobColumns(req.params.id)).map(c => c.col);
-  const aoa = [[...cols, 'Rate %', 'Previous %', 'Previous till', 'Effective From', 'Effective To', 'Notes'],
+  const sn = await showNotes(req.params.id, req.user);
+  const aoa = [[...cols, 'Rate %', 'Previous %', 'Previous till', 'Effective From', 'Effective To', ...(sn ? ['Notes'] : [])],
     ...rows.map(r => [...cols.map(c => r.params[c] ?? ''), r.rate_text, r.prev_rate && r.prev_rate !== r.rate_text ? r.prev_rate : '',
-                      r.prev_rate && r.prev_rate !== r.rate_text ? (r.prev_to || '') : '', r.effective_from, r.effective_to || '', r.notes || ''])];
+                      r.prev_rate && r.prev_rate !== r.rate_text ? (r.prev_to || '') : '', r.effective_from, r.effective_to || '', ...(sn ? [r.notes || ''] : [])])];
   const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Rates');
   const fl = Object.entries((req.body || {}).filters || {}).filter(([, v]) => Array.isArray(v) && v.length);
   const info = [['Grid', req.params.id], ['Rates as on', (req.body || {}).asOf || new Date().toISOString().slice(0, 10)], ['Rows', rows.length],

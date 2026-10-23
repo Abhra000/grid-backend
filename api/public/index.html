@@ -207,6 +207,8 @@ html.m body.in-app .m-nav.m-only{display:flex}
 .m-r{text-align:right;flex:none}
 .m-rate{font-size:17px;font-weight:600;color:#9A5300}
 .m-rate.z{color:#9A928A}
+.m-rate2{font-size:14px;font-weight:600;color:#9A5300;margin-top:3px}
+.m-rl{display:block;font-size:9.5px;font-weight:500;color:#9A928A;letter-spacing:.2px}
 .m-b{display:inline-block;border-radius:7px;padding:1px 6px;font-size:10.5px;white-space:nowrap}
 .m-b.dn{background:#FCEBEB;color:#A32D2D}.m-b.up{background:#EAF3DE;color:#3B6D11}.m-b.eq{color:#9A928A;padding:0}
 .m-empty{padding:24px 14px;text-align:center;color:#8A7A66;font-size:12px}
@@ -648,7 +650,7 @@ function mPanel(){
       return `<div class="m-f"><label>${esc(c.label)}</label><select class="${v?'on':''}" data-mcol="${esc(c.col)}"><option value="">${first}</option>${vals.map(x=>`<option value="${esc(x)}"${x===v?' selected':''}>${x==='All'?(allLbl(c.col)||'All (same for every value)'):esc(x)}</option>`).join('')}</select></div>`;};
     let h=`<div class="m-ph"><b>Find a rate</b>${ready&&Object.keys(S.sel).length?icon:''}</div><div class="m-grid">${cols.map(sel).join('')}</div>`;
     if(S.insFirst&&ic&&!(S.sel[ic.col]||[]).length)h+='<div class="m-hint">Choose an insurer — or a product type and a location to compare all insurers</div>';
-    else if(S.insFirst&&pc&&!(S.sel[pc.col]||[]).length)h+='<div class="m-hint">Now choose a product</div>';
+    else if(S.insFirst&&pc&&!(S.sel[pc.col]||[]).length)h+='<div class="m-hint">Showing all — pick a category or product to narrow</div>';
     $('mPnl').innerHTML=h;
   } else {
     const ch=Object.entries(S.sel).flatMap(([c,vs])=>vs.map(v=>`<span class="m-ch" data-mc="${esc(c)}">${esc(v)} ✕</span>`)).join('');
@@ -671,7 +673,7 @@ function mRows(newRows,reset){
     if(/discount|premium|term/i.test(c)&&!new RegExp(lab(c).split(' ')[0],'i').test(v))return lab(c)+' '+v;
     return v;};
   const icx=cols.find(c=>isIns(c.col));
-  if(S.insFirst&&((icx&&!(S.sel[icx.col]||[]).length)||(pc&&!(S.sel[pc.col]||[]).length))){if(!bestMode()){$('mList').innerHTML='';$('mMore').textContent='';}return;}   // rates appear once insurer + product are chosen (or the ranking)
+  if(S.insFirst&&icx&&!(S.sel[icx.col]||[]).length){if(!bestMode()){$('mList').innerHTML='';$('mMore').textContent='';}return;}   // rates appear once the insurer is chosen; category/product then narrow 1-by-1 (or the best-rate ranking)
   const html=newRows.map((r,i)=>{const P=r.params,k=S.rows.length-newRows.length+i;
     const newBiz=cols.some(c=>/business/i.test(c.col)&&/^new$/i.test(P[c.col]||''));
     const t=cols.filter(c=>!SUBC(c.col)&&P[c.col]&&!isAll(P[c.col])&&!(newBiz&&/age/i.test(c.col)&&/brand\s*new/i.test(P[c.col]))).map(c=>esc(nice(c.col,P[c.col]))).join(' · ')||'All vehicles';
@@ -681,7 +683,11 @@ function mRows(newRows,reset){
       ...cols.filter(c=>/po calculated/i.test(c.col)).map(c=>P[c.col]).filter(v=>v&&!isAll(v))].filter(Boolean);
     const a=parseFloat(r.rate_text),b=parseFloat(r.prev_rate);
     const badge=!r.prev_rate?'':r.prev_rate===r.rate_text?'<span class="m-b eq">no change</span>':`<span class="m-b ${a<b?'dn':'up'}">${a<b?'▼':'▲'} was ${esc(r.prev_rate)}</span>`;
-    return `<div class="m-rw" data-i="${k}"><div style="min-width:0"><div class="m-t">${t}</div><div class="m-s">${z?'Not payable · ':''}${esc(sub.join(' · ')||'All locations')}</div></div><div class="m-r"><div class="m-rate${z?' z':''}">${esc(r.rate_text)}</div>${badge}</div></div>`;}).join('');
+    const aftCols=S.after||[];                                           // 2nd-Year & onwards (and any after-rate column) shown under the 1st-year rate
+    const rateHtml=aftCols.length
+      ? `<div class="m-rate${z?' z':''}">${esc(r.rate_text)}<span class="m-rl">1st yr</span></div>`+aftCols.map(c=>{const v=P[c.col];const sl=/onwards/i.test(c.col)?'2nd yr onwards':esc(c.label);return `<div class="m-rate2">${v&&!isAll(v)?esc(v):'—'}<span class="m-rl">${sl}</span></div>`;}).join('')
+      : `<div class="m-rate${z?' z':''}">${esc(r.rate_text)}</div>`;
+    return `<div class="m-rw" data-i="${k}"><div style="min-width:0"><div class="m-t">${t}</div><div class="m-s">${z?'Not payable · ':''}${esc(sub.join(' · ')||'All locations')}</div></div><div class="m-r">${rateHtml}${badge}</div></div>`;}).join('');
   if(reset)$('mList').innerHTML=(S.total?`<div class="m-cnt">${nf(S.total)} rate${S.total===1?'':'s'}</div>`:'')+html;
   else $('mList').insertAdjacentHTML('beforeend',html);
   const ic=cols.find(c=>isIns(c.col));

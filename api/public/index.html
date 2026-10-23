@@ -545,7 +545,7 @@ function render(newRows,reset){
   if(reset){
     // a column is shown if some row has a real value in it, or the user is filtering on it (then its "All" rows say All)
     const used=S.cols.filter(c=>(S.sel[c.col]||[]).length||S.rows.some(r=>{const v=r.params[c.col];return v&&!isAll(v);}));
-    const AFTER=/^reward$|total\s*%|rate depends|renewal\s*%/i;                 // shown right after the rate (Fire / Engineering)
+    const AFTER=/^reward$|total\s*%|rate depends|renewal\s*%|onwards/i;                 // shown right after the rate (Fire / Engineering / Life 2nd-year)
     S.shown=used.filter(c=>!AFTER.test(c.col));S.after=used.filter(c=>AFTER.test(c.col));
     $('thr').innerHTML=S.shown.map(c=>`<th>${esc(c.label)}</th>`).join('')+`<th>${esc(S.rateCol||'Base Commission %')}</th>`+S.after.map(c=>`<th>${esc(c.label)}</th>`).join('')+'<th>Effective From</th>'+(S.showNotes?'<th>Notes</th>':'');
   }

@@ -245,6 +245,8 @@ html.m body.in-app .grp-tabs{display:none!important}
 .bd-m1{background:var(--accent)}.bd-m2{background:#A9ADA4}.bd-m3{background:#C7865A}
 .bd-pn{font-size:14.5px;font-weight:700;margin:10px 0 2px;color:var(--ink)}
 .bd-pr{font-size:30px;font-weight:800;color:var(--navy);line-height:1.1}
+.bd-pd{font-size:11px;color:var(--muted);font-weight:600;margin-top:6px}
+.bd-rd{display:block;font-size:11px;color:var(--muted);font-weight:500;margin-top:1px}
 .bd-pv{font-size:12px;color:var(--accent);font-weight:700;margin-top:8px}
 .bd-tag{position:absolute;top:12px;right:12px;font-size:10.5px;font-weight:700;background:var(--accent);color:#fff;border-radius:10px;padding:2px 9px}
 .bd-row{display:grid;grid-template-columns:30px minmax(140px,220px) 1fr 70px 70px;gap:14px;align-items:center;padding:10px 6px;border-top:1px solid #EEF3EE;font-size:13.5px;cursor:pointer;border-radius:8px}
@@ -268,6 +270,7 @@ html.m .br-hd{padding:8px 14px}html.m .br-row{padding:10px 14px;border-radius:0}
 .br-no{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12.5px;background:#F1F1EE;color:#5F5E5A}
 .br-no.g1{background:#F39C12;color:#2B1A00}.br-no.g2{background:#D3D1C7;color:#2C2C2A}.br-no.g3{background:#F0C27A;color:#5A3300}
 .br-ins{font-weight:700;font-size:14px;color:#2B1A00}.br-rt{font-size:19px;font-weight:700;color:#9A5300}
+.br-sub{display:block;font-size:10.5px;font-weight:500;color:#8A7A66;margin-top:1px}
 .br-np{color:#9A928A;font-size:12.5px;padding:10px 4px}
 .m-bst{border:none;border-radius:9px;padding:0 10px;height:28px;font-size:11.5px;font-weight:600;cursor:pointer;background:#F1F1EE;color:#A9A9A3;font-family:inherit;margin-right:6px}
 .m-bst.on{background:#F39C12;color:#2B1A00}
@@ -731,14 +734,15 @@ async function bestAuto(){
     const LOCS=new Map(d.ranked.map(r=>[r.insurer,r.locations||[]]));
     $('bdMode').textContent='Comparing '+d.ranked.length+' insurer'+(d.ranked.length===1?'':'s');
     const np=d.notPayable.length?`Not payable here: ${esc(d.notPayable.join(', '))}`:'';
-    if(true){const g=i=>i<3?' g'+(i+1):'';
-      tgt.innerHTML=mHead+(d.ranked.length?d.ranked.map((r,i)=>`<div class="br-row" data-ins="${esc(r.insurer)}"><span class="br-no${g(i)}">${i+1}</span><span class="br-ins">${esc(r.insurer)}</span><span class="br-rt">${esc(r.rate)}</span></div>`).join(''):'<div class="br-np">No insurer has a rate for this product type and location.</div>')+
+    const eff=r=>r.from?`w.e.f. ${esc(dtxt(r.from))}${r.to?' · till '+esc(dtxt(r.to)):''}`:'';
+    if(M()){const g=i=>i<3?' g'+(i+1):'';
+      tgt.innerHTML=mHead+(d.ranked.length?d.ranked.map((r,i)=>`<div class="br-row" data-ins="${esc(r.insurer)}"><span class="br-no${g(i)}">${i+1}</span><span class="br-ins">${esc(r.insurer)}<span class="br-sub">${eff(r)}</span></span><span class="br-rt">${esc(r.rate)}</span></div>`).join(''):'<div class="br-np">No insurer has a rate for this product type and location.</div>')+
         (np?`<div class="br-np">${np}</div>`:'')+'<div class="br-np" style="font-size:11.5px">Tap an insurer to see its rates.</div>';
     } else {
       const top=d.ranked.slice(0,3),rest=d.ranked.slice(3),mx=Math.max(...d.ranked.map(r=>parseFloat(r.rate)||0),1);
       tgt.innerHTML=dHead+(d.ranked.length?
-        `<div class="bd-pod">${top.map((r,i)=>`<div class="bd-pc${i?'':' p1'}" data-ins="${esc(r.insurer)}">${i?'':'<span class="bd-tag">Best</span>'}<div class="bd-md bd-m${i+1}">${i+1}</div><div class="bd-pn">${esc(r.insurer)}</div><div class="bd-pr">${esc(r.rate)}</div><div class="bd-pv">View rates →</div></div>`).join('')}</div>`+
-        rest.map((r,i)=>`<div class="bd-row" data-ins="${esc(r.insurer)}"><span class="bd-n">${i+4}</span><b>${esc(r.insurer)}</b><div class="bd-bar"><i style="width:${Math.round((parseFloat(r.rate)||0)/mx*100)}%"></i></div><span class="bd-rt">${esc(r.rate)}</span><span class="bd-lk">View →</span></div>`).join('')
+        `<div class="bd-pod">${top.map((r,i)=>`<div class="bd-pc${i?'':' p1'}" data-ins="${esc(r.insurer)}">${i?'':'<span class="bd-tag">Best</span>'}<div class="bd-md bd-m${i+1}">${i+1}</div><div class="bd-pn">${esc(r.insurer)}</div><div class="bd-pr">${esc(r.rate)}</div><div class="bd-pd">${eff(r)}</div><div class="bd-pv">View rates →</div></div>`).join('')}</div>`+
+        rest.map((r,i)=>`<div class="bd-row" data-ins="${esc(r.insurer)}"><span class="bd-n">${i+4}</span><b>${esc(r.insurer)}<span class="bd-rd">${eff(r)}</span></b><div class="bd-bar"><i style="width:${Math.round((parseFloat(r.rate)||0)/mx*100)}%"></i></div><span class="bd-rt">${esc(r.rate)}</span><span class="bd-lk">View →</span></div>`).join('')
         :'<div class="bd-np">No insurer has a rate for this product type and location.</div>')+(np?`<div class="bd-np">${np}</div>`:'');
     }
     tgt.onclick=e=>{const r=e.target.closest('[data-ins]');if(!r)return;S.sel[ic]=[r.dataset.ins];

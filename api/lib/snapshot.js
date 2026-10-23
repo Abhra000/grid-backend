@@ -240,8 +240,8 @@ export function bestRates(snap, q, cols) {
     const ins = String(r.params[ic]); seen.add(ins);
     if (!isAll(r.params[lc]) && r._rtos !== null) { if (!locOf.has(ins)) locOf.set(ins, new Set()); locOf.get(ins).add(r.params[lc]); }
     const n = parseFloat(r.rate_text); if (!(n > 0)) continue;
-    if (!best.has(ins) || n > best.get(ins).n) best.set(ins, { insurer: ins, rate: r.rate_text, n });
+    if (!best.has(ins) || n > best.get(ins).n) best.set(ins, { insurer: ins, rate: r.rate_text, n, from: r.effective_from, to: r.effective_to });
   }
-  const ranked = [...best.values()].sort((a, b) => b.n - a.n || a.insurer.localeCompare(b.insurer)).map(({ insurer, rate }) => ({ insurer, rate, locations: [...(locOf.get(insurer) || [])].sort() }));
+  const ranked = [...best.values()].sort((a, b) => b.n - a.n || a.insurer.localeCompare(b.insurer)).map(({ insurer, rate, from, to }) => ({ insurer, rate, from, to, locations: [...(locOf.get(insurer) || [])].sort() }));
   return { ranked, notPayable: [...seen].filter(i => !best.has(i)).sort() };
 }

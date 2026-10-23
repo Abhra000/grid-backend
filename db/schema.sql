@@ -200,12 +200,17 @@ ON CONFLICT DO NOTHING;
 -- ===== M-24: admin can hide the Notes column from users (per grid) =====
 ALTER TABLE lobs ADD COLUMN IF NOT EXISTS show_notes boolean NOT NULL DEFAULT true;
 
--- ===== M-25: Life grid (own entry in the switcher; First-Year Commission % is the rate, Renewal % shown after it) =====
+-- ===== M-25: Life grid (1st-Year Commission % is the rate, 2nd-Year & onwards Commission % shown after it) =====
 INSERT INTO lobs (id, name, rate_col, columns, insurer_first, hidden)
-VALUES ('life', 'Life', 'First-Year Commission %', '["Insurer", "Category", "Product", "Variant", "PPT", "Policy Term", "SI Band", "Channel", "First-Year Commission %", "Renewal %", "Notes"]', true, true)
+VALUES ('life', 'Life', '1st-Year Commission %', '["Insurer", "Category", "Product", "Variant", "PPT", "Policy Term", "SI Band", "Channel", "1st-Year Commission %", "2nd-Year & onwards Commission %", "Notes"]', true, true)
 ON CONFLICT (id) DO NOTHING;
--- insurer-first: show only Insurer + Product up front, then only the filters that insurer's plan uses (also applies to the already-created grid)
-UPDATE lobs SET insurer_first = true WHERE id = 'life';
+-- insurer-first + keep names current on the already-created grid (ON CONFLICT above skips updates)
+UPDATE lobs SET insurer_first = true,
+  rate_col = '1st-Year Commission %',
+  columns = '["Insurer", "Category", "Product", "Variant", "PPT", "Policy Term", "SI Band", "Channel", "1st-Year Commission %", "2nd-Year & onwards Commission %", "Notes"]'
+  WHERE id = 'life';
+-- rename the old Renewal % column in place (keeps its position) before inserting, so no duplicate appears
+UPDATE lob_columns SET col = '2nd-Year & onwards Commission %' WHERE lob_id = 'life' AND col = 'Renewal %';
 INSERT INTO lob_columns (lob_id, col, position, is_filter)
-SELECT 'life', c, ord, c NOT IN ('Renewal %') FROM unnest(ARRAY['Insurer','Category','Product','Variant','PPT','Policy Term','SI Band','Channel','Renewal %']::text[]) WITH ORDINALITY AS t(c, ord)
+SELECT 'life', c, ord, c NOT IN ('2nd-Year & onwards Commission %') FROM unnest(ARRAY['Insurer','Category','Product','Variant','PPT','Policy Term','SI Band','Channel','2nd-Year & onwards Commission %']::text[]) WITH ORDINALITY AS t(c, ord)
 ON CONFLICT DO NOTHING;

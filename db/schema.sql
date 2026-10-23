@@ -199,3 +199,11 @@ ON CONFLICT DO NOTHING;
 
 -- ===== M-24: admin can hide the Notes column from users (per grid) =====
 ALTER TABLE lobs ADD COLUMN IF NOT EXISTS show_notes boolean NOT NULL DEFAULT true;
+
+-- ===== M-25: Life grid (own entry in the switcher; First-Year Commission % is the rate, Renewal % shown after it) =====
+INSERT INTO lobs (id, name, rate_col, columns, insurer_first, hidden)
+VALUES ('life', 'Life', 'First-Year Commission %', '["Insurer", "Category", "Product", "Variant", "PPT", "Policy Term", "SI Band", "Channel", "First-Year Commission %", "Renewal %", "Notes"]', false, true)
+ON CONFLICT (id) DO NOTHING;
+INSERT INTO lob_columns (lob_id, col, position, is_filter)
+SELECT 'life', c, ord, c NOT IN ('Renewal %') FROM unnest(ARRAY['Insurer','Category','Product','Variant','PPT','Policy Term','SI Band','Channel','Renewal %']::text[]) WITH ORDINALITY AS t(c, ord)
+ON CONFLICT DO NOTHING;

@@ -202,8 +202,10 @@ ALTER TABLE lobs ADD COLUMN IF NOT EXISTS show_notes boolean NOT NULL DEFAULT tr
 
 -- ===== M-25: Life grid (own entry in the switcher; First-Year Commission % is the rate, Renewal % shown after it) =====
 INSERT INTO lobs (id, name, rate_col, columns, insurer_first, hidden)
-VALUES ('life', 'Life', 'First-Year Commission %', '["Insurer", "Category", "Product", "Variant", "PPT", "Policy Term", "SI Band", "Channel", "First-Year Commission %", "Renewal %", "Notes"]', false, true)
+VALUES ('life', 'Life', 'First-Year Commission %', '["Insurer", "Category", "Product", "Variant", "PPT", "Policy Term", "SI Band", "Channel", "First-Year Commission %", "Renewal %", "Notes"]', true, true)
 ON CONFLICT (id) DO NOTHING;
+-- insurer-first: show only Insurer + Product up front, then only the filters that insurer's plan uses (also applies to the already-created grid)
+UPDATE lobs SET insurer_first = true WHERE id = 'life';
 INSERT INTO lob_columns (lob_id, col, position, is_filter)
 SELECT 'life', c, ord, c NOT IN ('Renewal %') FROM unnest(ARRAY['Insurer','Category','Product','Variant','PPT','Policy Term','SI Band','Channel','Renewal %']::text[]) WITH ORDINALITY AS t(c, ord)
 ON CONFLICT DO NOTHING;

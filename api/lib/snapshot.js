@@ -174,8 +174,12 @@ function usedCols(snap, q, cols) {
   const start = [ic, pc, cc, vc, lc].filter(Boolean);                               // M-22: Product type + Location also open at the start (best-rate compare)
   const pick = new Set((q.filters || {})[ic] || []); if (!pick.size) return start;
   const pt = new Set(((q.filters || {})[pc] || []).map(String));
-  if (pc && !pt.size) return start;
-  const out = new Set([ic, pc, cc, vc].filter(Boolean));
+  // does Product actually vary for the chosen insurer(s)? (Fire PSUs have a single "All" product — skip the product step then)
+  let prodVaries = false;
+  if (pc) { const pvs = new Set(); for (const r of snap.rows) if (pick.has(String(r.params[ic]))) pvs.add(pv(r, pc)); prodVaries = pvs.size > 1; }
+  if (pc && prodVaries && !pt.size) return start;
+  const out = new Set([ic, cc, vc].filter(Boolean));
+  if (pc && (prodVaries || pt.size)) out.add(pc);                                  // show Product only when it varies / is chosen
   for (const g of combos(snap.rows, ic, pc, pick, pt.size ? pt : null)) {
     const ov = q.overrides && q.overrides.get(g.insurer + '\u0001' + g.product);
     (ov || autoCols(g.rows, cols, ic, pc)).forEach(c => out.add(c));

@@ -245,3 +245,24 @@ export function bestRates(snap, q, cols) {
   const ranked = [...best.values()].sort((a, b) => b.n - a.n || a.insurer.localeCompare(b.insurer)).map(({ insurer, rate, from, to }) => ({ insurer, rate, from, to, locations: [...(locOf.get(insurer) || [])].sort() }));
   return { ranked, notPayable: [...seen].filter(i => !best.has(i)).sort() };
 }
+
+/**
+ * Best rate for grids with no location (Life): insurers ranked by their highest rate for the chosen Category.
+ * All other picked filters (Product, PPT …) apply; Insurer and Category do not narrow the ranking axis itself.
+ */
+export function bestRatesCategory(snap, q, cols) {
+  const F = q.filters || {}, ic = cols.find(c => /insurer|company/i.test(c)), cat = cols.find(c => /^category$/i.test(c));
+  if (!ic || !cat || !(F[cat] || []).length) return { ranked: [], notPayable: [] };
+  const cats = new Set(F[cat]);
+  const other = Object.entries(F).filter(([c, v]) => c !== ic && c !== cat && v && v.length).map(([c, v]) => [c, new Set(v)]);
+  const best = new Map(), seen = new Set();
+  for (const r of snap.rows) {
+    const c = r.params[cat]; if (!(cats.has(c) || isAll(c))) continue;
+    if (!other.every(([col, s]) => passes(r, col, s))) continue;
+    const ins = String(r.params[ic]); seen.add(ins);
+    const n = parseFloat(r.rate_text); if (!(n > 0)) continue;
+    if (!best.has(ins) || n > best.get(ins).n) best.set(ins, { insurer: ins, rate: r.rate_text, n, from: r.effective_from, to: r.effective_to });
+  }
+  const ranked = [...best.values()].sort((a, b) => b.n - a.n || a.insurer.localeCompare(b.insurer)).map(({ insurer, rate, from, to }) => ({ insurer, rate, from, to, locations: [] }));
+  return { ranked, notPayable: [...seen].filter(i => !best.has(i)).sort() };
+}

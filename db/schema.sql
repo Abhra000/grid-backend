@@ -214,3 +214,7 @@ UPDATE lob_columns SET col = '2nd-Year & onwards Commission %' WHERE lob_id = 'l
 INSERT INTO lob_columns (lob_id, col, position, is_filter)
 SELECT 'life', c, ord, c NOT IN ('2nd-Year & onwards Commission %') FROM unnest(ARRAY['Insurer','Category','Product','Variant','PPT','Policy Term','SI Band','Channel','2nd-Year & onwards Commission %']::text[]) WITH ORDINALITY AS t(c, ord)
 ON CONFLICT DO NOTHING;
+
+-- ===== M-26: Fire grid viewer-ready — insurer-first, unhide, and Reward / Total % / Rate depends on become display-only (shown after the Base Commission % rate) =====
+UPDATE lobs SET insurer_first = true, hidden = false WHERE id = 'fire';
+UPDATE lob_columns SET is_filter = false WHERE lob_id = 'fire' AND col IN ('Reward', 'Total %', 'Rate depends on');

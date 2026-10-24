@@ -10,7 +10,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import XLSX from 'xlsx';
 import { publish, diffUpload, toRecords, effectiveDates, exportRows } from './lib/rates.js';
-import { insurerFilterTable, bestRates } from './lib/snapshot.js';
+import { insurerFilterTable, bestRates, bestRatesCategory } from './lib/snapshot.js';
 import { getSnapshot, querySnapshot, facetsSnapshot, clearSnapshots, filterSnapshot, setRtoMaps, rtoMaps } from './lib/snapshot.js';
 import { renameInsurers } from './lib/insurers.js';
 import { renameProducts } from './lib/products.js';
@@ -224,7 +224,9 @@ app.post('/api/lobs/:id/best', { preHandler: viewer }, async req => {
   const b = { ...(req.body || {}) };
   b.filters = await allowedFilters(req.params.id, req.user, b.filters);
   const cols = (await lobColumns(req.params.id)).map(c => c.col);
-  return bestRates(await getSnapshot(pool, req.params.id, b.asOf), b, cols);
+  const snap = await getSnapshot(pool, req.params.id, b.asOf);
+  const hasLoc = cols.some(c => /^location$/i.test(c));                          // Motor/PCV rank by product type + location; Life (no location) ranks by category
+  return hasLoc ? bestRates(snap, b, cols) : bestRatesCategory(snap, b, cols);
 });
 app.post('/api/lobs/:id/export', { preHandler: viewer }, async (req, reply) => {
   const eq = { ...(req.body || {}), filters: await allowedFilters(req.params.id, req.user, (req.body || {}).filters) };

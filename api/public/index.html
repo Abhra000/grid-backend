@@ -463,7 +463,7 @@ async function loadOptions(){
   const steps=cols.map((c,k)=>{
     const vals=S.opts[c.col]||[], sel=new Set(S.sel[c.col]||[]), all=[...new Set([...sel,...vals])];
     const none=!all.length;
-    const sb=all.length>12?`<input class="dl-mss" placeholder="Type to filter…" data-mss>`:'';
+    const sb=all.length>6?`<input class="dl-mss" placeholder="Type to filter…" data-mss>`:'';
     return `<div class="fstep${shownBefore.has(c.col)?'':' new'}" style="${shownBefore.has(c.col)?'':`animation-delay:${Math.min(k,12)*35}ms`}"><div class="lbl">${esc(c.label)}</div>
       <div class="dl-dd${sel.size?' on':''}${none?' na':''}" data-col="${esc(c.col)}"><button type="button" ${none?'disabled title="No values for the current choices"':''}>${sel.size?esc([...sel].join(', ')):(none?'— not applicable —':'Any')}</button>
       <div class="dl-pnl">${sb}<label class="dl-allopt" data-t="any"><input type="checkbox" data-all ${sel.size?'':'checked'}><b>Any</b>&nbsp;<span style="color:var(--muted);font-weight:500">(no filter)</span></label>${all.map(v=>`<label data-t="${esc(String(v).toLowerCase())}"><input type="checkbox" value="${esc(v)}" ${sel.has(v)?'checked':''}>${v==='All'?'<b>'+(allLbl(c.col)||'All')+'</b>':esc(v)}</label>`).join('')}</div></div></div>`;}).join('');

@@ -218,3 +218,12 @@ ON CONFLICT DO NOTHING;
 -- ===== M-26: Fire grid viewer-ready — insurer-first, unhide, and Reward / Total % / Rate depends on become display-only (shown after the Base Commission % rate) =====
 UPDATE lobs SET insurer_first = true, hidden = false WHERE id = 'fire';
 UPDATE lob_columns SET is_filter = false WHERE lob_id = 'fire' AND col IN ('Reward', 'Total %', 'Rate depends on');
+
+-- ===== M-27: Motor Two Wheeler grid (third Motor tab: Private car | PCV | Two Wheeler). Created hidden; unhide after rates uploaded. =====
+INSERT INTO lobs (id, name, rate_col, columns, lob_group, group_label, group_order, insurer_first, hidden)
+VALUES ('motor-tw', 'Motor Two Wheeler', 'Base Commission %', '["Insurer","Product Type","Age of Vehicle","Policy Term","Vehicle Name","Business Type","Location","RTO","Premium","NCB","Fuel Type","CC","PO calculated on","Base Commission %","Notes"]', 'Motor', 'Two Wheeler', 3, true, true)
+ON CONFLICT (id) DO NOTHING;
+INSERT INTO lob_columns (lob_id, col, position, is_filter)
+SELECT 'motor-tw', c, ord, c NOT IN ('PO calculated on')
+  FROM unnest(ARRAY['Insurer','Product Type','Age of Vehicle','Policy Term','Vehicle Name','Business Type','Location','RTO','Premium','NCB','Fuel Type','CC','PO calculated on']::text[]) WITH ORDINALITY AS t(c, ord)
+ON CONFLICT DO NOTHING;

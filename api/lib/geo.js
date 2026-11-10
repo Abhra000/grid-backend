@@ -99,6 +99,15 @@ export function ccOptions(v) {
   const r = ccRange(v); if (!r) return [String(v)];
   return CC_BUCKETS.filter(([, a, b]) => r[0] <= b && a <= r[1]).map(x => x[0]);
 }
+// Two Wheeler: engine CC as 2 clean choices (<=350cc / >350). EV power ratings (…KW) are kept as their own values.
+export const TW_CC_BUCKETS = [['<=350cc', 0, 350], ['>350', 351, Infinity]];
+export function ccOptionsTW(v) {
+  const s = String(v ?? '').trim();
+  if (s.toLowerCase() === 'all') return ['All'];
+  if (/kw/i.test(s)) return [s];                                   // electric power rating — leave as-is
+  const r = ccRange(v); if (!r) return [s];
+  return TW_CC_BUCKETS.filter(([, a, b]) => r[0] <= b && a <= r[1]).map(x => x[0]);
+}
 
 /** 'DL-1' / 'DL 01' / 'dl01' -> 'DL-01' (keeps letter suffixes: 'TN-15M') */
 export function normRto(c) {

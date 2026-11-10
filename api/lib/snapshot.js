@@ -53,7 +53,10 @@ export async function getSnapshot(pool, lobId, asOf) {
         x.params = { ...x.params, State: x._stN.length ? x._stN.join(' / ') : 'All' };
       } else x._stN = null;
       const cc = Object.keys(x.params).find(isCcCol);
-      x._cc = cc ? ccOptions(x.params[cc]) : null;                               // P-04: CC as 3 clean ranges
+      // P-04: car CC shown as 3 clean ranges (<1000 / 1000-1500 / >1500) — ONLY for the car grids.
+      // Two Wheeler (and any other grid) keeps its own CC buckets (Up to 180cc, 3-7 KW …) as plain filter values.
+      const carCc = lobId === 'motor-pvt-car' || lobId === 'motor-pcv';
+      x._cc = (cc && carCc) ? ccOptions(x.params[cc]) : null;
       x._s = (Object.values(x.params).join(' ') + ' ' + (x.notes || '') + ' ' + x.rate_text).toLowerCase();
     }
     return { date: d, rows };

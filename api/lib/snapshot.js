@@ -1,7 +1,7 @@
 // Hot "snapshot" engine: the rates valid on a date are loaded once from Postgres into the API's memory
 // and shared by all users. Filtering / filter options then take a few milliseconds instead of a DB round trip.
 // Postgres stays the single source of truth; snapshots are dropped whenever anything is published.
-import { locStates, rtoState, isRtoCol, isLocCol, locStateNames, cleanLoc, isCcCol, ccOptions, CC_BUCKETS, normRto, STATE_NAME } from './geo.js';
+import { locStates, rtoState, isRtoCol, isLocCol, locStateNames, cleanLoc, isCcCol, ccOptions, ccOptionsTW, CC_BUCKETS, normRto, STATE_NAME } from './geo.js';
 // P-10: RTO master (which RTOs each insurer's location covers) — set by the server at start and after an upload
 let MAPS = null;
 export const setRtoMaps = m => { MAPS = m; SNAP.clear(); };
@@ -53,10 +53,12 @@ export async function getSnapshot(pool, lobId, asOf) {
         x.params = { ...x.params, State: x._stN.length ? x._stN.join(' / ') : 'All' };
       } else x._stN = null;
       const cc = Object.keys(x.params).find(isCcCol);
-      // P-04: car CC shown as 3 clean ranges (<1000 / 1000-1500 / >1500) — ONLY for the car grids.
-      // Two Wheeler (and any other grid) keeps its own CC buckets (Up to 180cc, 3-7 KW …) as plain filter values.
-      const carCc = lobId === 'motor-pvt-car' || lobId === 'motor-pcv';
-      x._cc = (cc && carCc) ? ccOptions(x.params[cc]) : null;
+      // P-04: car CC shown as 3 clean ranges (<1000 / 1000-1500 / >1500) for the car grids;
+      // Two Wheeler CC shown as <=350cc / >350 (EV KW kept as-is); any other grid keeps raw CC values.
+      x._cc = !cc ? null
+        : (lobId === 'motor-pvt-car' || lobId === 'motor-pcv') ? ccOptions(x.params[cc])
+        : (lobId === 'motor-tw') ? ccOptionsTW(x.params[cc])
+        : null;
       x._s = (Object.values(x.params).join(' ') + ' ' + (x.notes || '') + ' ' + x.rate_text).toLowerCase();
     }
     return { date: d, rows };
